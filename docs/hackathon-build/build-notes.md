@@ -94,3 +94,14 @@
 - Next.js 16 generated `AGENTS.md` and `CLAUDE.md` during the first dev run; they are retained so future agents read version-local Next.js documentation before framework edits.
 - Verification passed: `npm run lint`, `npm run typecheck`, `npm test` (3 tests), and `npm run build`. The local `/` route returned HTTP 200, the build emitted standalone output, and `/api/health` compiled as a dynamic route.
 - Repository hygiene passed: `node_modules`, `.next`, the local npm cache, `.env.local`, coverage, logs, and service-account JSON patterns are ignored; a source scan found no populated provider key or private-key material.
+
+## 2026-08-28 — Build item 2: Google Cloud foundation and deployed hello
+
+- Created dedicated billed project `scriptops-agentic-arkad` (`ScriptOps Agentic Cinema`) instead of modifying the preconfigured, unrelated `sudoku-api-project-506106` project.
+- Selected `us-central1` for Cloud Run, Cloud Tasks, and Firestore so the first durable vertical slice shares a region; created the Standard Firestore Native `(default)` database with free-tier status and no PITR/delete-protection add-ons.
+- Enabled the minimum APIs: Cloud Run, Cloud Build, Artifact Registry, Cloud Tasks, Firestore, Vertex AI, and Secret Manager.
+- Created `scriptops-app` and `scriptops-task-invoker` service accounts. The app identity received Vertex AI user, Firestore data user, Cloud Tasks enqueuer, and log-writer roles; it can act as only the dedicated task invoker. The task identity has Cloud Run Invoker on only the `scriptops` service.
+- Active shaping/security decision: a project-wide `roles/secretmanager.secretAccessor` grant was rejected as broader than necessary. ScriptOps will grant secret access on each individual secret when the secret is created.
+- Created low-throughput queue `scriptops-ripples` in `us-central1` with one concurrent dispatch and one dispatch per second. Item 3 will tighten retry attempts/backoff while implementing the idempotent worker.
+- Added `.gcloudignore` and deployed revision `scriptops-00001-j6v` from source with scale-to-zero, one maximum instance, 512 MiB memory, one CPU, and the dedicated application identity.
+- Live verification passed: Cloud Run reports the revision ready, the queue is `RUNNING`, Firestore reports `FIRESTORE_NATIVE` / `STANDARD` in `us-central1`, and `https://scriptops-916693774226.us-central1.run.app/api/health` returned `{"service":"scriptops","status":"healthy"}`.

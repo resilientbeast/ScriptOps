@@ -38,6 +38,23 @@ npm run build
 
 The Next.js build uses standalone output for container deployment. `GET /api/health` reports only service health and never calls an external provider.
 
+## Google Cloud foundation
+
+The deployed bootstrap uses these non-secret resources:
+
+| Resource | Value |
+| --- | --- |
+| Project | `scriptops-agentic-arkad` |
+| Region | `us-central1` |
+| Cloud Run service | `scriptops` |
+| Public URL | `https://scriptops-916693774226.us-central1.run.app` |
+| Firestore | `(default)` / Native / Standard / `us-central1` |
+| Cloud Tasks queue | `scriptops-ripples` |
+| Runtime identity | `scriptops-app@scriptops-agentic-arkad.iam.gserviceaccount.com` |
+| Task OIDC identity | `scriptops-task-invoker@scriptops-agentic-arkad.iam.gserviceaccount.com` |
+
+The runtime identity has only Vertex AI user, Firestore data user, Cloud Tasks enqueuer, and log-writer roles. It may impersonate only the dedicated task OIDC identity. Secret Manager access is granted per secret when that secret is created; there is no project-wide secret-reader grant.
+
 ## Repository safety
 
 Local `.env*` files, service-account exports, generated output, logs, and test coverage are ignored. Copy `.env.example` for local development and keep real credentials in Google Secret Manager for deployment.

@@ -1,0 +1,14 @@
+.gcloudignore
+.git
+.gitignore
+.next
+.npm-cache
+node_modules
+coverage
+
+.env
+.env.*
+!.env.example
+
+*.log
+*.tsbuildinfo

@@ -20,7 +20,7 @@
   Acceptance: A clean clone has an obvious setup path, no secret material, and one placeholder route that builds under the pinned Node/dependency versions.
   Verify: Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`; inspect `git status --short` for ignored local/generated files; commit as `chore: bootstrap ScriptOps`.
 
-- [ ] **2. Provision the smallest Google Cloud foundation and deploy hello**
+- [x] **2. Provision the smallest Google Cloud foundation and deploy hello**
   Spec ref: `spec.md > 13. Environment And IAM > Google Cloud resources` and `Deployment`
   What to build: Select/create the Google Cloud project and region; enable Cloud Run, Cloud Build, Artifact Registry, Cloud Tasks, Firestore, Vertex AI, and Secret Manager; create Firestore Native mode, the queue, application service account, and task-invoker service account with least-privilege roles. Deploy the placeholder Next.js service from source and record non-secret resource names in README/build notes.
   Acceptance: A public Cloud Run URL serves `/api/health`; the queue and Firestore database exist in compatible locations; no broad owner keys are stored in the repo.
