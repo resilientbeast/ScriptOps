@@ -1,0 +1,46 @@
+{
+  "plugin": "devpost-hackathon",
+  "version": 2,
+  "hackathon": {
+    "slug": "agentic-cinema",
+    "name": "Agentic Cinema: The Blockbuster Hackathon",
+    "url": "https://agentic-cinema.devpost.com",
+    "selected": true,
+    "source": "known"
+  },
+  "participant": {
+    "name": "",
+    "display_name": "Arkadiusz Hukalowicz"
+  },
+  "project": {
+    "name": "ScriptOps",
+    "summary": "A human-supervised pre-production system for indie producers that turns screenplays into five connected production artifacts and uses Revision Ripple to propagate approved changes through all five with an explainable impact view.",
+    "ai_usage": "",
+    "codex_usage": ""
+  },
+  "current_stage": "resources",
+  "completed_stages": [
+    "start-hackathon",
+    "review",
+    "resources"
+  ],
+  "rules_acknowledged": true,
+  "learning": {
+    "status": "active",
+    "current_step": "build",
+    "completed_steps": [
+      "onboard",
+      "scope",
+      "prd",
+      "spec",
+      "checklist"
+    ],
+    "plan_file": "docs/hackathon-build/scope.md",
+    "checklist_file": "docs/hackathon-build/checklist.md"
+  },
+  "submission": {
+    "draft_file": "devpost-submission.md",
+    "status": "not-started"
+  },
+  "next_command": "build-project"
+}
