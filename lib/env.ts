@@ -17,6 +17,7 @@ export const serverEnvSchema = z.object({
   CLOUD_RUN_BASE_URL: z.url().optional(),
   TASK_INVOKER_SERVICE_ACCOUNT: z.email().optional(),
   TASK_OIDC_AUDIENCE: z.url().optional(),
+  SMOKE_TRIGGER_TOKEN: z.string().trim().min(32).optional(),
   PARALLEL_API_KEY: z.string().min(1).optional(),
   DAILY_RIPPLE_CAP: optionalPositiveInteger.default(20),
   RIPPLE_STALE_MS: optionalPositiveInteger,
@@ -27,6 +28,24 @@ export const serverEnvSchema = z.object({
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
 
+export const smokeRuntimeEnvSchema = z.object({
+  GOOGLE_CLOUD_PROJECT: z.string().min(1),
+  CLOUD_TASKS_LOCATION: z.string().min(1),
+  CLOUD_TASKS_QUEUE: z.string().min(1),
+  CLOUD_RUN_BASE_URL: z.url(),
+  TASK_INVOKER_SERVICE_ACCOUNT: z.email(),
+  TASK_OIDC_AUDIENCE: z.url(),
+  SMOKE_TRIGGER_TOKEN: z.string().trim().min(32),
+});
+
+export type SmokeRuntimeEnv = z.infer<typeof smokeRuntimeEnvSchema>;
+
 export function readServerEnv(input: NodeJS.ProcessEnv = process.env): ServerEnv {
   return serverEnvSchema.parse(input);
+}
+
+export function readSmokeRuntimeEnv(
+  input: NodeJS.ProcessEnv = process.env,
+): SmokeRuntimeEnv {
+  return smokeRuntimeEnvSchema.parse(input);
 }

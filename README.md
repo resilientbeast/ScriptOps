@@ -55,6 +55,17 @@ The deployed bootstrap uses these non-secret resources:
 
 The runtime identity has only Vertex AI user, Firestore data user, Cloud Tasks enqueuer, and log-writer roles. It may impersonate only the dedicated task OIDC identity. Secret Manager access is granted per secret when that secret is created; there is no project-wide secret-reader grant.
 
+### Durable dispatch smoke proof
+
+The temporary item-3 spike proves that browser/request lifetime does not own analysis work:
+
+1. `POST /api/smoke/durable-ripple` validates a Secret Manager-backed smoke token, writes a `queued` Firestore document, creates a named OIDC Cloud Task, and returns `202` immediately.
+2. Cloud Tasks independently calls `POST /api/internal/smoke/:runId/execute` as the dedicated task-invoker service account.
+3. The worker cryptographically verifies the Google issuer, exact audience, verified email, and exact service-account address before persisting `analyzing → completed` after a delay.
+4. `GET /api/smoke/durable-ripple/:runId` reads the persisted state. It remains available after the initiating HTTP client has exited.
+
+The smoke endpoints are development proof only. They will be replaced by the authenticated production ripple lifecycle while their identity and durability tests remain.
+
 ## Repository safety
 
 Local `.env*` files, service-account exports, generated output, logs, and test coverage are ignored. Copy `.env.example` for local development and keep real credentials in Google Secret Manager for deployment.

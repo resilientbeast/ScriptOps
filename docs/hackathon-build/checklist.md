@@ -26,7 +26,7 @@
   Acceptance: A public Cloud Run URL serves `/api/health`; the queue and Firestore database exist in compatible locations; no broad owner keys are stored in the repo.
   Verify: Run `gcloud run services describe scriptops --region <region>`, `gcloud tasks queues describe scriptops-ripples --location <region>`, and open `/api/health`; commit configuration/docs as `chore: add Google Cloud foundation`.
 
-- [ ] **3. Prove Cloud Tasks survives browser/request departure**
+- [x] **3. Prove Cloud Tasks survives browser/request departure**
   Spec ref: `spec.md > 2.1 Why Cloud Tasks` and `spec.md > 8. API Contracts > POST /api/internal/ripples/:runId/execute`
   What to build: Add Firestore admin access, task enqueueing, OIDC identity verification, and a temporary delayed worker smoke path. The public trigger must return immediately, while the task worker persists queued → analyzing → completed after a delay. Validate issuer, audience, and exact invoker service-account email; add unit tests for invalid identities.
   Acceptance: Closing the initiating client after `202` does not cancel work; the delayed completion is visible in Firestore. An unauthenticated or wrong-audience request to the internal route is rejected.

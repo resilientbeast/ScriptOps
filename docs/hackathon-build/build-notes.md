@@ -105,3 +105,16 @@
 - Created low-throughput queue `scriptops-ripples` in `us-central1` with one concurrent dispatch and one dispatch per second. Item 3 will tighten retry attempts/backoff while implementing the idempotent worker.
 - Added `.gcloudignore` and deployed revision `scriptops-00001-j6v` from source with scale-to-zero, one maximum instance, 512 MiB memory, one CPU, and the dedicated application identity.
 - Live verification passed: Cloud Run reports the revision ready, the queue is `RUNNING`, Firestore reports `FIRESTORE_NATIVE` / `STANDARD` in `us-central1`, and `https://scriptops-916693774226.us-central1.run.app/api/health` returned `{"service":"scriptops","status":"healthy"}`.
+
+## 2026-08-28 — Build item 3: durable Cloud Tasks dispatch proof
+
+- Pinned official server packages: `firebase-admin@14.3.0`, `@google-cloud/tasks@7.0.0`, and `google-auth-library@11.0.2`.
+- Added a temporary protected trigger, Firestore smoke-run repository, named Cloud Task enqueue, protected status endpoint, and internal delayed worker. The trigger writes `queued`, returns `202`, and does not execute the worker inline.
+- The worker validates a Google-signed OIDC token's issuer, exact Cloud Run audience, verified email, and exact `scriptops-task-invoker@scriptops-agentic-arkad.iam.gserviceaccount.com` identity before claiming the run transactionally.
+- Added execution tokens and conditional completion so a duplicate/late smoke worker cannot complete work it does not own.
+- Created only the `scriptops-smoke-token` secret and granted the runtime identity accessor on that one secret. The 32-byte random token was piped directly into Secret Manager; it was not printed, stored locally, or committed.
+- Tightened `scriptops-ripples` to three attempts, 5–60 second exponential backoff, one concurrent dispatch, and one dispatch per second.
+- Build finding: Next.js Turbopack could not bundle the generated Cloud Tasks loader (`Cannot find module as expression is too dynamic`). Applied the installed Next.js 16 documented `serverExternalPackages` boundary for `@google-cloud/tasks` and `google-auth-library`; the production build then passed.
+- Deployed revision `scriptops-00002-6ts`. A protected trigger returned `queued` in 2.181 seconds for run `e114cd8f-bbd6-45a0-b9d3-a1540af86b5e`; the initiating request ended, and Firestore later reported `completed` with `startedAt=2026-08-28T08:39:35.220Z` and `completedAt=2026-08-28T08:39:45.535Z`.
+- Deployed identity checks passed: no bearer token returned `401 TASK_IDENTITY_MISSING`; a Google-signed token with the wrong audience/service identity returned `401 TASK_TOKEN_INVALID`.
+- Verification passed: lint, typecheck, 8 unit tests (including wrong issuer/audience/email and missing bearer cases), production build, deployed queue/revision inspection, and persisted post-client completion.
