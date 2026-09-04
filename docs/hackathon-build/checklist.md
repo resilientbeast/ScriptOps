@@ -50,7 +50,7 @@
   Acceptance: The structured ADK call succeeds from deployed Cloud Run using Gemini on Vertex AI; the result is persisted; no provider secret reaches the client bundle or logs; the already-verified Parallel proof remains passing.
   Verify: Execute the deployed ADK smoke check, read the stored result, rerun the Parallel check, run `npm run build`, and search built/client source for leaked secret names. Revision `scriptops-00008-qr6` passed with ADK run `1c4bb6e0-08ff-4ef0-b451-ea6370be60e6` and live Parallel run `79ff3a36-188c-4c47-b412-1eefd02a3a65`. Commit 4a through 4b.2 as `feat: prove Gemini and Parallel integrations`.
 
-- [ ] **5. Lock domain schemas, fixtures, and golden invariants**
+- [x] **5. Lock domain schemas, fixtures, and golden invariants**
   Spec ref: `spec.md > 5. Persistence Model`, `spec.md > 6. Domain Contracts`, and `spec.md > 16.3 Golden-path assertions`
   What to build: Implement Zod schemas for the complete ProductionPlan, Proposal, five artifact impacts, evidence records, stage progress, and public errors. Add the sample screenplay, immutable baseline, approved example, and evidence fallback fixtures. Encode the Scene 14 golden consequences and document-size/prohibited-claim gates as deterministic tests.
   Acceptance: Every fixture validates at test/build time; malformed schedules, inverted budget bands, missing evidence IDs, named actors, incomplete proposals, and oversized snapshots fail before persistence or approval.

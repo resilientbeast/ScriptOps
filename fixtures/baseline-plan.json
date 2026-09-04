@@ -1,0 +1,157 @@
+{
+  "fixtureVersion": "2026-09-04.1",
+  "screenplayFixtureVersion": "2026-09-04.1",
+  "production": {
+    "id": "dust-and-thunder",
+    "title": "Dust & Thunder",
+    "logline": "A forensic accountant and a desert mechanic race to expose a land-fraud ledger before a staged road accident erases the last witness.",
+    "region": "New Mexico"
+  },
+  "schedule": {
+    "shootDays": 4,
+    "days": [
+      {
+        "id": "shoot-day-01",
+        "dayNumber": 1,
+        "label": "Interiors and motel",
+        "sceneIds": ["scene-01", "scene-02", "scene-03", "scene-04"],
+        "dayNight": "day",
+        "estimatedHours": 11,
+        "setupRequirements": ["rental-house interior", "roadside motel exterior"],
+        "complianceNotes": ["confirm property agreements and parking plan"]
+      },
+      {
+        "id": "shoot-day-02",
+        "dayNumber": 2,
+        "label": "Truck and gas station",
+        "sceneIds": ["scene-05", "scene-06", "scene-07"],
+        "dayNight": "mixed",
+        "estimatedHours": 10,
+        "setupRequirements": ["process trailer or stationary truck coverage", "dusk continuity"],
+        "complianceNotes": ["verify fuel-site fire and traffic procedures"]
+      },
+      {
+        "id": "shoot-day-03",
+        "dayNumber": 3,
+        "label": "Night pursuit",
+        "sceneIds": ["scene-08", "scene-09", "scene-10"],
+        "dayNight": "night",
+        "estimatedHours": 11,
+        "setupRequirements": ["night exterior lighting", "controlled alley picture vehicles"],
+        "complianceNotes": ["confirm local night-work and noise constraints"]
+      },
+      {
+        "id": "shoot-day-04",
+        "dayNumber": 4,
+        "label": "Workshop, railyard, and desert road",
+        "sceneIds": ["scene-11", "scene-12", "scene-13", "scene-14"],
+        "dayNight": "day",
+        "estimatedHours": 12,
+        "setupRequirements": ["workshop practicals", "railyard edge dressing", "desert access-road control"],
+        "complianceNotes": ["verify land access and traffic-control requirements"]
+      }
+    ]
+  },
+  "budget": {
+    "currency": "USD",
+    "low": 120000,
+    "high": 155000,
+    "deltaLow": 0,
+    "deltaHigh": 0,
+    "costDrivers": [
+      {
+        "id": "base-locations",
+        "label": "Four-day location package",
+        "direction": "neutral",
+        "reason": "Baseline estimate covers the planned interior and exterior company moves.",
+        "evidenceIds": []
+      },
+      {
+        "id": "base-vehicles",
+        "label": "Picture vehicles",
+        "direction": "neutral",
+        "reason": "Baseline estimate includes the hero pickup and two background vehicles.",
+        "evidenceIds": []
+      },
+      {
+        "id": "base-travel",
+        "label": "New Mexico local travel",
+        "direction": "neutral",
+        "reason": "Baseline estimate assumes a primarily local crew and compact travel radius.",
+        "evidenceIds": []
+      }
+    ],
+    "assumptions": ["four principal shoot days", "local crew where practical", "no child performers or precision stunts"]
+  },
+  "locations": [
+    {
+      "id": "location-mesa-road",
+      "name": "Mesa access road",
+      "locality": "Albuquerque area",
+      "region": "New Mexico",
+      "fit": "Open horizon and practical road geometry support the baseline dry daytime finale.",
+      "risks": ["limited shade", "land-access lead time", "wind exposure"],
+      "evidenceIds": ["evidence-permits", "evidence-traffic-control"],
+      "mapSearchUrl": "https://www.google.com/maps/search/desert+access+road+Albuquerque+New+Mexico"
+    },
+    {
+      "id": "location-west-mesa",
+      "name": "West Mesa service road",
+      "locality": "Bernalillo County",
+      "region": "New Mexico",
+      "fit": "Broad shoulders and a distant skyline provide a strong alternate road profile.",
+      "risks": ["traffic-control coordination", "exposed utilities", "variable public access"],
+      "evidenceIds": ["evidence-permits", "evidence-traffic-control"],
+      "mapSearchUrl": "https://www.google.com/maps/search/West+Mesa+service+road+New+Mexico"
+    },
+    {
+      "id": "location-sandia-ranch",
+      "name": "Sandia foothills ranch road",
+      "locality": "Sandoval County",
+      "region": "New Mexico",
+      "fit": "Private-road character can reduce public-road complexity while retaining desert scale.",
+      "risks": ["owner availability", "surface condition", "company-move distance"],
+      "evidenceIds": ["evidence-permits"],
+      "mapSearchUrl": "https://www.google.com/maps/search/ranch+road+Sandoval+County+New+Mexico"
+    }
+  ],
+  "casting": [
+    {
+      "id": "maya-reyes",
+      "roleName": "Maya Reyes",
+      "archetype": "Grounded lead in her thirties or forties; analytical under pressure with dry humor.",
+      "performerType": "archetype",
+      "ageCategory": "adult",
+      "complianceNotes": [],
+      "specialistNeeds": []
+    },
+    {
+      "id": "eli-ortiz",
+      "roleName": "Eli Ortiz",
+      "archetype": "Resourceful desert mechanic; guarded warmth and credible hands-on confidence.",
+      "performerType": "archetype",
+      "ageCategory": "adult",
+      "complianceNotes": [],
+      "specialistNeeds": ["comfortable working around stationary picture vehicles"]
+    },
+    {
+      "id": "deputy-cole",
+      "roleName": "Deputy Cole",
+      "archetype": "Controlled local authority figure whose calm masks divided loyalties.",
+      "performerType": "archetype",
+      "ageCategory": "adult",
+      "complianceNotes": [],
+      "specialistNeeds": []
+    },
+    {
+      "id": "mechanic-jo",
+      "roleName": "Mechanic Jo",
+      "archetype": "Observant workshop owner with concise comic timing and practical authority.",
+      "performerType": "archetype",
+      "ageCategory": "adult",
+      "complianceNotes": [],
+      "specialistNeeds": ["comfortable with workshop props"]
+    }
+  ],
+  "revisionRecord": null
+}

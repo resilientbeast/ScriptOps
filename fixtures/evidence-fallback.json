@@ -1,0 +1,71 @@
+{
+  "fixtureVersion": "2026-09-04.1",
+  "region": "New Mexico",
+  "disclosure": "Bundled cached fallback evidence — verify current requirements with the relevant authority before booking or permitting.",
+  "objectives": [
+    "Check child-performer work constraints for a New Mexico night exterior.",
+    "Check road-control and location-permit lead times.",
+    "Check planning needs for wet-road stunt driving and night work."
+  ],
+  "queries": [
+    "New Mexico child performer film rules",
+    "New Mexico film road closure permits",
+    "New Mexico film stunt safety night shoot"
+  ],
+  "evidence": {
+    "sourceMode": "cached",
+    "retrievedAt": "2026-08-28T10:00:00.000Z",
+    "records": [
+      {
+        "id": "evidence-child-labor",
+        "title": "Labor Law | New Mexico Film Office",
+        "url": "https://nmfilm.com/filmmaker-resources/permits-procedures/labor-law",
+        "excerpt": "New Mexico productions employing children should verify current pre-authorization, education, guardian, and work-hour requirements before scheduling.",
+        "objective": "Check child-performer work constraints for a New Mexico night exterior.",
+        "query": "New Mexico child performer film rules",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      },
+      {
+        "id": "evidence-permits",
+        "title": "Permit Information | New Mexico Film Office",
+        "url": "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/permit-information",
+        "excerpt": "Productions should verify which federal, state, tribal, city, or private permissions apply to the selected location.",
+        "objective": "Check road-control and location-permit lead times.",
+        "query": "New Mexico film road closure permits",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      },
+      {
+        "id": "evidence-traffic-control",
+        "title": "Productions | City of Albuquerque",
+        "url": "https://www.cabq.gov/film/productions",
+        "excerpt": "Road closures and intermittent traffic control can require additional notice, documentation, and coordination beyond a standard film permit.",
+        "objective": "Check road-control and location-permit lead times.",
+        "query": "New Mexico film road closure permits",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      },
+      {
+        "id": "evidence-stunt-safety",
+        "title": "Safety Bulletins | Contract Services",
+        "url": "https://www.csatf.org/production-affairs-safety/safety-bulletins/",
+        "excerpt": "Vehicle action, reduced visibility, wet surfaces, and night work require production-specific risk assessment and qualified stunt and safety supervision.",
+        "objective": "Check planning needs for wet-road stunt driving and night work.",
+        "query": "New Mexico film stunt safety night shoot",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      },
+      {
+        "id": "evidence-weather",
+        "title": "New Mexico Climate Center",
+        "url": "https://weather.nmsu.edu/",
+        "excerpt": "Weather exposure and water use should be checked against current local conditions and site restrictions during production planning.",
+        "objective": "Check planning needs for wet-road stunt driving and night work.",
+        "query": "New Mexico film stunt safety night shoot",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      }
+    ]
+  }
+}

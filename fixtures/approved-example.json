@@ -1,0 +1,267 @@
+{
+  "fixtureVersion": "2026-09-04.1",
+  "baselineFixtureVersion": "2026-09-04.1",
+  "disclosure": "Bundled approved demo example using cached evidence — verify current requirements with the relevant authority before booking or permitting.",
+  "runId": "11111111-1111-4111-8111-111111111111",
+  "sceneId": "scene-14",
+  "requestText": "Move Scene 14 to a rainy night, add a child witness, and turn the escape into controlled stunt driving.",
+  "basePlanVersion": 1,
+  "revisedScene": {
+    "id": "scene-14",
+    "sceneNumber": 14,
+    "heading": "EXT. DESERT ACCESS ROAD - NIGHT",
+    "setting": "exterior",
+    "location": "Desert access road",
+    "summary": "In hard rain, a child witness points Maya toward the ledger while Eli executes a controlled vehicle escape.",
+    "excerpt": "Rain needles the headlamps. A child raises one arm from behind the culvert as the pickup pivots through the marked escape lane.",
+    "pageStart": 18,
+    "pageEnd": 20,
+    "requirements": {
+      "timeOfDay": "night",
+      "weather": ["rain", "wet road"],
+      "castRoleIds": ["maya-reyes", "eli-ortiz", "child-witness"],
+      "vehicles": ["hero pickup", "pursuit SUV"],
+      "stunts": ["controlled precision stunt driving", "wet-surface vehicle pivot"],
+      "minors": ["child witness performer"],
+      "specialEquipment": ["rain effects rigs", "night exterior lighting", "wet-down and drainage package"]
+    }
+  },
+  "revisedSchedule": {
+    "shootDays": 4,
+    "days": [
+      {
+        "id": "shoot-day-01",
+        "dayNumber": 1,
+        "label": "Interiors and motel",
+        "sceneIds": ["scene-01", "scene-02", "scene-03", "scene-04"],
+        "dayNight": "day",
+        "estimatedHours": 11,
+        "setupRequirements": ["rental-house interior", "roadside motel exterior"],
+        "complianceNotes": ["confirm property agreements and parking plan"]
+      },
+      {
+        "id": "shoot-day-02",
+        "dayNumber": 2,
+        "label": "Truck and gas station",
+        "sceneIds": ["scene-05", "scene-06", "scene-07"],
+        "dayNight": "mixed",
+        "estimatedHours": 10,
+        "setupRequirements": ["process trailer or stationary truck coverage", "dusk continuity"],
+        "complianceNotes": ["verify fuel-site fire and traffic procedures"]
+      },
+      {
+        "id": "shoot-day-03",
+        "dayNumber": 3,
+        "label": "Night pursuit",
+        "sceneIds": ["scene-08", "scene-09", "scene-10"],
+        "dayNight": "night",
+        "estimatedHours": 11,
+        "setupRequirements": ["night exterior lighting", "controlled alley picture vehicles"],
+        "complianceNotes": ["confirm local night-work and noise constraints"]
+      },
+      {
+        "id": "shoot-day-04",
+        "dayNumber": 4,
+        "label": "Workshop, railyard, and rainy night road",
+        "sceneIds": ["scene-11", "scene-12", "scene-13", "scene-14"],
+        "dayNight": "mixed",
+        "estimatedHours": 14,
+        "setupRequirements": ["night exterior lighting", "rain effects and drainage", "stunt-driving setup and wet-road reset lane"],
+        "complianceNotes": ["verify child-performer work window and guardian requirements", "coordinate road control and stunt safety plan"]
+      }
+    ]
+  },
+  "revisedBudget": {
+    "currency": "USD",
+    "low": 145000,
+    "high": 195000,
+    "deltaLow": 25000,
+    "deltaHigh": 40000,
+    "costDrivers": [
+      {
+        "id": "rain-effects",
+        "label": "Rain and wet-down effects",
+        "direction": "increase",
+        "reason": "Rain rigs, water handling, surface resets, and weather contingencies add crew, equipment, and time.",
+        "evidenceIds": ["evidence-weather", "evidence-stunt-safety"]
+      },
+      {
+        "id": "night-lighting",
+        "label": "Night lighting package",
+        "direction": "increase",
+        "reason": "The revised night exterior requires lighting, power distribution, rigging, and additional setup time.",
+        "evidenceIds": ["evidence-stunt-safety"]
+      },
+      {
+        "id": "stunt-driving",
+        "label": "Controlled stunt driving",
+        "direction": "increase",
+        "reason": "Qualified stunt supervision, drivers, rehearsals, road control, and safety coverage are added.",
+        "evidenceIds": ["evidence-stunt-safety", "evidence-traffic-control"]
+      },
+      {
+        "id": "child-compliance",
+        "label": "Child-performer compliance",
+        "direction": "increase",
+        "reason": "The child witness adds welfare, guardian, education, scheduling, and authorization planning needs.",
+        "evidenceIds": ["evidence-child-labor"]
+      },
+      {
+        "id": "night-road-control",
+        "label": "Night road control",
+        "direction": "increase",
+        "reason": "The revised sequence may need a longer controlled road window and additional traffic coordination.",
+        "evidenceIds": ["evidence-permits", "evidence-traffic-control"]
+      }
+    ],
+    "assumptions": ["four principal shoot days with a longer final day", "local crew where practical", "production-specific quotes remain pending"]
+  },
+  "revisedLocations": [
+    {
+      "id": "location-sandia-ranch",
+      "name": "Sandia foothills ranch road",
+      "locality": "Sandoval County",
+      "region": "New Mexico",
+      "fit": "Private-road control and working space make this the strongest candidate for night rigging, rain effects, and stunt resets.",
+      "risks": ["verify emergency access", "confirm road-control boundaries", "assess rain drainage and surface traction", "plan lighting rigging and weather shelter", "complete stunt-safety assessment"],
+      "evidenceIds": ["evidence-permits", "evidence-stunt-safety", "evidence-weather"],
+      "mapSearchUrl": "https://www.google.com/maps/search/ranch+road+Sandoval+County+New+Mexico"
+    },
+    {
+      "id": "location-west-mesa",
+      "name": "West Mesa service road",
+      "locality": "Bernalillo County",
+      "region": "New Mexico",
+      "fit": "Broad shoulders support vehicle lanes, but public access increases road-control and night-lighting complexity.",
+      "risks": ["coordinate traffic control", "verify public access", "assess rigging clearance", "plan wet-weather runoff", "complete stunt-safety assessment"],
+      "evidenceIds": ["evidence-permits", "evidence-traffic-control", "evidence-stunt-safety", "evidence-weather"],
+      "mapSearchUrl": "https://www.google.com/maps/search/West+Mesa+service+road+New+Mexico"
+    },
+    {
+      "id": "location-mesa-road",
+      "name": "Mesa access road",
+      "locality": "Albuquerque area",
+      "region": "New Mexico",
+      "fit": "The open horizon photographs well at night, subject to a workable control zone for rain rigs and stunt vehicles.",
+      "risks": ["limited controlled access", "road-control lead time", "lighting rig exposure", "weather and drainage exposure", "stunt reset distance"],
+      "evidenceIds": ["evidence-permits", "evidence-traffic-control", "evidence-stunt-safety", "evidence-weather"],
+      "mapSearchUrl": "https://www.google.com/maps/search/desert+access+road+Albuquerque+New+Mexico"
+    }
+  ],
+  "revisedCasting": [
+    {
+      "id": "maya-reyes",
+      "roleName": "Maya Reyes",
+      "archetype": "Grounded lead in her thirties or forties; analytical under pressure with dry humor.",
+      "performerType": "archetype",
+      "ageCategory": "adult",
+      "complianceNotes": [],
+      "specialistNeeds": []
+    },
+    {
+      "id": "eli-ortiz",
+      "roleName": "Eli Ortiz",
+      "archetype": "Resourceful desert mechanic; guarded warmth and credible hands-on confidence.",
+      "performerType": "archetype",
+      "ageCategory": "adult",
+      "complianceNotes": [],
+      "specialistNeeds": ["comfortable working around stationary picture vehicles"]
+    },
+    {
+      "id": "deputy-cole",
+      "roleName": "Deputy Cole",
+      "archetype": "Controlled local authority figure whose calm masks divided loyalties.",
+      "performerType": "archetype",
+      "ageCategory": "adult",
+      "complianceNotes": [],
+      "specialistNeeds": []
+    },
+    {
+      "id": "mechanic-jo",
+      "roleName": "Mechanic Jo",
+      "archetype": "Observant workshop owner with concise comic timing and practical authority.",
+      "performerType": "archetype",
+      "ageCategory": "adult",
+      "complianceNotes": [],
+      "specialistNeeds": ["comfortable with workshop props"]
+    },
+    {
+      "id": "child-witness",
+      "roleName": "Child Witness",
+      "archetype": "Alert young witness able to communicate urgency through concise action and reaction.",
+      "performerType": "archetype",
+      "ageCategory": "minor",
+      "complianceNotes": ["verify authorization, guardian, education, welfare, and night-work constraints"],
+      "specialistNeeds": ["rain-safe wardrobe and warming plan"]
+    },
+    {
+      "id": "stunt-coordinator",
+      "roleName": "Stunt Coordinator / Driving Specialist",
+      "archetype": "Qualified production specialist for controlled vehicle action on a wet night exterior.",
+      "performerType": "archetype",
+      "ageCategory": "adult",
+      "complianceNotes": ["production-specific risk assessment and safety plan required"],
+      "specialistNeeds": ["stunt coordination", "precision driving", "wet-surface vehicle safety"]
+    }
+  ],
+  "evidence": {
+    "sourceMode": "cached",
+    "retrievedAt": "2026-08-28T10:00:00.000Z",
+    "records": [
+      {
+        "id": "evidence-child-labor",
+        "title": "Labor Law | New Mexico Film Office",
+        "url": "https://nmfilm.com/filmmaker-resources/permits-procedures/labor-law",
+        "excerpt": "New Mexico productions employing children should verify current pre-authorization, education, guardian, and work-hour requirements before scheduling.",
+        "objective": "Check child-performer work constraints for a New Mexico night exterior.",
+        "query": "New Mexico child performer film rules",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      },
+      {
+        "id": "evidence-permits",
+        "title": "Permit Information | New Mexico Film Office",
+        "url": "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/permit-information",
+        "excerpt": "Productions should verify which federal, state, tribal, city, or private permissions apply to the selected location.",
+        "objective": "Check road-control and location-permit lead times.",
+        "query": "New Mexico film road closure permits",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      },
+      {
+        "id": "evidence-traffic-control",
+        "title": "Productions | City of Albuquerque",
+        "url": "https://www.cabq.gov/film/productions",
+        "excerpt": "Road closures and intermittent traffic control can require additional notice, documentation, and coordination beyond a standard film permit.",
+        "objective": "Check road-control and location-permit lead times.",
+        "query": "New Mexico film road closure permits",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      },
+      {
+        "id": "evidence-stunt-safety",
+        "title": "Safety Bulletins | Contract Services",
+        "url": "https://www.csatf.org/production-affairs-safety/safety-bulletins/",
+        "excerpt": "Vehicle action, reduced visibility, wet surfaces, and night work require production-specific risk assessment and qualified stunt and safety supervision.",
+        "objective": "Check planning needs for wet-road stunt driving and night work.",
+        "query": "New Mexico film stunt safety night shoot",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      },
+      {
+        "id": "evidence-weather",
+        "title": "New Mexico Climate Center",
+        "url": "https://weather.nmsu.edu/",
+        "excerpt": "Weather exposure and water use should be checked against current local conditions and site restrictions during production planning.",
+        "objective": "Check planning needs for wet-road stunt driving and night work.",
+        "query": "New Mexico film stunt safety night shoot",
+        "retrievedAt": "2026-08-28T10:00:00.000Z",
+        "sourceMode": "cached"
+      }
+    ]
+  },
+  "assumptions": ["cached evidence is a transparent demo fallback", "production-specific quotes and permissions remain pending"],
+  "warnings": ["verify all current child-work, permit, road-control, weather, and stunt requirements before production"],
+  "generatedAt": "2026-08-28T10:05:00.000Z",
+  "approvedAt": "2026-08-28T10:10:00.000Z"
+}

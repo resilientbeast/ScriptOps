@@ -1,0 +1,288 @@
+{
+  "fixtureVersion": "2026-09-04.1",
+  "productionId": "dust-and-thunder",
+  "title": "Dust & Thunder",
+  "screenplayVersion": "Demo draft 1.0",
+  "scenes": [
+    {
+      "id": "scene-01",
+      "sceneNumber": 1,
+      "heading": "INT. RENTAL HOUSE KITCHEN - DAWN",
+      "setting": "interior",
+      "location": "Rental house kitchen",
+      "summary": "Maya discovers the missing evidence ledger before the town wakes.",
+      "excerpt": "A coffee maker clicks off. Maya turns the ledger toward the first blue light at the window.",
+      "pageStart": 1,
+      "pageEnd": 2,
+      "requirements": {
+        "timeOfDay": "dawn",
+        "weather": ["dry"],
+        "castRoleIds": ["maya-reyes"],
+        "vehicles": [],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["practical dawn window effect"]
+      }
+    },
+    {
+      "id": "scene-02",
+      "sceneNumber": 2,
+      "heading": "EXT. ALBUQUERQUE MOTEL - DAY",
+      "setting": "exterior",
+      "location": "Roadside motel",
+      "summary": "Eli arrives with a damaged pickup and a warning for Maya.",
+      "excerpt": "The pickup rolls into the empty lot on a soft tire. Eli leaves the engine running.",
+      "pageStart": 2,
+      "pageEnd": 3,
+      "requirements": {
+        "timeOfDay": "day",
+        "weather": ["dry"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz"],
+        "vehicles": ["picture pickup truck"],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": []
+      }
+    },
+    {
+      "id": "scene-03",
+      "sceneNumber": 3,
+      "heading": "INT. MOTEL ROOM - DAY",
+      "setting": "interior",
+      "location": "Roadside motel room",
+      "summary": "Maya and Eli map a route to the transmitter site.",
+      "excerpt": "Maya draws one hard line across the county map and circles the old service road.",
+      "pageStart": 3,
+      "pageEnd": 5,
+      "requirements": {
+        "timeOfDay": "day",
+        "weather": ["dry"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz"],
+        "vehicles": [],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["hero county map"]
+      }
+    },
+    {
+      "id": "scene-04",
+      "sceneNumber": 4,
+      "heading": "EXT. SERVICE ROAD - DAY",
+      "setting": "exterior",
+      "location": "Industrial service road",
+      "summary": "The pickup is followed through the industrial fringe.",
+      "excerpt": "A white utility van holds two car lengths back as the skyline disappears in dust.",
+      "pageStart": 5,
+      "pageEnd": 6,
+      "requirements": {
+        "timeOfDay": "day",
+        "weather": ["dry", "wind"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz"],
+        "vehicles": ["picture pickup truck", "picture utility van"],
+        "stunts": ["controlled vehicle follow"],
+        "minors": [],
+        "specialEquipment": ["vehicle mounts"]
+      }
+    },
+    {
+      "id": "scene-05",
+      "sceneNumber": 5,
+      "heading": "INT. PICKUP TRUCK - DAY",
+      "setting": "interior",
+      "location": "Picture pickup truck",
+      "summary": "Eli admits the transmitter holds more than the missing files.",
+      "excerpt": "Eli watches the mirror. Maya folds the map small enough to hide beneath the seat.",
+      "pageStart": 6,
+      "pageEnd": 7,
+      "requirements": {
+        "timeOfDay": "day",
+        "weather": ["dry"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz"],
+        "vehicles": ["picture pickup truck", "process trailer"],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["process trailer", "vehicle interior lighting"]
+      }
+    },
+    {
+      "id": "scene-06",
+      "sceneNumber": 6,
+      "heading": "EXT. GAS STATION - DUSK",
+      "setting": "exterior",
+      "location": "Rural gas station",
+      "summary": "Deputy Cole blocks the only fuel pump and questions the pair.",
+      "excerpt": "Cole rests one hand on the pump. The sunset burns in the pickup's cracked windshield.",
+      "pageStart": 7,
+      "pageEnd": 9,
+      "requirements": {
+        "timeOfDay": "dusk",
+        "weather": ["dry"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz", "deputy-cole"],
+        "vehicles": ["picture pickup truck", "sheriff cruiser"],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["dusk continuity lighting"]
+      }
+    },
+    {
+      "id": "scene-07",
+      "sceneNumber": 7,
+      "heading": "INT. GAS STATION - DUSK",
+      "setting": "interior",
+      "location": "Rural gas station shop",
+      "summary": "Maya copies a security-camera timestamp while Eli distracts Cole.",
+      "excerpt": "The receipt printer chatters. Maya photographs the monitor reflection in the freezer door.",
+      "pageStart": 9,
+      "pageEnd": 10,
+      "requirements": {
+        "timeOfDay": "dusk",
+        "weather": ["dry"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz", "deputy-cole"],
+        "vehicles": [],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["security monitor playback"]
+      }
+    },
+    {
+      "id": "scene-08",
+      "sceneNumber": 8,
+      "heading": "EXT. DESERT OVERLOOK - NIGHT",
+      "setting": "exterior",
+      "location": "Desert overlook",
+      "summary": "Maya confirms the transmitter is active across the valley.",
+      "excerpt": "A red pulse answers from the far ridge. Maya counts the interval against her watch.",
+      "pageStart": 10,
+      "pageEnd": 12,
+      "requirements": {
+        "timeOfDay": "night",
+        "weather": ["dry", "cold"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz"],
+        "vehicles": ["picture pickup truck"],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["night exterior lighting", "distant transmitter practical"]
+      }
+    },
+    {
+      "id": "scene-09",
+      "sceneNumber": 9,
+      "heading": "INT. SHERIFF SUBSTATION - NIGHT",
+      "setting": "interior",
+      "location": "Sheriff substation",
+      "summary": "Cole deletes a dispatch record and calls an unknown handler.",
+      "excerpt": "The dispatch row vanishes. Cole locks the terminal before the call connects.",
+      "pageStart": 12,
+      "pageEnd": 13,
+      "requirements": {
+        "timeOfDay": "night",
+        "weather": ["dry"],
+        "castRoleIds": ["deputy-cole"],
+        "vehicles": [],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["hero dispatch terminal"]
+      }
+    },
+    {
+      "id": "scene-10",
+      "sceneNumber": 10,
+      "heading": "EXT. BACK ALLEY - NIGHT",
+      "setting": "exterior",
+      "location": "Downtown service alley",
+      "summary": "Maya trades the copied timestamp for access codes.",
+      "excerpt": "Jo slides a key card beneath the workshop door. A cruiser turns the next corner.",
+      "pageStart": 13,
+      "pageEnd": 15,
+      "requirements": {
+        "timeOfDay": "night",
+        "weather": ["dry"],
+        "castRoleIds": ["maya-reyes", "mechanic-jo"],
+        "vehicles": ["background sheriff cruiser"],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["wet-down for reflections"]
+      }
+    },
+    {
+      "id": "scene-11",
+      "sceneNumber": 11,
+      "heading": "INT. WORKSHOP - DAWN",
+      "setting": "interior",
+      "location": "Mechanic workshop",
+      "summary": "Jo rigs the pickup to carry a portable receiver.",
+      "excerpt": "Jo seats the final cable and the receiver wakes with a low amber glow.",
+      "pageStart": 15,
+      "pageEnd": 17,
+      "requirements": {
+        "timeOfDay": "dawn",
+        "weather": ["dry"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz", "mechanic-jo"],
+        "vehicles": ["picture pickup truck"],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["hero portable receiver", "practical electronics"]
+      }
+    },
+    {
+      "id": "scene-12",
+      "sceneNumber": 12,
+      "heading": "EXT. RAILYARD EDGE - DAY",
+      "setting": "exterior",
+      "location": "Railyard perimeter",
+      "summary": "The team tests the receiver beneath active freight lines.",
+      "excerpt": "A freight horn swallows the first signal. Maya raises the antenna and tries again.",
+      "pageStart": 17,
+      "pageEnd": 18,
+      "requirements": {
+        "timeOfDay": "day",
+        "weather": ["dry", "wind"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz", "mechanic-jo"],
+        "vehicles": ["picture pickup truck"],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["hero portable receiver", "long-lens rail safety position"]
+      }
+    },
+    {
+      "id": "scene-13",
+      "sceneNumber": 13,
+      "heading": "INT. PICKUP TRUCK - DAY",
+      "setting": "interior",
+      "location": "Picture pickup truck",
+      "summary": "Maya commits to the exposed desert route despite Cole's pursuit.",
+      "excerpt": "The receiver locks onto the pulse. Maya points toward the road running alone into the basin.",
+      "pageStart": 18,
+      "pageEnd": 19,
+      "requirements": {
+        "timeOfDay": "day",
+        "weather": ["dry"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz"],
+        "vehicles": ["picture pickup truck", "process trailer"],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["process trailer", "hero portable receiver"]
+      }
+    },
+    {
+      "id": "scene-14",
+      "sceneNumber": 14,
+      "heading": "EXT. DESERT ACCESS ROAD - DAY",
+      "setting": "exterior",
+      "location": "Remote desert access road",
+      "summary": "Maya and Eli race the transmitter shutdown across an exposed desert road.",
+      "excerpt": "The pickup climbs through a veil of dust. Ahead, the transmitter pulse begins to slow.",
+      "pageStart": 19,
+      "pageEnd": 22,
+      "requirements": {
+        "timeOfDay": "day",
+        "weather": ["dry", "dust"],
+        "castRoleIds": ["maya-reyes", "eli-ortiz"],
+        "vehicles": ["picture pickup truck", "picture utility van"],
+        "stunts": [],
+        "minors": [],
+        "specialEquipment": ["vehicle mounts", "dust-control water truck"]
+      }
+    }
+  ]
+}

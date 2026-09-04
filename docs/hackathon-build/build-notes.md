@@ -137,3 +137,13 @@
 - Revision `scriptops-00008-qr6` passed the deployed Google ADK proof. Run `1c4bb6e0-08ff-4ef0-b451-ea6370be60e6` persisted every required golden signal using `@google/adk@2.0.0` and `gemini-3.7-flash` through Vertex AI at `global`.
 - The same revision preserved the Parallel integration: live run `79ff3a36-188c-4c47-b412-1eefd02a3a65` persisted eight attributed evidence records with Parallel request `search_f366a43c34512415f544a35063ece5e8` using `parallel-web@1.3.2`.
 - Provider slice verification passed: lint, typecheck, 23 tests, production build, Firestore-backed readbacks for both providers, and client-bundle secret-name scanning. Provider keys remain server-only and resource-scoped in Secret Manager.
+
+## 2026-09-04 — Build item 5: production contracts and immutable fixtures
+
+- Added strict Zod contracts for the complete production plan, five typed artifact impacts, evidence/provenance bundles, revision proposals, six-stage progress, public failures, approved revisions, and all fixture sources.
+- Enforced persistence boundaries before Firestore writes: validated snapshots fail above 700 KB, prohibit unsupported certainty claims, require every scene to be scheduled exactly once, reject unknown scene/cast references, and reject missing evidence references in impacts, budget drivers, and locations.
+- Added four versioned fixtures for the fictional **Dust & Thunder** demo: a 14-scene screenplay, immutable baseline plan, visibly cached evidence fallback, and a compact approved-example source that hydrates into a complete validated proposal and approved plan.
+- Encoded the prepared Scene 14 request as deterministic golden invariants across night/rain/child/stunt breakdown changes, sourced New Mexico evidence, schedule constraints, positive budget drivers, re-ranked locations, and archetype-only child/stunt casting briefs.
+- Kept performer guidance archetype-only and fixture loading deeply frozen at runtime; the approved example increments the external plan version once while the proposal remains approval-free.
+- Focused verification passed 12 contract tests covering malformed schedules, inverted budget bands, missing evidence IDs, named performers, incomplete proposals, oversized snapshots, prohibited certainty language, and golden-path drift. Repository-wide verification passed lint, typecheck, all 35 tests, and the production build.
+- This item changed code and fixtures only; no new Google Cloud revision or infrastructure resource was deployed.
