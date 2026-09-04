@@ -40,6 +40,21 @@ export const smokeRuntimeEnvSchema = z.object({
 
 export type SmokeRuntimeEnv = z.infer<typeof smokeRuntimeEnvSchema>;
 
+export const providerSmokeRuntimeEnvSchema = z.object({
+  GOOGLE_CLOUD_PROJECT: z.string().min(1),
+  GOOGLE_CLOUD_LOCATION: z.string().min(1),
+  GOOGLE_GENAI_USE_VERTEXAI: z.literal("true"),
+  GEMINI_MODEL: z.string().min(1),
+  SMOKE_TRIGGER_TOKEN: z.string().trim().min(32),
+  PARALLEL_API_KEY: z.string().trim().min(1),
+  GEMINI_STAGE_TIMEOUT_MS: optionalPositiveInteger.default(45_000),
+  PARALLEL_TIMEOUT_MS: optionalPositiveInteger.default(30_000),
+});
+
+export type ProviderSmokeRuntimeEnv = z.infer<
+  typeof providerSmokeRuntimeEnvSchema
+>;
+
 export function readServerEnv(input: NodeJS.ProcessEnv = process.env): ServerEnv {
   return serverEnvSchema.parse(input);
 }
@@ -48,4 +63,10 @@ export function readSmokeRuntimeEnv(
   input: NodeJS.ProcessEnv = process.env,
 ): SmokeRuntimeEnv {
   return smokeRuntimeEnvSchema.parse(input);
+}
+
+export function readProviderSmokeRuntimeEnv(
+  input: NodeJS.ProcessEnv = process.env,
+): ProviderSmokeRuntimeEnv {
+  return providerSmokeRuntimeEnvSchema.parse(input);
 }

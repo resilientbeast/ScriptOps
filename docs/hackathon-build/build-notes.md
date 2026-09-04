@@ -118,3 +118,22 @@
 - Deployed revision `scriptops-00002-6ts`. A protected trigger returned `queued` in 2.181 seconds for run `e114cd8f-bbd6-45a0-b9d3-a1540af86b5e`; the initiating request ended, and Firestore later reported `completed` with `startedAt=2026-08-28T08:39:35.220Z` and `completedAt=2026-08-28T08:39:45.535Z`.
 - Deployed identity checks passed: no bearer token returned `401 TASK_IDENTITY_MISSING`; a Google-signed token with the wrong audience/service identity returned `401 TASK_TOKEN_INVALID`.
 - Verification passed: lint, typecheck, 8 unit tests (including wrong issuer/audience/email and missing bearer cases), production build, deployed queue/revision inspection, and persisted post-client completion.
+
+## 2026-08-28 — Build item 4 adaptation: split provider verification
+
+- Deployed revision `scriptops-00003-72z` with protected Gemini/ADK and Parallel smoke routes after local lint, typecheck, 11 tests, and production build passed.
+- Parallel Search succeeded live and persisted eight visibly attributed evidence records, including request ID, URL, excerpt, query/objective provenance, retrieval time, and `live` status.
+- The Gemini/ADK route returned the intentionally redacted `GEMINI_SMOKE_FAILED` for run `5071e3ad-4287-4d8d-a5cf-144f2eff57de`; item 4 was not marked complete or committed.
+- Following the guided build failure protocol, work paused rather than guessing. Arkadiusz approved keeping revision 3 and splitting the item into verified Parallel substep 4a and Gemini compatibility substep 4b.
+- Rollback to revision 2 remains available, but the protected revision 3 is retained because it does not mutate the product baseline and preserves useful provider evidence.
+- Revision `scriptops-00004-ll9` replaced ADK-facing boolean literal enums with ordinary booleans while preserving strict post-response validation and added safe error classification. Local lint, typecheck, 17 tests, and production build passed, but deployed run `76e23e5e-de6e-4d76-9750-de130a3bacc5` still failed as the otherwise unclassified `GEMINI_PROVIDER_FAILED`.
+- Arkadiusz approved a second diagnostic split: direct Vertex transport proof (4b.1), followed by the isolated ADK runner fix and final provider verification (4b.2). Revision 4 remains live because all diagnostic routes are token-protected.
+- Direct dependency `@google/genai@2.19.0` and a protected Vertex-only diagnostic were deployed as revision `scriptops-00005-2st` after typecheck, 18 tests, lint, and production build passed.
+- Diagnostic run `d7b11d6e-59cd-4ec0-8e0d-1a8eb075e8ee` persisted `GEMINI_MODEL_UNAVAILABLE` for `gemini-3.7-flash` at `us-central1`. This isolates the blocker to model/location availability rather than Cloud Run request handling, Firestore persistence, Parallel configuration, or the ADK runner.
+- Arkadiusz approved keeping Cloud Run, Cloud Tasks, and Firestore in `us-central1` while moving only Vertex AI Gemini inference to `global`, where the selected model is available.
+- Revision `scriptops-00006-wqq` cleared the model/location blocker but exposed a strict-output mismatch. The provider response stayed redacted; a safe diagnostic layer was added that records only invalid schema field paths and never generated values.
+- Direct Vertex run `1439d309-c8ae-473c-a348-01c097e08916` passed on revision `scriptops-00007-4t2`, proving `gemini-3.7-flash`, the `global` Vertex endpoint, Cloud Run service identity, JSON response schema, and the strict Scene 14 contract independently of ADK.
+- ADK run `f17e3bf5-70ef-4d8d-a9ac-d6e3c9c263d8` then isolated the remaining incompatibility to ADK final-event extraction. Arkadiusz approved using ADK's documented `outputKey` session state as the primary structured result with a single whole-document JSON-fence compatibility fallback.
+- Revision `scriptops-00008-qr6` passed the deployed Google ADK proof. Run `1c4bb6e0-08ff-4ef0-b451-ea6370be60e6` persisted every required golden signal using `@google/adk@2.0.0` and `gemini-3.7-flash` through Vertex AI at `global`.
+- The same revision preserved the Parallel integration: live run `79ff3a36-188c-4c47-b412-1eefd02a3a65` persisted eight attributed evidence records with Parallel request `search_f366a43c34512415f544a35063ece5e8` using `parallel-web@1.3.2`.
+- Provider slice verification passed: lint, typecheck, 23 tests, production build, Firestore-backed readbacks for both providers, and client-bundle secret-name scanning. Provider keys remain server-only and resource-scoped in Secret Manager.

@@ -32,11 +32,23 @@
   Acceptance: Closing the initiating client after `202` does not cancel work; the delayed completion is visible in Firestore. An unauthenticated or wrong-audience request to the internal route is rejected.
   Verify: Trigger the deployed smoke route, close the client, then read the persisted completion; call the worker route without OIDC and confirm `401/403`; run `npm test`; commit as `feat: prove durable ripple dispatch`.
 
-- [ ] **4. Prove one Gemini/ADK result and one live Parallel result**
-  Spec ref: `spec.md > 10. Parallel Search Integration` and `spec.md > 11. Google ADK And Gemini`
-  What to build: Install/pin official `@google/adk` and `parallel-web`; add server-only clients and redacted configuration. Create two protected smoke paths/tests: one structured Breakdown result through Gemini on Vertex AI and one Parallel Search result normalized to title, URL, excerpt, query/objective, retrieval time, and live status. Record the working Gemini model ID and package versions.
-  Acceptance: Both calls succeed from deployed Cloud Run using only allowed runtime AI providers; Parallel output is persisted and visibly attributable; no provider secret reaches the client bundle or logs.
-  Verify: Execute both deployed smoke checks, inspect one stored evidence record, run `npm run build`, and search the built/client source for leaked secret names; commit as `feat: prove Gemini and Parallel integrations`.
+- [x] **4a. Prove one live Parallel result**
+  Spec ref: `spec.md > 10. Parallel Search Integration`
+  What to build: Install/pin official `parallel-web`; add a server-only client and redacted configuration. Create a protected smoke path/test that performs a live-only Parallel Search and normalizes title, URL, excerpt, query/objective, retrieval time, request ID, attribution, and live status.
+  Acceptance: The call succeeds from deployed Cloud Run; output is persisted and visibly attributable; the provider secret is stored in one resource-scoped Secret Manager secret and never reaches client code or logs.
+  Verify: Execute the deployed smoke check and read one stored evidence record back through the protected status route. This passed on revision `scriptops-00003-72z` with eight live records.
+
+- [x] **4b.1. Isolate Vertex transport from the ADK runner**
+  Spec ref: `spec.md > 11. Google ADK And Gemini`
+  What to build: Add a protected, minimal direct Vertex `generateContent` diagnostic using the official `@google/genai` SDK and the same Cloud Run service identity, project, location, model, prompt, and strict post-response contract. Persist only structured output or a redacted failure code.
+  Acceptance: The deployed call identifies whether model/location/IAM transport succeeds independently of ADK; no raw provider error, credential, or prompt is written to logs or returned publicly.
+  Verify: Execute the deployed diagnostic and read its Firestore-backed record through the protected status route. Revision `scriptops-00005-2st` identified `GEMINI_MODEL_UNAVAILABLE` for `gemini-3.7-flash` in `us-central1`, proving the failure is below the ADK runner layer.
+
+- [x] **4b.2. Prove one structured Gemini/ADK result and close the provider slice**
+  Spec ref: `spec.md > 11. Google ADK And Gemini`
+  What to build: Keep official `@google/adk` pinned; fix only the isolated ADK runner incompatibility and retain schema-constrained Breakdown output. Record the working model ID and all provider package versions.
+  Acceptance: The structured ADK call succeeds from deployed Cloud Run using Gemini on Vertex AI; the result is persisted; no provider secret reaches the client bundle or logs; the already-verified Parallel proof remains passing.
+  Verify: Execute the deployed ADK smoke check, read the stored result, rerun the Parallel check, run `npm run build`, and search built/client source for leaked secret names. Revision `scriptops-00008-qr6` passed with ADK run `1c4bb6e0-08ff-4ef0-b451-ea6370be60e6` and live Parallel run `79ff3a36-188c-4c47-b412-1eefd02a3a65`. Commit 4a through 4b.2 as `feat: prove Gemini and Parallel integrations`.
 
 - [ ] **5. Lock domain schemas, fixtures, and golden invariants**
   Spec ref: `spec.md > 5. Persistence Model`, `spec.md > 6. Domain Contracts`, and `spec.md > 16.3 Golden-path assertions`

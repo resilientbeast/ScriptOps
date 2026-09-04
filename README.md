@@ -45,7 +45,8 @@ The deployed bootstrap uses these non-secret resources:
 | Resource | Value |
 | --- | --- |
 | Project | `scriptops-agentic-arkad` |
-| Region | `us-central1` |
+| Infrastructure region | `us-central1` |
+| Vertex AI inference location | `global` |
 | Cloud Run service | `scriptops` |
 | Public URL | `https://scriptops-916693774226.us-central1.run.app` |
 | Firestore | `(default)` / Native / Standard / `us-central1` |
@@ -65,6 +66,20 @@ The temporary item-3 spike proves that browser/request lifetime does not own ana
 4. `GET /api/smoke/durable-ripple/:runId` reads the persisted state. It remains available after the initiating HTTP client has exited.
 
 The smoke endpoints are development proof only. They will be replaced by the authenticated production ripple lifecycle while their identity and durability tests remain.
+
+### Provider smoke proof
+
+The item-4 spike pins `@google/adk@2.0.0`, `@google/genai@2.19.0`, `parallel-web@1.3.2`, and the Vertex AI model `gemini-3.7-flash`. Cloud Run, Cloud Tasks, and Firestore remain in `us-central1`; only Gemini inference uses Vertex AI's `global` location because the model is not served from `us-central1`:
+
+1. `POST /api/smoke/providers/gemini` runs a schema-constrained Scene 14 Breakdown through an ADK `LlmAgent` on Vertex AI and persists the structured result.
+2. `POST /api/smoke/providers/parallel` performs a live-only Parallel Search for New Mexico production constraints, normalizes up to eight cited records, and persists the request ID, objective, query provenance, retrieval time, and `live` status.
+3. `GET /api/smoke/providers/:provider/:runId` reads the stored provider proof. Every route requires the Secret Manager-backed smoke token.
+
+During compatibility diagnosis, `POST /api/smoke/providers/vertex` isolates the same Vertex model, project, location, prompt, and output contract from the ADK runner. It persists only validated output or a redacted failure category and is not part of the final product API.
+
+The Parallel client disables SDK logging and cached fallback for this proof. `PARALLEL_API_KEY` is server-only and is deployed from the resource-scoped `parallel-api-key` Secret Manager secret.
+
+Deployed provider verification passed on Cloud Run revision `scriptops-00008-qr6`. Gemini run `1c4bb6e0-08ff-4ef0-b451-ea6370be60e6` persisted the schema-constrained Scene 14 breakdown through Google ADK; Parallel run `79ff3a36-188c-4c47-b412-1eefd02a3a65` persisted eight live evidence records. ADK structured output is read from its documented `outputKey` session state and then validated by the stricter application contract.
 
 ## Repository safety
 

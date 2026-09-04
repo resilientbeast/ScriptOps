@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { serverEnvSchema } from "@/lib/env";
+import { providerSmokeRuntimeEnvSchema, serverEnvSchema } from "@/lib/env";
 
 describe("serverEnvSchema", () => {
   it("supplies safe local defaults without provider credentials", () => {
@@ -23,6 +23,18 @@ describe("serverEnvSchema", () => {
 
   it("rejects a weak demo cookie secret", () => {
     const result = serverEnvSchema.safeParse({ DEMO_INSTANCE_COOKIE_SECRET: "too-short" });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("requires provider smoke secrets and an explicit Vertex model", () => {
+    const result = providerSmokeRuntimeEnvSchema.safeParse({
+      GOOGLE_CLOUD_PROJECT: "scriptops-agentic-arkad",
+      GOOGLE_CLOUD_LOCATION: "us-central1",
+      GOOGLE_GENAI_USE_VERTEXAI: "true",
+      GEMINI_MODEL: "gemini-3.7-flash",
+      SMOKE_TRIGGER_TOKEN: "s".repeat(32),
+    });
 
     expect(result.success).toBe(false);
   });
