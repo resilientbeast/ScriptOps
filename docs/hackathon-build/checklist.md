@@ -56,7 +56,7 @@
   Acceptance: Every fixture validates at test/build time; malformed schedules, inverted budget bands, missing evidence IDs, named actors, incomplete proposals, and oversized snapshots fail before persistence or approval.
   Verify: Run focused schema/fixture tests plus `npm run typecheck`; print only fixture titles/counts—not screenplay contents or secrets—in test output; commit as `feat: define production contracts and fixtures`.
 
-- [ ] **6. Implement Firestore state machine, isolation, idempotency, and cap**
+- [x] **6. Implement Firestore state machine, isolation, idempotency, and cap**
   Spec ref: `spec.md > 4. Authentication, Isolation, And Cost Controls`, `spec.md > 5. Persistence Model`, and `spec.md > 7. Run State Machine`
   What to build: Implement repositories/transactions for browser demo initialization, queued run creation, deterministic run IDs, one open run per cycle, daily UTC reservation, worker claims/execution tokens/heartbeats, proposal writes, discard, atomic approval, and reset. Keep all mutable state keyed to the long-lived demo cookie, never the Clerk user ID.
   Acceptance: Concurrent starts reserve at most one run; duplicate idempotency returns the same run without another daily count; invalid state transitions and late worker writes fail; approval changes all five artifacts once; reset preserves the cookie and usage count.
