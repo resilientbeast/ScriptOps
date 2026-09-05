@@ -1,33 +1,32 @@
-const artifacts = ["Breakdown", "Schedule", "Budget", "Locations", "Casting"];
+import { redirect } from "next/navigation";
 
-export default function Home() {
+import { AccessNotice } from "@/components/dashboard/access-notice";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getServerAccess } from "@/lib/auth/require-access";
+import { immutableBaselinePlan } from "@/lib/domain/fixtures";
+
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const access = await getServerAccess();
+  if (access.outcome === "signed-out") redirect("/sign-in");
+  if (access.outcome === "forbidden") {
+    return <AccessNotice kind="forbidden" />;
+  }
+  if (access.outcome === "misconfigured") {
+    return <AccessNotice kind="misconfigured" />;
+  }
+
   return (
-    <main className="shell">
-      <section className="status-card" aria-labelledby="scriptops-title">
-        <div className="eyebrow">
-          <span className="status-dot" aria-hidden="true" />
-          System bootstrap complete
-        </div>
-        <p className="kicker">Production control / New Mexico</p>
-        <h1 id="scriptops-title">ScriptOps</h1>
-        <p className="lede">
-          One approved scene change stays connected across the entire pre-production plan.
-        </p>
-
-        <div className="artifact-row" aria-label="Connected production artifacts">
-          {artifacts.map((artifact, index) => (
-            <span key={artifact} className="artifact-chip">
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {artifact}
-            </span>
-          ))}
-        </div>
-
-        <div className="next-slice">
-          <span>Next vertical proof</span>
-          <strong>Cloud Run → Cloud Tasks → Firestore</strong>
-        </div>
-      </section>
-    </main>
+    <DashboardShell
+      authConfigured={access.mode === "clerk"}
+      initialSnapshot={{
+        cycle: 1,
+        planVersion: 1,
+        currentPlan: immutableBaselinePlan,
+        hasApprovedRipple: false,
+        openRunId: null,
+      }}
+    />
   );
 }

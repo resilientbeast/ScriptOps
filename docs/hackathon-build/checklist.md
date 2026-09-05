@@ -62,7 +62,7 @@
   Acceptance: Concurrent starts reserve at most one run; duplicate idempotency returns the same run without another daily count; invalid state transitions and late worker writes fail; approval changes all five artifacts once; reset preserves the cookie and usage count.
   Verify: Run concurrency/state-machine integration tests against an emulator or isolated test project, including duplicate create/approve and version mismatch cases; commit as `feat: add transactional ripple state`.
 
-- [ ] **7. Build Clerk gate and the populated baseline dashboard**
+- [x] **7. Build Clerk gate and the populated baseline dashboard**
   Spec ref: `prd.md > Epic 1: Protected Judge Access And Isolated Demo Session`, `prd.md > Epic 2: Production Baseline And Artifact Exploration`, and `spec.md > 14.1 First viewport`
   What to build: Add Clerk invite-only/shared-account access, server-side route authorization, the independent long-lived cookie, and demo bootstrap API. Build the dark restrained first viewport with real production identity, Scene 14, five populated summary cards, current version, revision guidance, and the shared detail drawer. Ensure logout does not clear the demo cookie.
   Acceptance: Supplied credentials land directly on the fixed project; a second browser gets a clean baseline; logout/login in the same browser returns to the same mutable state; the first desktop viewport communicates all five artifacts without clicking.
