@@ -45,7 +45,31 @@ export function ActivityRail({ run }: { run: PublicRippleRun | null }) {
       ) : (
         <p className="baseline-lock-note">The approved baseline remains unchanged while analysis runs.</p>
       )}
+      {run.proposal ? (
+        <div className="evidence-proof">
+          <div className="evidence-proof-heading">
+            <div>
+              <span>Parallel proof</span>
+              <strong>{run.proposal.evidence.sourceMode} evidence · {run.proposal.evidence.records.length} sources</strong>
+            </div>
+            <time dateTime={run.proposal.evidence.retrievedAt}>
+              {new Date(run.proposal.evidence.retrievedAt).toLocaleString()}
+            </time>
+          </div>
+          <div className="evidence-proof-sources">
+            {run.proposal.evidence.records.slice(0, 3).map((record) => (
+              <a href={record.url} target="_blank" rel="noreferrer" key={record.id}>
+                {record.title}
+              </a>
+            ))}
+          </div>
+          <div className="impact-proof" aria-label="Validated proposal impacts">
+            {Object.entries(run.proposal.impacts).map(([name, impact]) => (
+              <span data-changed={impact.changed} key={name}>{name} · {impact.changed ? "changed" : "held"}</span>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
-

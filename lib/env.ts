@@ -68,6 +68,19 @@ export const rippleTaskRuntimeEnvSchema = smokeRuntimeEnvSchema.omit({
 
 export type RippleTaskRuntimeEnv = z.infer<typeof rippleTaskRuntimeEnvSchema>;
 
+export const agentRuntimeEnvSchema = z.object({
+  GOOGLE_CLOUD_PROJECT: z.string().min(1),
+  GOOGLE_CLOUD_LOCATION: z.string().min(1),
+  GOOGLE_GENAI_USE_VERTEXAI: z.literal("true"),
+  GEMINI_MODEL: z.string().min(1),
+  PARALLEL_API_KEY: z.string().trim().min(1),
+  GEMINI_STAGE_TIMEOUT_MS: optionalPositiveInteger.default(45_000),
+  PARALLEL_TIMEOUT_MS: optionalPositiveInteger.default(30_000),
+  EVIDENCE_CACHE_TTL_HOURS: optionalPositiveInteger.default(72),
+});
+
+export type AgentRuntimeEnv = z.infer<typeof agentRuntimeEnvSchema>;
+
 export const providerSmokeRuntimeEnvSchema = z.object({
   GOOGLE_CLOUD_PROJECT: z.string().min(1),
   GOOGLE_CLOUD_LOCATION: z.string().min(1),
@@ -97,6 +110,12 @@ export function readRippleTaskRuntimeEnv(
   input: NodeJS.ProcessEnv = process.env,
 ): RippleTaskRuntimeEnv {
   return rippleTaskRuntimeEnvSchema.parse(input);
+}
+
+export function readAgentRuntimeEnv(
+  input: NodeJS.ProcessEnv = process.env,
+): AgentRuntimeEnv {
+  return agentRuntimeEnvSchema.parse(input);
 }
 
 export function readProviderSmokeRuntimeEnv(

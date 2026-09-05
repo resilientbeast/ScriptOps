@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { providerSmokeRuntimeEnvSchema, serverEnvSchema } from "@/lib/env";
+import { agentRuntimeEnvSchema, providerSmokeRuntimeEnvSchema, serverEnvSchema } from "@/lib/env";
 
 describe("serverEnvSchema", () => {
   it("supplies safe local defaults without provider credentials", () => {
@@ -50,5 +50,14 @@ describe("serverEnvSchema", () => {
     });
 
     expect(result.success).toBe(false);
+  });
+
+  it("requires both runtime providers for the full agent crew", () => {
+    expect(agentRuntimeEnvSchema.safeParse({
+      GOOGLE_CLOUD_PROJECT: "scriptops-agentic-arkad",
+      GOOGLE_CLOUD_LOCATION: "global",
+      GOOGLE_GENAI_USE_VERTEXAI: "true",
+      GEMINI_MODEL: "gemini-3.7-flash",
+    }).success).toBe(false);
   });
 });

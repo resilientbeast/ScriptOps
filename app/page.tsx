@@ -26,6 +26,7 @@ export default async function Home() {
         currentPlan: immutableBaselinePlan,
         hasApprovedRipple: false,
         openRunId: null,
+        openRun: null,
       }}
     />
   );

@@ -33,6 +33,7 @@ describe("populated baseline dashboard", () => {
           currentPlan: immutableBaselinePlan,
           hasApprovedRipple: false,
           openRunId: null,
+          openRun: null,
         }}
       />,
     );

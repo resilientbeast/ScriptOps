@@ -8,6 +8,7 @@ import {
   resolveDemoCookie,
 } from "@/lib/demo-cookie";
 import { getRippleStateRepository } from "@/lib/firestore/ripple-state-admin";
+import { toPublicRippleRun } from "@/lib/ripple/contracts";
 
 export const dynamic = "force-dynamic";
 
@@ -21,12 +22,22 @@ export async function GET(request: NextRequest) {
       getDemoCookieSecret(),
     );
     const instance = await getRippleStateRepository().initializeDemo(cookie.demoId);
+    const openRun = instance.openRunId
+      ? await getRippleStateRepository().getRun(instance.openRunId)
+      : null;
+    if (
+      (instance.openRunId && !openRun) ||
+      (openRun && openRun.demoId !== instance.demoId)
+    ) {
+      throw new Error("Open run ownership mismatch");
+    }
     const response = NextResponse.json({
       cycle: instance.cycle,
       planVersion: instance.planVersion,
       currentPlan: instance.currentPlan,
       hasApprovedRipple: instance.hasApprovedRipple,
       openRunId: instance.openRunId,
+      openRun: openRun ? toPublicRippleRun(openRun) : null,
     });
 
     if (cookie.created) {

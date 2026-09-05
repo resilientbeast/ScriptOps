@@ -74,7 +74,7 @@
   Acceptance: Double-click creates one run; the UI locks while analyzing; SSE is observation-only; refresh or SSE loss reconnects to persisted state; invalid requests remain editable; a stale/failed run never changes the baseline and offers a full retry.
   Verify: Exercise duplicate clicks, forced SSE disconnect, refresh during analysis, queue failure, and stale state locally/deployed; run `npm test` and `npm run build`; commit as `feat: connect durable revision lifecycle`.
 
-- [ ] **9. Implement the full evidence-aware ADK Revision Ripple**
+- [x] **9. Implement the full evidence-aware ADK Revision Ripple**
   Spec ref: `spec.md > 2.2 Agent dependency graph`, `spec.md > 9. Revision Execution Lifecycle`, and `prd.md > Epic 4: Revision Ripple Analysis`
   What to build: Implement Breakdown → Parallel Evidence → Schedule → parallel Budget/Locations/Casting using official ADK workflow primitives and distinct output keys. Add provider timeouts, schema gates, evidence normalization/cache/fallback, real persisted stage progress, final proposal validation, and conditional token-owned writes. Tune prompts until the golden request produces all required production consequences.
   Acceptance: The six rail stages reflect real work; every accepted live run attempts Parallel Search; Schedule, Budget, and Locations cite consumed evidence; all five artifact impacts are complete; any required invalid stage fails the whole proposal while preserving the baseline.

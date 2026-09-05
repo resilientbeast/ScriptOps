@@ -55,7 +55,17 @@ export function DashboardShell({
       })
       .then((nextSnapshot) => {
         setSnapshot(nextSnapshot);
-        if (nextSnapshot.openRunId) setObservedRunId(nextSnapshot.openRunId);
+        if (nextSnapshot.openRun) {
+          setActiveRun(nextSnapshot.openRun);
+          setObservedRunId(
+            terminalRunStatuses.has(nextSnapshot.openRun.status)
+              ? null
+              : nextSnapshot.openRun.runId,
+          );
+        } else {
+          setActiveRun(null);
+          setObservedRunId(null);
+        }
         setSyncState("ready");
       })
       .catch((error: unknown) => {
@@ -106,6 +116,11 @@ export function DashboardShell({
       source.close();
       startPolling();
     };
+
+    // A ready proposal can be persisted before a freshly mounted EventSource has
+    // attached its first message handler. Read once immediately so a reload always
+    // restores terminal runs as well as in-flight progress.
+    void poll();
 
     return () => {
       stopped = true;

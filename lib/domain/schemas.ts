@@ -511,7 +511,17 @@ export const revisionProposalSchema = z
   .strict()
   .superRefine((proposal, context) => {
     addDocumentSizeIssue(proposal, context);
-    addProhibitedClaimIssues(proposal, context);
+    // Evidence excerpts and the user's request are quoted inputs, not claims made
+    // by ScriptOps. Safety language is enforced on the generated plan and impact
+    // analysis while preserving cited source text verbatim.
+    addProhibitedClaimIssues(
+      {
+        impacts: proposal.impacts,
+        assumptions: proposal.assumptions,
+        warnings: proposal.warnings,
+      },
+      context,
+    );
 
     if (proposal.proposedPlan.revisionRecord !== null) {
       context.addIssue({

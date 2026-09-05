@@ -115,6 +115,14 @@ describe("contract rejection boundaries", () => {
     expect(productionPlanSchema.safeParse(plan).success).toBe(false);
   });
 
+  it("preserves prohibited phrases when they are quoted inside source evidence", () => {
+    const proposal = clone(approvedExampleFixture.proposal);
+    proposal.evidence.records[0].excerpt =
+      "The source says permits are approved for a different historical production.";
+
+    expect(revisionProposalSchema.safeParse(proposal).success).toBe(true);
+  });
+
   it("rejects a proposal that drifts from Scene 14 golden invariants", () => {
     const proposal = clone(approvedExampleFixture.proposal);
     proposal.impacts.locations.after = proposal.impacts.locations.after.map(

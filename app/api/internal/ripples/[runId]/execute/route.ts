@@ -2,10 +2,15 @@ import { type NextRequest } from "next/server";
 import { z } from "zod";
 
 import {
+  executeRevisionRipple,
+  RevisionRippleExecutionError,
+  RevisionRippleRejectedError,
+} from "@/lib/agents/revision-ripple";
+import {
   TaskIdentityError,
   verifyTaskRequestIdentity,
 } from "@/lib/cloud-tasks/verify-task-identity";
-import { readRippleTaskRuntimeEnv, readServerEnv } from "@/lib/env";
+import { readAgentRuntimeEnv, readRippleTaskRuntimeEnv, readServerEnv } from "@/lib/env";
 import { getRippleStateRepository } from "@/lib/firestore/ripple-state-admin";
 
 export const dynamic = "force-dynamic";
@@ -41,29 +46,46 @@ export async function POST(
   );
   if (claim.outcome !== "claimed") return new Response(null, { status: 204 });
 
-  const now = new Date().toISOString();
-  const failure = {
-    code: "AGENT_CREW_NOT_CONNECTED",
-    message: "The durable revision lifecycle is ready; the evidence-aware agent crew is connected in the next build stage. The baseline was not changed.",
-    baselineChanged: false as const,
-    retryable: true,
-    stage: "breakdown" as const,
-  };
-  await repository.transitionStage(routeRunId, claim.executionToken, "breakdown", {
-    status: "active",
-    message: "Validating the selected scene and revision request.",
-    startedAt: now,
-    completedAt: null,
-    failure: null,
-  });
-  await repository.transitionStage(routeRunId, claim.executionToken, "breakdown", {
-    status: "failed",
-    message: "Agent crew connection is pending the next build stage.",
-    startedAt: now,
-    completedAt: new Date().toISOString(),
-    failure,
-  });
-  await repository.failRun(routeRunId, claim.executionToken, failure);
+  const run = await repository.getRun(routeRunId);
+  if (!run) return Response.json({ error: "RUN_NOT_FOUND" }, { status: 404 });
+  const demo = await repository.getDemo(run.demoId);
+  if (!demo) return Response.json({ error: "DEMO_NOT_FOUND" }, { status: 404 });
+
+  try {
+    const proposal = await executeRevisionRipple({
+      run,
+      demo,
+      executionToken: claim.executionToken,
+      repository,
+      env: readAgentRuntimeEnv(),
+    });
+    await repository.writeProposal(routeRunId, claim.executionToken, proposal);
+  } catch (error) {
+    if (error instanceof RevisionRippleRejectedError) {
+      await repository.rejectRun(routeRunId, claim.executionToken, {
+        code: "REQUEST_NOT_PRODUCTION_RELEVANT",
+        message: error.message,
+        baselineChanged: false,
+        retryable: false,
+        stage: "breakdown",
+      });
+      return new Response(null, { status: 204 });
+    }
+    const failure = error instanceof RevisionRippleExecutionError
+      ? {
+          code: error.code,
+          message: error.message,
+          baselineChanged: false as const,
+          retryable: error.retryable,
+          stage: error.stage,
+        }
+      : {
+          code: "REVISION_RIPPLE_FAILED",
+          message: "The revision proposal could not be completed. The baseline was not changed; retry the full request.",
+          baselineChanged: false as const,
+          retryable: true,
+        };
+    await repository.failRun(routeRunId, claim.executionToken, failure);
+  }
   return new Response(null, { status: 204 });
 }
-

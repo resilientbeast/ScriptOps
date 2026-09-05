@@ -770,6 +770,72 @@ a:focus-visible {
   margin: 0.7rem 0 0;
 }
 
+.evidence-proof {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+  padding: 0.9rem;
+  border: 1px solid var(--amber-dim);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--amber) 5%, var(--panel-2));
+}
+
+.evidence-proof-heading,
+.evidence-proof-sources,
+.impact-proof {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.evidence-proof-heading {
+  justify-content: space-between;
+}
+
+.evidence-proof-heading div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.evidence-proof-heading span,
+.evidence-proof-heading time,
+.impact-proof span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.evidence-proof-heading strong {
+  color: var(--text-soft);
+  font-size: 0.68rem;
+  font-weight: 620;
+}
+
+.evidence-proof-sources a {
+  color: var(--amber-bright);
+  font-size: 0.58rem;
+  text-decoration: none;
+}
+
+.evidence-proof-sources a:hover {
+  text-decoration: underline;
+}
+
+.impact-proof span {
+  padding: 0.32rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.impact-proof span[data-changed="true"] {
+  border-color: var(--amber-dim);
+  color: var(--amber-bright);
+}
+
 .guidance-icon {
   color: var(--amber);
   font-size: 1.1rem;
