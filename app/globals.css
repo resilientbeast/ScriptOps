@@ -268,6 +268,11 @@ a:focus-visible {
   color: var(--text);
 }
 
+.scene-list-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
 .scene-list-item[data-selected="true"] {
   background: linear-gradient(90deg, rgb(215 168 75 / 0.13), transparent);
   color: var(--text);
@@ -537,6 +542,234 @@ a:focus-visible {
   background: rgb(215 168 75 / 0.055);
 }
 
+.revision-composer {
+  overflow: hidden;
+  border: 1px solid #44391f;
+  border-radius: 0.55rem;
+  background: rgb(215 168 75 / 0.045);
+}
+
+.revision-composer-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0.85rem 0.65rem;
+}
+
+.revision-composer-heading div > span {
+  color: var(--amber-bright);
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.revision-composer-heading p {
+  margin: 0.08rem 0 0;
+  color: var(--text-soft);
+  font-size: 0.67rem;
+}
+
+.revision-composer textarea {
+  display: block;
+  width: calc(100% - 1.4rem);
+  min-height: 4.35rem;
+  margin: 0 0.7rem;
+  padding: 0.7rem 0.75rem;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  outline: none;
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.revision-composer textarea:focus {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 2px rgb(215 168 75 / 0.12);
+}
+
+.revision-composer textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.68;
+}
+
+.revision-composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.7rem 0.7rem;
+}
+
+.revision-composer-actions > span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.5rem;
+}
+
+.revision-composer-actions button {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--amber-dim);
+  border-radius: 0.38rem;
+  background: var(--amber);
+  color: #151107;
+  cursor: pointer;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.revision-composer-actions button:disabled {
+  border-color: var(--line);
+  background: var(--panel-3);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.revision-error {
+  margin: 0;
+  padding: 0 0.7rem 0.75rem;
+  color: #d66f63;
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.ripple-activity {
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.ripple-activity-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.ripple-activity-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: -0.025em;
+}
+
+.run-status,
+.stage-index,
+.stage-status,
+.ripple-failure span,
+.baseline-lock-note {
+  font-family: var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.run-status {
+  color: var(--amber);
+  font-size: 0.58rem;
+}
+
+.ripple-stage-list {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 1px;
+  background: var(--line);
+  list-style: none;
+}
+
+.ripple-stage-list li {
+  display: grid;
+  min-height: 7rem;
+  grid-template-columns: auto 1fr;
+  gap: 0.65rem;
+  padding: 0.8rem;
+  background: var(--panel-2);
+}
+
+.stage-index {
+  color: var(--muted);
+  font-size: 0.52rem;
+}
+
+.stage-marker {
+  justify-self: end;
+  width: 0.48rem;
+  height: 0.48rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+
+.stage-copy {
+  display: flex;
+  min-width: 0;
+  grid-column: 1 / -1;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stage-copy strong {
+  color: var(--text-soft);
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.stage-copy small {
+  color: var(--muted);
+  font-size: 0.57rem;
+  line-height: 1.35;
+}
+
+.stage-status {
+  grid-column: 1 / -1;
+  align-self: end;
+  color: var(--muted);
+  font-size: 0.48rem;
+}
+
+.ripple-stage-list li[data-status="active"] {
+  box-shadow: inset 0 2px var(--amber);
+}
+
+.ripple-stage-list li[data-status="active"] .stage-marker,
+.ripple-stage-list li[data-status="completed"] .stage-marker {
+  border-color: var(--amber);
+  background: var(--amber);
+}
+
+.ripple-stage-list li[data-status="failed"] .stage-marker {
+  border-color: #c85f54;
+  background: #c85f54;
+}
+
+.ripple-failure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgb(200 95 84 / 0.42);
+  border-radius: 0.4rem;
+  background: rgb(200 95 84 / 0.06);
+}
+
+.ripple-failure strong {
+  color: var(--text-soft);
+  font-size: 0.67rem;
+  font-weight: 560;
+}
+
+.ripple-failure span,
+.baseline-lock-note {
+  color: var(--muted);
+  font-size: 0.48rem;
+}
+
+.baseline-lock-note {
+  margin: 0.7rem 0 0;
+}
+
 .guidance-icon {
   color: var(--amber);
   font-size: 1.1rem;
@@ -690,6 +923,15 @@ a:focus-visible {
 .dashboard-shell[data-theme="light"] .revision-guidance {
   border-color: #d8bf87;
   background: #fff9ec;
+}
+
+.dashboard-shell[data-theme="light"] .revision-composer {
+  border-color: #d8bf87;
+  background: #fff9ec;
+}
+
+.dashboard-shell[data-theme="light"] .revision-composer-actions button:not(:disabled) {
+  color: #ffffff;
 }
 
 .dashboard-shell[data-theme="light"] .detail-drawer {
@@ -1024,6 +1266,10 @@ a:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .ripple-stage-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .artifact-card {
     grid-column: span 1;
     min-height: 8.2rem;
@@ -1126,6 +1372,16 @@ a:focus-visible {
 
   .revision-guidance {
     grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .revision-composer-heading,
+  .ripple-failure {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ripple-stage-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .guidance-status {

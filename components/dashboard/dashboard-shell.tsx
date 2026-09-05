@@ -11,6 +11,19 @@ import type {
   ArtifactKey,
   DashboardSnapshot,
 } from "@/components/dashboard/types";
+import { ActivityRail } from "@/components/ripple/activity-rail";
+import { RevisionComposer } from "@/components/ripple/revision-composer";
+import { GOLDEN_REQUEST } from "@/lib/domain/golden-invariants";
+import type { PublicRippleRun } from "@/lib/ripple/contracts";
+
+const terminalRunStatuses = new Set([
+  "rejected",
+  "proposal_ready",
+  "failed",
+  "discarded",
+  "approved",
+  "superseded",
+]);
 
 export function DashboardShell({
   initialSnapshot,
@@ -23,6 +36,9 @@ export function DashboardShell({
   const [selectedSceneId, setSelectedSceneId] = useState("scene-14");
   const [activeArtifact, setActiveArtifact] = useState<ArtifactKey | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [requestText, setRequestText] = useState(GOLDEN_REQUEST);
+  const [activeRun, setActiveRun] = useState<PublicRippleRun | null>(null);
+  const [observedRunId, setObservedRunId] = useState<string | null>(null);
   const [syncState, setSyncState] = useState<"loading" | "ready" | "error">(
     "loading",
   );
@@ -39,6 +55,7 @@ export function DashboardShell({
       })
       .then((nextSnapshot) => {
         setSnapshot(nextSnapshot);
+        if (nextSnapshot.openRunId) setObservedRunId(nextSnapshot.openRunId);
         setSyncState("ready");
       })
       .catch((error: unknown) => {
@@ -48,14 +65,72 @@ export function DashboardShell({
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    if (!observedRunId) return;
+    let stopped = false;
+    let pollTimer: ReturnType<typeof setInterval> | undefined;
+    const source = new EventSource(`/api/ripples/${observedRunId}/events`);
+
+    const applyRun = (run: PublicRippleRun) => {
+      if (stopped) return;
+      setActiveRun(run);
+      if (terminalRunStatuses.has(run.status)) {
+        source.close();
+        if (pollTimer) clearInterval(pollTimer);
+      }
+    };
+    const poll = async () => {
+      const response = await fetch(`/api/ripples/${observedRunId}`, {
+        headers: { Accept: "application/json" },
+      }).catch(() => null);
+      if (!response?.ok) return;
+      const payload = (await response.json()) as { run: PublicRippleRun };
+      applyRun(payload.run);
+    };
+    const startPolling = () => {
+      if (pollTimer || stopped) return;
+      void poll();
+      pollTimer = setInterval(() => void poll(), 1_500);
+    };
+
+    source.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data) as { run?: PublicRippleRun };
+        if (payload.run) applyRun(payload.run);
+      } catch {
+        source.close();
+        startPolling();
+      }
+    };
+    source.onerror = () => {
+      source.close();
+      startPolling();
+    };
+
+    return () => {
+      stopped = true;
+      source.close();
+      if (pollTimer) clearInterval(pollTimer);
+    };
+  }, [observedRunId]);
+
   const closeDrawer = useCallback(() => setActiveArtifact(null), []);
   const toggleTheme = useCallback(() => {
     setTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
+  }, []);
+  const handleSceneSelect = useCallback((sceneId: string) => {
+    setSelectedSceneId(sceneId);
+    setRequestText(sceneId === "scene-14" ? GOLDEN_REQUEST : "");
+  }, []);
+  const handleRunStarted = useCallback((run: PublicRippleRun) => {
+    setActiveRun(run);
+    setObservedRunId(run.runId);
   }, []);
   const selectedScene =
     snapshot.currentPlan.scenes.find((scene) => scene.id === selectedSceneId) ??
     snapshot.currentPlan.scenes.at(-1)!;
   const artifactSummaries = buildArtifactSummaries(snapshot.currentPlan);
+  const analysisActive = activeRun?.status === "queued" || activeRun?.status === "analyzing";
 
   return (
     <main className="dashboard-shell" data-theme={theme}>
@@ -77,7 +152,8 @@ export function DashboardShell({
       <ScenePanel
         scenes={snapshot.currentPlan.scenes}
         selectedSceneId={selectedScene.id}
-        onSelect={setSelectedSceneId}
+        onSelect={handleSceneSelect}
+        disabled={analysisActive}
       />
 
       <section className="workspace" id="workspace">
@@ -107,16 +183,18 @@ export function DashboardShell({
               </div>
             </div>
             <blockquote>“{selectedScene.excerpt}”</blockquote>
-            <div className="revision-guidance">
-              <span className="guidance-icon" aria-hidden="true">◎</span>
-              <div>
-                <span>Revision Ripple</span>
-                <p>Type a change to this scene and watch it ripple through the whole plan.</p>
-              </div>
-              <span className="guidance-status">Ready for analysis</span>
-            </div>
+            <RevisionComposer
+              sceneNumber={selectedScene.sceneNumber}
+              sceneId={selectedScene.id}
+              requestText={requestText}
+              disabled={analysisActive}
+              onRequestTextChange={setRequestText}
+              onRunStarted={handleRunStarted}
+            />
           </div>
         </section>
+
+        <ActivityRail run={activeRun} />
 
         <ArtifactGrid artifacts={artifactSummaries} onOpen={setActiveArtifact} />
 

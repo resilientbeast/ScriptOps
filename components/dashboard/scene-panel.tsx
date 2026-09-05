@@ -4,10 +4,12 @@ export function ScenePanel({
   scenes,
   selectedSceneId,
   onSelect,
+  disabled = false,
 }: {
   scenes: SceneBreakdown[];
   selectedSceneId: string;
   onSelect: (sceneId: string) => void;
+  disabled?: boolean;
 }) {
   return (
     <aside className="scene-panel" aria-label="Screenplay scenes">
@@ -29,6 +31,7 @@ export function ScenePanel({
               onClick={() => onSelect(scene.id)}
               type="button"
               aria-pressed={selected}
+              disabled={disabled}
             >
               <span>{String(scene.sceneNumber).padStart(2, "0")}</span>
               <span>

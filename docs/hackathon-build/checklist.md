@@ -68,7 +68,7 @@
   Acceptance: Supplied credentials land directly on the fixed project; a second browser gets a clean baseline; logout/login in the same browser returns to the same mutable state; the first desktop viewport communicates all five artifacts without clicking.
   Verify: Run component/auth tests and manually test same-browser logout/login plus a second browser profile. **Visual pause 1:** Arkadiusz reviews the baseline layout, hierarchy, typography, and trust signal. Commit as `feat: ship protected production dashboard`.
 
-- [ ] **8. Connect revision creation, passive progress transport, and recovery**
+- [x] **8. Connect revision creation, passive progress transport, and recovery**
   Spec ref: `spec.md > 8. API Contracts > POST /api/ripples` through `GET /api/ripples/:runId` and `prd.md > Epic 3: Natural-Language Revision Request`
   What to build: Add the selected-scene revision composer, request validation, idempotency key generation, real `POST /api/ripples`, Cloud Task creation, passive SSE endpoint, polling fallback, refresh rehydration, analysis lock, sanitized failures, and stale-run recovery. Replace the temporary smoke trigger without removing its test coverage.
   Acceptance: Double-click creates one run; the UI locks while analyzing; SSE is observation-only; refresh or SSE loss reconnects to persisted state; invalid requests remain editable; a stale/failed run never changes the baseline and offers a full retry.

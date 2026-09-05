@@ -551,6 +551,56 @@ export class RippleStateRepository {
     });
   }
 
+  failStaleRun(
+    demoId: string,
+    runId: string,
+    staleAfterMs: number,
+    now = new Date(),
+  ): Promise<{ outcome: "failed" | "not-stale"; run: RippleRun }> {
+    return this.store.runTransaction(async (transaction) => {
+      const [instance, run] = await Promise.all([
+        this.requireDemo(transaction, demoId),
+        this.requireRun(transaction, runId),
+      ]);
+      this.requireOwnership(instance, run);
+
+      if (run.status !== "queued" && run.status !== "analyzing") {
+        return { outcome: "not-stale", run };
+      }
+
+      const leaseTime =
+        run.status === "queued"
+          ? run.createdAt
+          : (run.heartbeatAt ?? run.startedAt);
+      if (!leaseTime || now.getTime() - leaseTime.getTime() <= staleAfterMs) {
+        return { outcome: "not-stale", run };
+      }
+
+      const failure = publicErrorSchema.parse({
+        code: "RIPPLE_STALE",
+        message: "Analysis did not complete in time. The baseline was not changed; retry the full request.",
+        baselineChanged: false,
+        retryable: true,
+      });
+      const failedRun = rippleRunSchema.parse({
+        ...run,
+        status: "failed",
+        executionToken: null,
+        heartbeatAt: now,
+        finishedAt: now,
+        failure,
+      });
+      transaction.set("rippleRuns", runId, failedRun);
+      if (instance.openRunId === runId) {
+        transaction.update<DemoInstance>("demoInstances", demoId, {
+          openRunId: null,
+          updatedAt: now,
+        });
+      }
+      return { outcome: "failed", run: failedRun };
+    });
+  }
+
   private async finishFailedRun(
     runId: string,
     executionToken: string | null,

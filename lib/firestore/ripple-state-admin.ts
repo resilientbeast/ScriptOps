@@ -7,26 +7,28 @@ import {
   InMemoryStateStore,
 } from "@/lib/firestore/transaction-store";
 
-let repository: RippleStateRepository | undefined;
+const repositoryKey = Symbol.for("scriptops.ripple-state-repository");
+const processState = globalThis as typeof globalThis & {
+  [repositoryKey]?: RippleStateRepository;
+};
 
 export function getRippleStateRepository(): RippleStateRepository {
-  if (repository) return repository;
+  if (processState[repositoryKey]) return processState[repositoryKey];
 
   const projectId = process.env.GOOGLE_CLOUD_PROJECT;
-  const shouldUseFirestore =
-    process.env.NODE_ENV === "production" ||
-    Boolean(process.env.FIRESTORE_EMULATOR_HOST);
-  if (projectId && shouldUseFirestore) {
-    repository = new RippleStateRepository(
+  if (projectId) {
+    processState[repositoryKey] = new RippleStateRepository(
       new FirestoreStateStore(getAdminFirestore(projectId)),
     );
-    return repository;
+    return processState[repositoryKey];
   }
 
   if (process.env.NODE_ENV === "production") {
     throw new Error("GOOGLE_CLOUD_PROJECT is not configured");
   }
 
-  repository = new RippleStateRepository(new InMemoryStateStore());
-  return repository;
+  processState[repositoryKey] = new RippleStateRepository(
+    new InMemoryStateStore(),
+  );
+  return processState[repositoryKey];
 }

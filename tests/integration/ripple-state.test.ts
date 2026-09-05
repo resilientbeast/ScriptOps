@@ -453,4 +453,59 @@ describe("transactional ripple state", () => {
       1,
     );
   });
+
+  it("fails an expired analysis lease without changing the baseline", async () => {
+    const repository = new RippleStateRepository(new InMemoryStateStore());
+    await repository.initializeDemo(DEMO_A, NOW);
+    const created = await repository.createQueuedRun({
+      demoId: DEMO_A,
+      idempotencyKey: IDEMPOTENCY_A,
+      sceneId: "scene-14",
+      requestText: GOLDEN_REQUEST,
+      dailyCap: 20,
+      now: NOW,
+    });
+    const claim = await repository.claimRun(created.run.runId, 30_000, NOW);
+    expect(claim.outcome).toBe("claimed");
+
+    const recovered = await repository.failStaleRun(
+      DEMO_A,
+      created.run.runId,
+      30_000,
+      LATER,
+    );
+    expect(recovered.outcome).toBe("failed");
+    expect(recovered.run.failure?.code).toBe("RIPPLE_STALE");
+    expect((await repository.getDemo(DEMO_A))?.currentPlan).toEqual(
+      immutableBaselinePlan,
+    );
+    expect((await repository.getDemo(DEMO_A))?.openRunId).toBeNull();
+  });
+
+  it("fails a queued run when dispatch never starts", async () => {
+    const repository = new RippleStateRepository(new InMemoryStateStore());
+    await repository.initializeDemo(DEMO_A, NOW);
+    const created = await repository.createQueuedRun({
+      demoId: DEMO_A,
+      idempotencyKey: IDEMPOTENCY_A,
+      sceneId: "scene-14",
+      requestText: GOLDEN_REQUEST,
+      dailyCap: 20,
+      now: NOW,
+    });
+
+    const recovered = await repository.failStaleRun(
+      DEMO_A,
+      created.run.runId,
+      30_000,
+      LATER,
+    );
+
+    expect(recovered.outcome).toBe("failed");
+    expect(recovered.run.failure?.code).toBe("RIPPLE_STALE");
+    expect((await repository.getDemo(DEMO_A))?.currentPlan).toEqual(
+      immutableBaselinePlan,
+    );
+    expect((await repository.getDemo(DEMO_A))?.openRunId).toBeNull();
+  });
 });

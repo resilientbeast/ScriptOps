@@ -41,6 +41,8 @@ describe("populated baseline dashboard", () => {
     expect(html).toContain("Selected scene");
     expect(html).toContain("14");
     expect(html).toContain("Revision Ripple");
+    expect(html).toContain("Analyze proposed ripple");
+    expect(html).toContain("Move Scene 14 to a rainy night");
     expect(html).toContain("Breakdown");
     expect(html).toContain("Schedule");
     expect(html).toContain("Budget");

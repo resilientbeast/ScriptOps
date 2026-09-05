@@ -21,6 +21,19 @@ describe("serverEnvSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("treats blank optional local settings as unset", () => {
+    const result = serverEnvSchema.parse({
+      NODE_ENV: "development",
+      GEMINI_MODEL: "",
+      SMOKE_TRIGGER_TOKEN: "  ",
+      RIPPLE_STALE_MS: "",
+    });
+
+    expect(result.GEMINI_MODEL).toBeUndefined();
+    expect(result.SMOKE_TRIGGER_TOKEN).toBeUndefined();
+    expect(result.RIPPLE_STALE_MS).toBeUndefined();
+  });
+
   it("rejects a weak demo cookie secret", () => {
     const result = serverEnvSchema.safeParse({ DEMO_INSTANCE_COOKIE_SECRET: "too-short" });
 
