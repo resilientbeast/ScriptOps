@@ -76,6 +76,51 @@ describe("production evidence resolution", () => {
 });
 
 describe("live evidence normalization", () => {
+  it("keeps only clean, sentence-level excerpts instead of navigation or markdown noise", () => {
+    const evidence = normalizeProductionEvidence({
+      search_id: "clean",
+      session_id: "session-clean",
+      results: [
+        {
+          title: "New Mexico Film Office",
+          url: "https://nmfilm.com/production",
+          excerpts: [
+            "Skip To Content # **Where History Gets Made** [Subscribe](https://nmfilm.com/newsletter)",
+            "Productions should confirm permit requirements before scheduling road control.",
+          ],
+        },
+      ],
+    }, input, "2026-09-05T01:00:00.000Z");
+
+    expect(evidence.records[0]?.excerpt).toBe(
+      "Productions should confirm permit requirements before scheduling road control.",
+    );
+    expect(evidence.records[0]?.excerpt).not.toContain("[");
+    expect(evidence.records[0]?.excerpt).not.toContain("Subscribe");
+  });
+
+  it("omits generic marketing copy that does not state a production constraint", () => {
+    const evidence = normalizeProductionEvidence({
+      search_id: "relevance",
+      session_id: "session-relevance",
+      results: [
+        {
+          title: "New Mexico Film Office",
+          url: "https://nmfilm.com/",
+          excerpts: ["Bring your film to life in New Mexico. It pays to film in New Mexico."],
+        },
+        {
+          title: "Permit guidance",
+          url: "https://nmfilm.com/permits",
+          excerpts: ["Productions should confirm permit requirements before scheduling road control."],
+        },
+      ],
+    }, input, "2026-09-05T01:00:00.000Z");
+
+    expect(evidence.records).toHaveLength(1);
+    expect(evidence.records[0]?.title).toBe("Permit guidance");
+  });
+
   it("rejects an empty usable result set at the schema gate", () => {
     expect(() => normalizeProductionEvidence({ search_id: "empty", session_id: "session-empty", results: [] }, input, "2026-09-05T01:00:00.000Z")).toThrow();
   });

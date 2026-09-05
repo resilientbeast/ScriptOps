@@ -27,6 +27,7 @@ export default async function Home() {
         hasApprovedRipple: false,
         openRunId: null,
         openRun: null,
+        dailyCapReached: false,
       }}
     />
   );

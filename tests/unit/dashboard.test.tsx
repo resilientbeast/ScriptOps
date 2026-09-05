@@ -34,6 +34,7 @@ describe("populated baseline dashboard", () => {
           hasApprovedRipple: false,
           openRunId: null,
           openRun: null,
+          dailyCapReached: false,
         }}
       />,
     );

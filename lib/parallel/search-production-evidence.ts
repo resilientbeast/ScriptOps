@@ -35,6 +35,30 @@ function evidenceId(url: string): string {
   return `evidence-${createHash("sha256").update(url).digest("hex").slice(0, 12)}`;
 }
 
+const navigationNoise = /\b(skip to content|subscribe|newsletter|conference|where history gets made|sign up|follow us)\b/i;
+const productionEvidenceTerms = /\b(permit|production|road|child|minor|labor|safety|stunt|weather|rain|night|location|compliance|authorization)\b/i;
+
+function cleanExcerpt(excerpts: string[]): string | null {
+  const sentences = excerpts.flatMap((excerpt) => {
+    const text = excerpt
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/[`*_>#|]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    return text.match(/[^.!?]+[.!?]+/g) ?? [text];
+  });
+  const usable = sentences
+    .map((sentence) => sentence.replace(/\s+/g, " ").trim())
+    .find((sentence) =>
+      sentence.length >= 40 &&
+      !navigationNoise.test(sentence) &&
+      productionEvidenceTerms.test(sentence),
+    );
+
+  return usable?.slice(0, 700) ?? null;
+}
+
 export function normalizeProductionEvidence(
   response: SearchResult,
   input: EvidenceResearchInput,
@@ -43,7 +67,7 @@ export function normalizeProductionEvidence(
   const seen = new Set<string>();
   const records = response.results.flatMap((result, index) => {
     const url = canonicalUrl(result.url);
-    const excerpt = result.excerpts.filter(Boolean).join("\n\n").trim();
+    const excerpt = cleanExcerpt(result.excerpts);
     if (!url || !excerpt || seen.has(url)) return [];
     seen.add(url);
     return [{

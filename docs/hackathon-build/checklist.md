@@ -80,7 +80,7 @@
   Acceptance: The six rail stages reflect real work; every accepted live run attempts Parallel Search; Schedule, Budget, and Locations cite consumed evidence; all five artifact impacts are complete; any required invalid stage fails the whole proposal while preserving the baseline.
   Verify: Run one deployed live golden ripple and one forced-Parallel-failure ripple; inspect stored stage/evidence/proposal documents and execute contract tests. **Visual pause 2:** Arkadiusz reviews the amber rail, visible Parallel proof, proposal quality, and whether the ripple feels memorable. Commit as `feat: complete Revision Ripple agent crew`.
 
-- [ ] **10. Add producer review, atomic approval, discard, rerun, reset, and cap UX**
+- [x] **10. Add producer review, atomic approval, discard, rerun, reset, and cap UX**
   Spec ref: `prd.md > Epic 5: Proposal Review And Producer Approval`, `prd.md > Epic 8: Reset, Limits, And Recoverable Failures`, and `spec.md > 8. API Contracts`
   What to build: Build the complete proposal view and shared before/after drawer with evidence citations, assumptions, confidence, and unchanged-baseline notice. Wire Approve, Discard, Edit request and rerun, explicit Reset demo, one-approved-ripple lock, daily-cap read-only state, and the disclosed approved-example fallback. Do not permit manual artifact patching.
   Acceptance: Approval commits exactly once and updates version/all five cards; discard leaves the baseline untouched; rerun supersedes the old proposal; logout does not bypass the cycle; reset is the only intended fresh-cycle path; cap exhaustion preserves view/PDF/example access.

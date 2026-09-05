@@ -190,3 +190,14 @@
 - Refresh recovery now rehydrates the authenticated browser's owned open run through `/api/demo`, so a terminal proposal does not depend on a fragile per-run fetch after local development-server restarts.
 - The local sign-in loading issue was traced to a sandboxed development server denied Clerk's handshake network request; the network-enabled server removed the `EACCES` failure and restored the normal authenticated workspace.
 - **Visual pause 2 approved:** Arkadiusz reviewed the live rail, source links, cached-fallback proof, and completed proposal, then confirmed, “looks good!”
+
+## 2026-09-05 — Build item 10: controlled producer decisions
+
+- Added the complete proposal review surface with all five before/after impact summaries, confidence, citations, assumptions, warnings, and the persistent unchanged-baseline statement. The shared artifact drawer now discloses proposal values alongside baseline values.
+- Added authenticated, same-origin, browser-isolated mutation endpoints for atomic approval, discard, and reset. The UI provides exactly the approved decision set: approve all five, edit and rerun, discard, and explicit reset. It never permits individual artifact patches.
+- Verified the end-to-end decision flow against Firestore: discard preserved Plan v1, a fresh live proposal rehydrated after refresh, approval atomically advanced to Plan v2 with all five changes, and reset returned the same browser demo instance to Plan v1 without spending another daily allowance.
+- Corrected proposal provenance so a live Parallel run says live everywhere, while cached evidence is labeled only as a fallback. The workspace footer now follows the active proposal/approved revision instead of incorrectly calling live evidence a bundled baseline.
+- Tightened live evidence normalization to strip markdown/navigation artifacts and omit generic marketing snippets lacking a production constraint. The final deployed run returned six clean live Parallel records rather than presenting a poor eighth result as evidence.
+- Strengthened the prepared Scene 14 ripple: the schedule now moves from four to five shoot days, with a protected fifth night unit for rain, stunt preparation, and the child-work window. The baseline artifact cards explicitly say `Baseline · proposal ready` while a proposal is open.
+- Local verification passed 78 tests (2 skipped), TypeScript typecheck, ESLint, focused source-normalization regressions, and the Cloud Build production build. Cloud Build images were deployed as Cloud Run revisions `scriptops-00025-vng` and final `scriptops-00026-qgk`; the final live proposal showed six clean cited sources, a 4 → 5 schedule delta, live provenance disclosure, and all five changed impacts.
+- **Visual pause 3a approved:** Arkadiusz reviewed the final deployed proposal/control flow and said, “ok approved.” The proposal is intentionally left unapproved in the browser so the baseline remains safe for the next review.

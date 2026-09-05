@@ -3,13 +3,59 @@
 import { useEffect } from "react";
 
 import type { ArtifactKey } from "@/components/dashboard/types";
-import type { ProductionPlan, SceneBreakdown } from "@/lib/domain/types";
+import type { ProductionPlan, RevisionProposal, SceneBreakdown } from "@/lib/domain/types";
+
+function proposalComparison(
+  artifact: ArtifactKey,
+  plan: ProductionPlan,
+  proposedPlan: ProductionPlan,
+) {
+  if (artifact === "breakdown") {
+    const before = plan.scenes.find((scene) => scene.id === "scene-14")!;
+    const after = proposedPlan.scenes.find((scene) => scene.id === "scene-14")!;
+    return [`${before.requirements.timeOfDay} / ${before.requirements.weather.join(", ") || "clear"}`, `${after.requirements.timeOfDay} / ${after.requirements.weather.join(", ") || "clear"}`];
+  }
+  if (artifact === "schedule") return [`${plan.schedule.shootDays} shoot days`, `${proposedPlan.schedule.shootDays} shoot days`];
+  if (artifact === "budget") return [`$${Math.round(plan.budget.low / 1000)}k–$${Math.round(plan.budget.high / 1000)}k`, `$${Math.round(proposedPlan.budget.low / 1000)}k–$${Math.round(proposedPlan.budget.high / 1000)}k`];
+  if (artifact === "locations") return [`${plan.locations.length} ranked candidates`, `${proposedPlan.locations.length} ranked candidates`];
+  return [`${plan.casting.length} role briefs`, `${proposedPlan.casting.length} role briefs`];
+}
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   maximumFractionDigits: 0,
 });
+
+function ProposalAwareDetailContent({
+  artifact,
+  plan,
+  scene,
+  proposal,
+}: {
+  artifact: ArtifactKey;
+  plan: ProductionPlan;
+  scene: SceneBreakdown;
+  proposal: RevisionProposal | null;
+}) {
+  const displayPlan = proposal?.proposedPlan ?? plan;
+  const displayScene = displayPlan.scenes.find((candidate) => candidate.id === scene.id) ?? scene;
+  const comparison = proposal ? proposalComparison(artifact, plan, displayPlan) : null;
+  const impact = proposal?.impacts[artifact];
+
+  return (
+    <>
+      {comparison && impact ? (
+        <div className="drawer-comparison">
+          <span>Before <strong>{comparison[0]}</strong></span>
+          <span>After <strong>{comparison[1]}</strong></span>
+          <p>{impact.reasons[0]} · {impact.confidence} confidence</p>
+        </div>
+      ) : null}
+      <DetailContent artifact={artifact} plan={displayPlan} scene={displayScene} />
+    </>
+  );
+}
 
 function DetailContent({
   artifact,
@@ -105,11 +151,13 @@ export function DetailDrawer({
   artifact,
   plan,
   scene,
+  proposal,
   onClose,
 }: {
   artifact: ArtifactKey | null;
   plan: ProductionPlan;
   scene: SceneBreakdown;
+  proposal: RevisionProposal | null;
   onClose: () => void;
 }) {
   useEffect(() => {
@@ -131,8 +179,8 @@ export function DetailDrawer({
           <div><p className="overline">Baseline detail</p><h2 id="drawer-title">{titles[artifact]}</h2></div>
           <button className="drawer-close" type="button" onClick={onClose} autoFocus aria-label="Close details">×</button>
         </div>
-        <DetailContent artifact={artifact} plan={plan} scene={scene} />
-        <p className="drawer-note">Read-only baseline · opening this view never starts analysis.</p>
+        <ProposalAwareDetailContent artifact={artifact} plan={plan} scene={scene} proposal={proposal} />
+        <p className="drawer-note">{proposal ? "Proposal preview · approval is required before these updates become the baseline." : "Read-only baseline · opening this view never starts analysis."}</p>
       </aside>
     </div>
   );

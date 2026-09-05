@@ -8,12 +8,16 @@ export function ProductionHeader({
   syncState,
   theme,
   onToggleTheme,
+  onResetDemo,
+  resetPending,
 }: {
   snapshot: DashboardSnapshot;
   authConfigured: boolean;
   syncState: "loading" | "ready" | "error";
   theme: "light" | "dark";
   onToggleTheme: () => void;
+  onResetDemo?: () => void;
+  resetPending: boolean;
 }) {
   return (
     <header className="production-header">
@@ -38,6 +42,11 @@ export function ProductionHeader({
             <span aria-hidden="true">{theme === "light" ? "☼" : "◐"}</span>
             <span>{theme === "light" ? "Light" : "Dark"}</span>
           </button>
+          {onResetDemo ? (
+            <button className="reset-demo" type="button" onClick={onResetDemo} disabled={resetPending}>
+              {resetPending ? "Resetting…" : "Reset demo"}
+            </button>
+          ) : null}
           <div className="trust-signal">
             <span className="status-dot" aria-hidden="true" />
             <span>

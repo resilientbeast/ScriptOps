@@ -41,6 +41,11 @@ describe("versioned domain fixtures", () => {
     expect(approvedExampleFixture.approvedPlan.revisionRecord?.planVersion).toBe(
       2,
     );
+    expect(approvedExampleFixture.proposal.impacts.schedule.before.shootDays).toBe(4);
+    expect(approvedExampleFixture.proposal.impacts.schedule.after.shootDays).toBe(5);
+    expect(approvedExampleFixture.proposal.impacts.schedule.reasons[0]).toContain(
+      "protected fifth night unit",
+    );
     expect(
       goldenRevisionProposalSchema.safeParse(approvedExampleFixture.proposal)
         .success,

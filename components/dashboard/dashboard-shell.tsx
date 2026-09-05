@@ -12,6 +12,7 @@ import type {
   DashboardSnapshot,
 } from "@/components/dashboard/types";
 import { ActivityRail } from "@/components/ripple/activity-rail";
+import { ProposalReview } from "@/components/ripple/proposal-review";
 import { RevisionComposer } from "@/components/ripple/revision-composer";
 import { GOLDEN_REQUEST } from "@/lib/domain/golden-invariants";
 import type { PublicRippleRun } from "@/lib/ripple/contracts";
@@ -42,6 +43,9 @@ export function DashboardShell({
   const [syncState, setSyncState] = useState<"loading" | "ready" | "error">(
     "loading",
   );
+  const [decisionPending, setDecisionPending] = useState(false);
+  const [decisionNotice, setDecisionNotice] = useState<string | null>(null);
+  const [composerFocusToken, setComposerFocusToken] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -140,12 +144,108 @@ export function DashboardShell({
   const handleRunStarted = useCallback((run: PublicRippleRun) => {
     setActiveRun(run);
     setObservedRunId(run.runId);
+    setDecisionNotice(null);
   }, []);
+  const applySnapshot = useCallback((nextSnapshot: DashboardSnapshot) => {
+    setSnapshot(nextSnapshot);
+    setObservedRunId(null);
+  }, []);
+  const decide = useCallback(async (path: string) => {
+    const response = await fetch(path, {
+      method: "POST",
+      headers: { Accept: "application/json" },
+    });
+    const payload = (await response.json().catch(() => ({}))) as {
+      snapshot?: DashboardSnapshot;
+      run?: PublicRippleRun;
+      error?: { message?: string };
+    };
+    if (!response.ok || !payload.snapshot) {
+      throw new Error(payload.error?.message ?? "The producer decision could not be completed.");
+    }
+    return payload;
+  }, []);
+  const handleApprove = useCallback(async () => {
+    if (!activeRun) return;
+    setDecisionPending(true);
+    setDecisionNotice(null);
+    try {
+      const payload = await decide(`/api/ripples/${activeRun.runId}/approve`);
+      applySnapshot(payload.snapshot!);
+      setActiveRun(payload.run ?? null);
+      setDecisionNotice("Approved. Plan v2 now contains all five validated updates.");
+    } catch (error) {
+      setDecisionNotice(error instanceof Error ? error.message : "Approval could not be completed.");
+    } finally {
+      setDecisionPending(false);
+    }
+  }, [activeRun, applySnapshot, decide]);
+  const handleDiscard = useCallback(async (editAndRerun = false) => {
+    if (!activeRun) return;
+    const priorRequest = activeRun.requestText;
+    setDecisionPending(true);
+    setDecisionNotice(null);
+    try {
+      const payload = await decide(`/api/ripples/${activeRun.runId}/discard`);
+      applySnapshot(payload.snapshot!);
+      setActiveRun(null);
+      if (editAndRerun) {
+        setRequestText(priorRequest);
+        setComposerFocusToken((token) => token + 1);
+        setDecisionNotice("Proposal replaced safely. Edit the request, then run a new complete analysis.");
+      } else {
+        setDecisionNotice("Proposal discarded. The approved baseline remains unchanged.");
+      }
+    } catch (error) {
+      setDecisionNotice(error instanceof Error ? error.message : "Discard could not be completed.");
+    } finally {
+      setDecisionPending(false);
+    }
+  }, [activeRun, applySnapshot, decide]);
+  const handleReset = useCallback(async () => {
+    setDecisionPending(true);
+    setDecisionNotice(null);
+    try {
+      const payload = await decide("/api/demo/reset");
+      applySnapshot(payload.snapshot!);
+      setActiveRun(null);
+      setSelectedSceneId("scene-14");
+      setRequestText(GOLDEN_REQUEST);
+      setDecisionNotice("Demo reset to its immutable baseline. The shared daily allowance was not changed.");
+    } catch (error) {
+      setDecisionNotice(error instanceof Error ? error.message : "Reset could not be completed.");
+    } finally {
+      setDecisionPending(false);
+    }
+  }, [applySnapshot, decide]);
   const selectedScene =
     snapshot.currentPlan.scenes.find((scene) => scene.id === selectedSceneId) ??
     snapshot.currentPlan.scenes.at(-1)!;
   const artifactSummaries = buildArtifactSummaries(snapshot.currentPlan);
   const analysisActive = activeRun?.status === "queued" || activeRun?.status === "analyzing";
+  const proposalReady = activeRun?.status === "proposal_ready" && activeRun.proposal;
+  const evidenceFooter = proposalReady
+    ? `Evidence: ${proposalReady.evidence.sourceMode === "live" ? "live Parallel" : "cached Parallel fallback"} · ${proposalReady.evidence.records.length} sources`
+    : snapshot.currentPlan.revisionRecord
+      ? `Evidence: ${snapshot.currentPlan.revisionRecord.evidenceSourceMode === "live" ? "live Parallel" : "cached Parallel fallback"} approval`
+      : "Evidence: bundled baseline";
+  const composerDisabled = Boolean(
+    analysisActive || proposalReady || snapshot.hasApprovedRipple || snapshot.dailyCapReached || decisionPending,
+  );
+  const composerDisabledMessage = analysisActive
+    ? "Analysis in progress"
+    : proposalReady
+      ? "Review the proposal below"
+      : snapshot.hasApprovedRipple
+        ? "Reset demo for another ripple"
+        : snapshot.dailyCapReached
+          ? "Shared daily limit reached"
+          : "Producer decision in progress";
+  const resetAvailable =
+    snapshot.hasApprovedRipple ||
+    activeRun?.status === "failed" ||
+    activeRun?.status === "rejected" ||
+    decisionNotice?.startsWith("Proposal discarded") === true;
 
   return (
     <main className="dashboard-shell" data-theme={theme}>
@@ -178,6 +278,8 @@ export function DashboardShell({
           syncState={syncState}
           theme={theme}
           onToggleTheme={toggleTheme}
+          onResetDemo={resetAvailable ? handleReset : undefined}
+          resetPending={decisionPending}
         />
 
         <section className="scene-focus" aria-labelledby="scene-focus-heading">
@@ -202,7 +304,9 @@ export function DashboardShell({
               sceneNumber={selectedScene.sceneNumber}
               sceneId={selectedScene.id}
               requestText={requestText}
-              disabled={analysisActive}
+              disabled={composerDisabled}
+              disabledMessage={composerDisabledMessage}
+              focusToken={composerFocusToken}
               onRequestTextChange={setRequestText}
               onRunStarted={handleRunStarted}
             />
@@ -211,11 +315,31 @@ export function DashboardShell({
 
         <ActivityRail run={activeRun} />
 
-        <ArtifactGrid artifacts={artifactSummaries} onOpen={setActiveArtifact} />
+        {proposalReady ? (
+          <ProposalReview
+            proposal={proposalReady}
+            pending={decisionPending}
+            onApprove={() => void handleApprove()}
+            onDiscard={() => void handleDiscard()}
+            onEditAndRerun={() => void handleDiscard(true)}
+          />
+        ) : null}
+
+        {decisionNotice ? <p className="decision-notice" role="status">{decisionNotice}</p> : null}
+
+        {snapshot.dailyCapReached ? (
+          <p className="cap-notice" role="status">Today’s shared analysis allowance is reached. You can still review evidence, approve a ready proposal, reset this browser demo, and export an approved plan.</p>
+        ) : null}
+
+        <ArtifactGrid
+          artifacts={artifactSummaries}
+          onOpen={setActiveArtifact}
+          proposalReady={Boolean(proposalReady)}
+        />
 
         <footer className="workspace-footer">
           <span>Fixture {snapshot.currentPlan.fixtureVersion}</span>
-          <span>Evidence: bundled baseline</span>
+          <span>{evidenceFooter}</span>
           <span>Cycle {snapshot.cycle}</span>
         </footer>
       </section>
@@ -224,6 +348,7 @@ export function DashboardShell({
         artifact={activeArtifact}
         plan={snapshot.currentPlan}
         scene={selectedScene}
+        proposal={proposalReady || null}
         onClose={closeDrawer}
       />
       <span className="sr-only" aria-live="polite">

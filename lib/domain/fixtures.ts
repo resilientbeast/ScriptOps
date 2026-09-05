@@ -92,7 +92,7 @@ const proposal = revisionProposalSchema.parse({
       before: baseline.schedule,
       after: approvedSource.revisedSchedule,
       reasons: [
-        "Scene 14 now needs a night unit, rain setup, stunt preparation, and a child-work window.",
+        "A protected fifth night unit isolates Scene 14's rain setup, stunt preparation, and child-work window.",
       ],
       evidenceIds: [
         "evidence-child-labor",

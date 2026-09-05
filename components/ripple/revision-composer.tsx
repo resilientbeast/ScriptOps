@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { PublicRippleRun } from "@/lib/ripple/contracts";
 
@@ -14,6 +14,8 @@ export function RevisionComposer({
   sceneId,
   requestText,
   disabled,
+  disabledMessage,
+  focusToken,
   onRequestTextChange,
   onRunStarted,
 }: {
@@ -21,12 +23,19 @@ export function RevisionComposer({
   sceneId: string;
   requestText: string;
   disabled: boolean;
+  disabledMessage?: string;
+  focusToken: number;
   onRequestTextChange: (value: string) => void;
   onRunStarted: (run: PublicRippleRun) => void;
 }) {
   const submitting = useRef(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const input = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (focusToken > 0) input.current?.focus();
+  }, [focusToken]);
 
   async function startRipple() {
     if (submitting.current || disabled) return;
@@ -67,11 +76,12 @@ export function RevisionComposer({
           <span>Revision Ripple</span>
           <p>Type a change to Scene {sceneNumber} and watch it ripple through the whole plan.</p>
         </div>
-        <span className="guidance-status">{disabled ? "Analysis in progress" : "Baseline protected"}</span>
+        <span className="guidance-status">{disabled ? (disabledMessage ?? "Analysis in progress") : "Baseline protected"}</span>
       </div>
       <textarea
         aria-label={`Production change for Scene ${sceneNumber}`}
         disabled={disabled || pending}
+        ref={input}
         maxLength={2_000}
         onChange={(event) => onRequestTextChange(event.target.value)}
         placeholder="Change time of day, weather, cast, stunt, location, schedule, or budget requirements…"
@@ -92,4 +102,3 @@ export function RevisionComposer({
     </div>
   );
 }
-

@@ -1,14 +1,6 @@
-import type { ProductionPlan } from "@/lib/domain/types";
-import type { PublicRippleRun } from "@/lib/ripple/contracts";
+import type { PublicDemoSnapshot } from "@/lib/ripple/public-demo";
 
-export type DashboardSnapshot = {
-  cycle: number;
-  planVersion: number;
-  currentPlan: ProductionPlan;
-  hasApprovedRipple: boolean;
-  openRunId: string | null;
-  openRun: PublicRippleRun | null;
-};
+export type DashboardSnapshot = PublicDemoSnapshot;
 
 export type ArtifactKey =
   | "breakdown"

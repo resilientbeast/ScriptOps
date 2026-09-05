@@ -4,9 +4,11 @@ import type { ArtifactKey } from "@/components/dashboard/types";
 export function ArtifactGrid({
   artifacts,
   onOpen,
+  proposalReady,
 }: {
   artifacts: ArtifactSummary[];
   onOpen: (artifact: ArtifactKey) => void;
+  proposalReady: boolean;
 }) {
   return (
     <section className="artifact-section" aria-labelledby="artifact-heading">
@@ -21,6 +23,7 @@ export function ArtifactGrid({
         {artifacts.map((artifact) => (
           <button
             className="artifact-card"
+            data-proposed={proposalReady}
             key={artifact.key}
             onClick={() => onOpen(artifact.key)}
             type="button"
@@ -32,7 +35,7 @@ export function ArtifactGrid({
             </span>
             <strong>{artifact.metric}</strong>
             <span className="artifact-label">{artifact.label}</span>
-            <small>{artifact.descriptor}</small>
+            <small>{proposalReady ? "Baseline · proposal ready" : artifact.descriptor}</small>
           </button>
         ))}
       </div>

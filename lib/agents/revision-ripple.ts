@@ -101,6 +101,12 @@ function safeEvidenceIds(requested: string[], evidence: EvidenceBundle): string[
   return selected.length > 0 ? [...new Set(selected)] : evidence.records.map((record) => record.id);
 }
 
+function evidenceDisclosure(evidence: EvidenceBundle): string {
+  return evidence.sourceMode === "live"
+    ? "Live Parallel evidence informed this proposal; each cited source is shown below."
+    : "Cached Parallel evidence is a transparent resilience fallback for this proposal.";
+}
+
 function assembleProposal(
   run: RippleRun,
   demo: DemoInstance,
@@ -244,7 +250,12 @@ function assembleProposal(
     },
     evidence,
     assumptions: [
-      ...(isGolden ? approvedExampleFixture.proposal.assumptions : breakdown.assumptions),
+      evidenceDisclosure(evidence),
+      ...(isGolden
+        ? approvedExampleFixture.proposal.assumptions.filter(
+            (assumption) => !assumption.toLowerCase().includes("cached evidence"),
+          )
+        : breakdown.assumptions),
       "Planning values remain estimates until production-specific quotes and permissions are confirmed.",
     ],
     warnings: [

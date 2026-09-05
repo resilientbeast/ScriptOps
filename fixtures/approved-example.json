@@ -27,7 +27,7 @@
     }
   },
   "revisedSchedule": {
-    "shootDays": 4,
+    "shootDays": 5,
     "days": [
       {
         "id": "shoot-day-01",
@@ -62,12 +62,22 @@
       {
         "id": "shoot-day-04",
         "dayNumber": 4,
-        "label": "Workshop, railyard, and rainy night road",
-        "sceneIds": ["scene-11", "scene-12", "scene-13", "scene-14"],
-        "dayNight": "mixed",
-        "estimatedHours": 14,
+        "label": "Workshop and railyard",
+        "sceneIds": ["scene-11", "scene-12", "scene-13"],
+        "dayNight": "day",
+        "estimatedHours": 11,
+        "setupRequirements": ["workshop practicals", "railyard edge dressing"],
+        "complianceNotes": ["confirm property access and parking plan"]
+      },
+      {
+        "id": "shoot-day-05",
+        "dayNumber": 5,
+        "label": "Protected rainy night road",
+        "sceneIds": ["scene-14"],
+        "dayNight": "night",
+        "estimatedHours": 10,
         "setupRequirements": ["night exterior lighting", "rain effects and drainage", "stunt-driving setup and wet-road reset lane"],
-        "complianceNotes": ["verify child-performer work window and guardian requirements", "coordinate road control and stunt safety plan"]
+        "complianceNotes": ["schedule the child performer within the verified work window and guardian requirements", "coordinate road control and stunt safety plan"]
       }
     ]
   },
@@ -114,7 +124,7 @@
         "evidenceIds": ["evidence-permits", "evidence-traffic-control"]
       }
     ],
-    "assumptions": ["four principal shoot days with a longer final day", "local crew where practical", "production-specific quotes remain pending"]
+    "assumptions": ["four principal shoot days plus a protected fifth night unit", "local crew where practical", "production-specific quotes remain pending"]
   },
   "revisedLocations": [
     {
