@@ -13,17 +13,39 @@ export default function SignInPage() {
           </span>
           <span>ScriptOps</span>
         </Link>
-        <div>
-          <p className="overline">Protected production workspace</p>
-          <h1 id="auth-title">One change. Every department accounted for.</h1>
-          <p>
-            Sign in with the supplied judge account to open the fixed Dust &amp;
-            Thunder production plan. Public account creation is disabled.
+        <div className="auth-hero">
+          <p className="overline">Production control, in early access</p>
+          <h1 id="auth-title">One change. Every department, accounted for.</h1>
+          <p className="auth-intro">
+            ScriptOps turns an approved screenplay revision into a coordinated,
+            evidence-backed production plan—so schedule, budget, locations,
+            casting, and safety stay aligned.
           </p>
+          <ol className="auth-workflow" aria-label="How ScriptOps works">
+            <li>
+              <span>01</span>
+              <strong>Ground the plan</strong>
+              <p>Review the screenplay source before planning begins.</p>
+            </li>
+            <li>
+              <span>02</span>
+              <strong>Trace the ripple</strong>
+              <p>See one revision across every affected production artifact.</p>
+            </li>
+            <li>
+              <span>03</span>
+              <strong>Approve with context</strong>
+              <p>Keep the evidence and every approved version connected.</p>
+            </li>
+          </ol>
         </div>
-        <p className="auth-footnote">
-          Browser sessions remain isolated even when judges share one account.
-        </p>
+        <div className="auth-bottom">
+          <p className="auth-availability">
+            <span aria-hidden="true" /> Invitation-only early access for
+            production teams.
+          </p>
+          <p className="auth-tech">Built with Gemini · Google Cloud · Parallel</p>
+        </div>
       </section>
 
       <section className="auth-panel" aria-label="Sign in">
