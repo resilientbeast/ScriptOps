@@ -1,14 +1,14 @@
 # Private-pilot release evidence
 
-Status: PH14 evidence matrix started on 2026-09-07. This document records observed proof and open gates; it is not an authorization to enable a wider pilot.
+Status: PH14 evidence matrix reconciled on 2026-09-08. This document records observed proof and open gates; it is not an authorization to enable a wider pilot.
 
 ## Current deployment
 
 | Item | Evidence |
 | --- | --- |
 | Service | Cloud Run `scriptops`, project `scriptops-agentic-arkad`, `us-central1` |
-| Production revision | `scriptops-00051-j5q`, Ready, 100% traffic |
-| Public health | `GET /api/health` returned HTTP 200 with `{"service":"scriptops","status":"healthy"}` after PH13 deployment |
+| Production revision | `scriptops-00055-qnj`, Ready, 100% traffic |
+| Public health | `GET /api/health` returned HTTP 200 with `{"service":"scriptops","status":"healthy"}` in the current-revision boundary check |
 | Planning flag | `PROJECT_PLANNING_ENABLED=true` by prior explicit production decision |
 | Upload boundary | Private bucket configured through `PROJECT_UPLOAD_BUCKET`; signed browser writes expire after 900 seconds |
 | Durable work | Cloud Tasks project queue and OIDC worker are deployed; maintenance runs reconciliation and cleanup |
@@ -17,16 +17,16 @@ Status: PH14 evidence matrix started on 2026-09-07. This document records observ
 
 | Requirement | Current evidence | Status |
 | --- | --- | --- |
-| PDF and FDX upload through review | Prior authenticated production workflow covered both formats through persisted review-ready state | Partial: rerun against current revision |
-| Initial plan and Plan v1 | Prior production project generated and approved Plan v1 | Partial: current-revision retry and quality review required |
-| Ripple v1 → v3, history, export | Unit coverage and PH11/PH12 local rendering; anonymous export returned 401 | Open authenticated current-revision check |
-| Two users and two projects | Local/emulator ownership tests | Open deployed check |
-| Refresh, retries, worker recovery | Local/emulator contracts and prior queue deployment | Open deployed recovery drill |
-| Archive and restore | Local repository/UI coverage | Open authenticated current-revision check |
-| Deletion during upload, worker, and proposal | Local epoch fencing and deployed PH13 rollout health | Open authenticated destructive-flow check |
-| Private boundary | Deployed smoke asserts signed-out project/deletion APIs return 401 and workspace redirects to sign-in | Ready to run against the explicit production URL |
+| PDF and FDX upload through review | The existing FDX project reloaded into accepted-scene state on revision `00055`; prior production evidence covers PDF review state | Partial: current-revision PDF rerun and upload-path drill remain |
+| Initial plan and Plan v1 | The approved production project exposes Plan v3 and three persisted approved-history entries on revision `00055` | Partial: no current-revision fresh initial-plan generation or full human-quality review |
+| Ripple v1 → v3, history, export | Current production reload retains Plan v3 and three approved-history entries; anonymous export returned 401 | Partial: browser download client still cannot dispatch the authenticated file download |
+| Two users and two projects | Local/emulator ownership tests | Deferred by owner; deployed second-account check remains open |
+| Refresh, retries, worker recovery | Current production reload retained the active project, scene review, Plan v3, and history. A disposable Plan v4 proposal was queued, the page was reloaded while its job was running, and the completed proposal reappeared and was discarded without changing Plan v3. Local/emulator contracts cover recovery. | Partial: no forced worker interruption or lease-reclaim drill |
+| Archive and restore | Archive changed the live project to read-only and Restore returned it to active with Plan v3 intact on revision `00055` | Verified |
+| Deletion during upload, worker, and proposal | Confirmed empty-project deletion reached 404 on revision `00055`; local epoch fencing and earlier deployed scoped inspection are recorded below | Partial: upload/parser/proposal race remains open |
+| Private boundary | `verify:post-hackathon:e2e` passed all four anonymous-boundary assertions on revision `00055` | Verified |
 | Narrow-screen and keyboard flow | Not recorded | Open |
-| Human plan quality | PH09 synthetic paid checks were rate-limited before full plans | Open |
+| Human plan quality | Live Plan v2 and v3 proposals were reviewed and approved with retained evidence | Partial: three-script quality rubric and feature-length provider case remain open |
 
 ## Controls and operations
 
@@ -67,7 +67,7 @@ This is perimeter evidence only. It does not authenticate, create a project, inv
 - History now lists Plan v1 (initial), Plan v2 (ripple), and Plan v3 (ripple), each with its own owner-scoped PDF endpoint. The browser automation client blocks direct download endpoints, so authenticated download-file handling remains a client limitation rather than a failed application response.
 - The existing PDF verification project reloaded into its persisted `Screenplay parsed` / `Review ph07-verification.pdf` state, confirming the PDF workflow survives a browser reload.
 
-The only remaining lifecycle verification action is deletion of a disposable project while upload, work, or proposal state is present. It has not been run because deletion is irreversible and needs a just-in-time confirmation.
+At this point the remaining lifecycle verification was deletion of a disposable project while upload, work, or proposal state was present. Later empty-project checks are recorded below. The in-flight deletion races remain open.
 
 ## 2026-09-08 confirmed disposable deletion
 
@@ -87,6 +87,15 @@ This proves confirmed empty-project cleanup and tombstone fencing on the deploye
 The production upload bucket was inspected directly. It has uniform bucket-level access and public-access prevention enforced. Object versioning is enabled; its lifecycle deletes non-live versions at seven days; its Cloud Storage soft-delete policy also retains deleted objects for **604,800 seconds (seven days)**. Therefore the application’s immediate live-object cleanup must not be represented as physical storage erasure within 24 hours. The documented retention statement is: application reads and live object generations are removed promptly after cleanup, while Cloud Storage recovery retention can keep deleted generations for up to seven days. No separate backup-retention promise has been verified.
 
 The authenticated scheduled reconciler `scriptops-project-reconcile` is enabled every five minutes (UTC) against `/api/internal/projects/reconcile`. It handles durable dispatch recovery and completed-tombstone late-write sweeps; the schedule is evidence of cadence, not a proof of every in-flight race.
+
+## 2026-09-08 current-revision reconciliation
+
+- Revision `scriptops-00055-qnj` is Ready at 100% traffic with `PROJECT_PLANNING_ENABLED=true`. Its only application change from the preceding release is the restored isolated `/demo` route and the demo-to-projects navigation control; the production project workflow is otherwise unchanged.
+- `E2E_BASE_URL=https://scriptops-5sinbwmqzq-uc.a.run.app npm run verify:post-hackathon:e2e` passed all four checks outside the sandbox: health is `200`, signed-out project and deletion reads return `401`, signed-out `/projects` redirects to sign-in, and an anonymous delete is rejected before cleanup starts.
+- The existing FDX project `d7e6a53c-0dd9-45bf-8529-85484eeffd13` reloaded into accepted scenes and Plan v3. The plan-history count rehydrated to three after the client read completed. Archive and Restore both completed, returning the project to active with the approved plan intact.
+- A disposable Plan v4 proposal on the same project entered `running`; after a browser reload it appeared as a ready proposal with its plan impact and retained evidence. Discarding it returned the project to its Plan v3 baseline and released the proposal lock. This proves browser-refresh continuity, not a forced worker-restart/lease-reclaim path.
+- Disposable project `37a74a50-3557-4d19-9cdd-9b6b2ec18031` was created solely for this pass. Its exact-title deletion control moved it to `deleting`; a reload about 18 seconds later returned `404`. This is current-revision empty-project cleanup evidence, not an in-flight race.
+- The in-app browser automation cannot attach a local FDX/PDF fixture, so it cannot perform the remaining upload/parser race or create an isolated project for a fresh paid planning/proposal race. Those checks remain open. The separate two-account check remains deferred by the owner.
 
 ## Submission decision
 

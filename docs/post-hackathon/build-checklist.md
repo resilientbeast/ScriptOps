@@ -114,6 +114,12 @@ Run focused verification for each change and Q at the specified slice boundaries
   **Verify:** Q; `npm run verify:post-hackathon:ingestion`; `npm run verify:post-hackathon:planning`; `npm run verify:post-hackathon:e2e`; separate sample-demo regression. Run a rollback drill that preserves reads/exports without allowing incompatible worker writes.
   **Exit / review checkpoint 3:** the entire functional specification is demonstrated in the pilot; no critical ownership, lost-source, partial-baseline, or version-history defects remain.
 
-## Start here
+## Reconciled status — 2026-09-08
 
-The current build slice is **PH11**. Preserve PH09's separate deployment/recovery release gate, plus the earlier unchecked PH01/PH04/PH05 release gates. See `build-notes.md` for the tested working-tree state and pending limitations.
+The implementation through PH14 is present in the repository and deployed. The unchecked boxes above remain unchecked deliberately: their exit criteria include evidence that has not been collected, rather than indicating that their feature code is absent.
+
+- **Verified on the current revision:** anonymous boundary, project reload, accepted FDX scene review, Plan v3 with three-entry history, proposal refresh/discard continuity, archive/restore, confirmed empty-project deletion, the enabled reconciler, and the restored isolated demo route.
+- **Deferred by owner:** the second allow-listed user and two-project ownership check.
+- **Still open:** a current-revision PDF upload rerun; upload/parser/proposal deletion races; in-flight worker recovery; full three-script and feature-length quality review; narrow-screen/keyboard review; rollback drill; and alert/on-call evidence.
+
+See [release evidence](release-evidence.md) for the exact observations, limitations, deployed revision, and non-overstated pilot gates.
