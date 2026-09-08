@@ -7,7 +7,7 @@ Status: PH14 evidence matrix reconciled on 2026-09-08. This document records obs
 | Item | Evidence |
 | --- | --- |
 | Service | Cloud Run `scriptops`, project `scriptops-agentic-arkad`, `us-central1` |
-| Production revision | `scriptops-00055-qnj`, Ready, 100% traffic |
+| Production revision | `scriptops-00057-mnq`, Ready, 100% traffic |
 | Public health | `GET /api/health` returned HTTP 200 with `{"service":"scriptops","status":"healthy"}` in the current-revision boundary check |
 | Planning flag | `PROJECT_PLANNING_ENABLED=true` by prior explicit production decision |
 | Upload boundary | Private bucket configured through `PROJECT_UPLOAD_BUCKET`; signed browser writes expire after 900 seconds |
@@ -24,7 +24,7 @@ Status: PH14 evidence matrix reconciled on 2026-09-08. This document records obs
 | Refresh, retries, worker recovery | Current production reload retained the active project, scene review, Plan v3, and history. A disposable Plan v4 proposal was queued, the page was reloaded while its job was running, and the completed proposal reappeared and was discarded without changing Plan v3. Local/emulator contracts cover recovery. | Partial: no forced worker interruption or lease-reclaim drill |
 | Archive and restore | Archive changed the live project to read-only and Restore returned it to active with Plan v3 intact on revision `00055` | Verified |
 | Deletion during upload, worker, and proposal | Confirmed empty-project deletion reached 404 on revision `00055`; local epoch fencing and earlier deployed scoped inspection are recorded below | Partial: upload/parser/proposal race remains open |
-| Private boundary | `verify:post-hackathon:e2e` passed all four anonymous-boundary assertions on revision `00055` | Verified |
+| Private boundary | `verify:post-hackathon:e2e` passed all four anonymous-boundary assertions on revision `00057` | Verified |
 | Narrow-screen and keyboard flow | Not recorded | Open |
 | Human plan quality | Live Plan v2 and v3 proposals were reviewed and approved with retained evidence | Partial: three-script quality rubric and feature-length provider case remain open |
 
@@ -88,7 +88,7 @@ The production upload bucket was inspected directly. It has uniform bucket-level
 
 The authenticated scheduled reconciler `scriptops-project-reconcile` is enabled every five minutes (UTC) against `/api/internal/projects/reconcile`. It handles durable dispatch recovery and completed-tombstone late-write sweeps; the schedule is evidence of cadence, not a proof of every in-flight race.
 
-## 2026-09-08 current-revision reconciliation
+## 2026-09-08 workflow reconciliation
 
 - Revision `scriptops-00055-qnj` is Ready at 100% traffic with `PROJECT_PLANNING_ENABLED=true`. Its only application change from the preceding release is the restored isolated `/demo` route and the demo-to-projects navigation control; the production project workflow is otherwise unchanged.
 - `E2E_BASE_URL=https://scriptops-5sinbwmqzq-uc.a.run.app npm run verify:post-hackathon:e2e` passed all four checks outside the sandbox: health is `200`, signed-out project and deletion reads return `401`, signed-out `/projects` redirects to sign-in, and an anonymous delete is rejected before cleanup starts.
@@ -96,6 +96,12 @@ The authenticated scheduled reconciler `scriptops-project-reconcile` is enabled 
 - A disposable Plan v4 proposal on the same project entered `running`; after a browser reload it appeared as a ready proposal with its plan impact and retained evidence. Discarding it returned the project to its Plan v3 baseline and released the proposal lock. This proves browser-refresh continuity, not a forced worker-restart/lease-reclaim path.
 - Disposable project `37a74a50-3557-4d19-9cdd-9b6b2ec18031` was created solely for this pass. Its exact-title deletion control moved it to `deleting`; a reload about 18 seconds later returned `404`. This is current-revision empty-project cleanup evidence, not an in-flight race.
 - The in-app browser automation cannot attach a local FDX/PDF fixture, so it cannot perform the remaining upload/parser race or create an isolated project for a fresh paid planning/proposal race. Those checks remain open. The separate two-account check remains deferred by the owner.
+
+## 2026-09-08 live workspace visual alignment
+
+- Commit `ea0561f` changed only `app/globals.css`: the real project workspace now uses the demo's light grid, amber production-control accents, monospace labels, card treatment, and compact brand rail. No project, permission, worker, provider, or API code changed.
+- Cloud Run revision `scriptops-00057-mnq` is Ready at 100% traffic. The signed-in `PH08 verification screenplay` workspace was reopened on that revision and retained its accepted FDX review, Plan v3 ripple controls, and three-entry history while rendering in the unified design.
+- `E2E_BASE_URL=https://scriptops-5sinbwmqzq-uc.a.run.app npm run verify:post-hackathon:e2e` passed all four anonymous-boundary checks on revision `00057`.
 
 ## Submission decision
 
