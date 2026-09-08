@@ -82,8 +82,8 @@ Producer browser
 ## Testing and validation
 
 - Unit, integration, typecheck, lint, and production-build coverage for planning, ownership, versioning, export, cleanup, and failure boundaries.
-- Deployed verification confirmed signed-out project and deletion APIs return `401`, the workspace redirects unauthenticated users to sign-in, and Cloud Run health is live.
-- Authenticated production verification covered project archive/restore, Plan v1 to Plan v2 to Plan v3 approval, version history, persisted PDF review state, and an empty-project confirmed deletion with scoped Firestore and Cloud Storage cleanup.
+- Deployed verification on the current Cloud Run revision confirms signed-out project and deletion APIs return `401`, the workspace redirects unauthenticated users to sign-in, and health is live.
+- Authenticated production verification covered project archive/restore, Plan v1 to Plan v2 to Plan v3 approval, version history, persisted PDF review state, a proposal that survived a browser refresh and was cleanly discarded, and an empty-project confirmed deletion with scoped Firestore and Cloud Storage cleanup.
 - Live production planning produced cited Parallel evidence and visible schedule, budget, and location impacts. Provider errors cannot publish a draft baseline.
 
 ## How Codex was used
