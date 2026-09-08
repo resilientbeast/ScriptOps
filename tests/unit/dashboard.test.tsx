@@ -44,6 +44,7 @@ describe("populated baseline dashboard", () => {
     expect(html).toContain("14");
     expect(html).toContain("Revision Ripple");
     expect(html).toContain("Analyze proposed ripple");
+    expect(html).not.toContain("Download Production Bible");
     expect(html).toContain("Move Scene 14 to a rainy night");
     expect(html).toContain("Breakdown");
     expect(html).toContain("Schedule");
@@ -51,5 +52,26 @@ describe("populated baseline dashboard", () => {
     expect(html).toContain("Locations");
     expect(html).toContain("Casting");
     expect(html).toContain("v1");
+  });
+
+  it("puts PDF handoff with the approved plan rather than the utility header", () => {
+    const html = renderToStaticMarkup(
+      <DashboardShell
+        authConfigured={false}
+        initialSnapshot={{
+          cycle: 1,
+          planVersion: 2,
+          currentPlan: immutableBaselinePlan,
+          hasApprovedRipple: true,
+          openRunId: null,
+          openRun: null,
+          dailyCapReached: false,
+        }}
+      />,
+    );
+
+    expect(html).toContain("Approved production handoff");
+    expect(html).toContain("Download Production Bible");
+    expect(html).not.toContain(">Export PDF<");
   });
 });

@@ -45,6 +45,27 @@ describe("revision lifecycle contracts", () => {
     ).toBe(false);
   });
 
+  it("accepts configured public origins behind a Cloud Run proxy", () => {
+    const publicOrigin = "https://scriptops-916693774226.us-central1.run.app";
+    const serviceOrigin = "https://scriptops-5sinbwmqzq-uc.a.run.app";
+    const proxiedRequest = new Request("http://127.0.0.1:8080/api/ripples", {
+      method: "POST",
+      headers: { Origin: serviceOrigin },
+    });
+
+    expect(
+      isSameOrigin(proxiedRequest, {
+        CLOUD_RUN_BASE_URL: publicOrigin,
+        CLOUD_RUN_ALLOWED_ORIGINS: serviceOrigin,
+      }),
+    ).toBe(true);
+    expect(
+      isSameOrigin(proxiedRequest, {
+        CLOUD_RUN_BASE_URL: "https://another-service.example",
+      }),
+    ).toBe(false);
+  });
+
   it("redacts browser ownership and worker tokens from public snapshots", async () => {
     const repository = new RippleStateRepository(new InMemoryStateStore());
     await repository.initializeDemo(demoId);
@@ -63,4 +84,3 @@ describe("revision lifecycle contracts", () => {
     expect(publicRun).not.toHaveProperty("executionToken");
   });
 });
-

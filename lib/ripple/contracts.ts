@@ -22,12 +22,41 @@ export function isProductionRelevant(requestText: string): boolean {
   return productionSignals.some((signal) => signal.test(requestText));
 }
 
-export function isSameOrigin(request: Request): boolean {
+export function isSameOrigin(
+  request: Request,
+  environment: {
+    CLOUD_RUN_BASE_URL?: string;
+    CLOUD_RUN_ALLOWED_ORIGINS?: string;
+  } = process.env as {
+    CLOUD_RUN_BASE_URL?: string;
+    CLOUD_RUN_ALLOWED_ORIGINS?: string;
+  },
+): boolean {
   const origin = request.headers.get("origin");
   if (!origin) return false;
 
   try {
-    return new URL(origin).origin === new URL(request.url).origin;
+    const trustedOrigins = new Set([new URL(request.url).origin]);
+
+    // Cloud Run terminates TLS before forwarding requests into the Next.js
+    // container, so request.url can describe the internal container address.
+    // Only explicitly configured public service origins are permitted.
+    const configuredOrigins = [
+      environment.CLOUD_RUN_BASE_URL,
+      ...(environment.CLOUD_RUN_ALLOWED_ORIGINS?.split(",") ?? []),
+    ];
+
+    for (const configuredOrigin of configuredOrigins) {
+      if (!configuredOrigin?.trim()) continue;
+
+      try {
+        trustedOrigins.add(new URL(configuredOrigin.trim()).origin);
+      } catch {
+        // A malformed optional deployment setting must not broaden access.
+      }
+    }
+
+    return trustedOrigins.has(new URL(origin).origin);
   } catch {
     return false;
   }

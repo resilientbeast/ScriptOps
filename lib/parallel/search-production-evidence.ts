@@ -35,10 +35,27 @@ function evidenceId(url: string): string {
   return `evidence-${createHash("sha256").update(url).digest("hex").slice(0, 12)}`;
 }
 
+function sourceKey(urlValue: string): string {
+  const url = new URL(urlValue);
+  url.hash = "";
+  url.search = "";
+  url.hostname = url.hostname.toLowerCase();
+  url.pathname = url.pathname.replace(/\/+$/, "").toLowerCase() || "/";
+
+  // NM Film Office exposes some resource pages both below /whynewmexico and
+  // at the canonical root path. They are one source, not two citations.
+  if (url.hostname.endsWith("nmfilm.com")) {
+    url.pathname = url.pathname.replace(/^\/whynewmexico(?=\/filmmaker-resources\/)/, "");
+  }
+
+  return `${url.origin}${url.pathname}`;
+}
+
 const navigationNoise = /\b(skip to content|subscribe|newsletter|conference|where history gets made|sign up|follow us)\b/i;
 const productionEvidenceTerms = /\b(permit|production|road|child|minor|labor|safety|stunt|weather|rain|night|location|compliance|authorization)\b/i;
 
-function cleanExcerpt(excerpts: string[]): string | null {
+function cleanExcerpt(excerpts: string[], title: string): string | null {
+  const normalizedTitle = title.replace(/[^a-z0-9]+/gi, "").toLowerCase();
   const sentences = excerpts.flatMap((excerpt) => {
     const text = excerpt
       .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
@@ -53,7 +70,8 @@ function cleanExcerpt(excerpts: string[]): string | null {
     .find((sentence) =>
       sentence.length >= 40 &&
       !navigationNoise.test(sentence) &&
-      productionEvidenceTerms.test(sentence),
+      productionEvidenceTerms.test(sentence) &&
+      sentence.replace(/[^a-z0-9]+/gi, "").toLowerCase() !== normalizedTitle,
     );
 
   return usable?.slice(0, 700) ?? null;
@@ -67,12 +85,15 @@ export function normalizeProductionEvidence(
   const seen = new Set<string>();
   const records = response.results.flatMap((result, index) => {
     const url = canonicalUrl(result.url);
-    const excerpt = cleanExcerpt(result.excerpts);
-    if (!url || !excerpt || seen.has(url)) return [];
-    seen.add(url);
+    const title = result.title?.trim() || (url ? new URL(url).hostname : "");
+    const excerpt = cleanExcerpt(result.excerpts, title);
+    if (!url || !excerpt) return [];
+    const key = sourceKey(url);
+    if (seen.has(key)) return [];
+    seen.add(key);
     return [{
       id: evidenceId(url),
-      title: result.title?.trim() || new URL(url).hostname,
+      title,
       url,
       excerpt: excerpt.slice(0, 4_000),
       objective: input.objectives[index % input.objectives.length],

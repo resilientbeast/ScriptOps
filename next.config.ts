@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
     "@google/genai",
     "google-auth-library",
     "parallel-web",
+    "@react-pdf/renderer",
+    "pdf-parse",
+    "fast-xml-parser",
+    "@google-cloud/storage",
   ],
 };
 

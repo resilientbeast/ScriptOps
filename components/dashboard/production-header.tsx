@@ -1,4 +1,5 @@
 import { UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 import type { DashboardSnapshot } from "@/components/dashboard/types";
 
@@ -47,6 +48,9 @@ export function ProductionHeader({
               {resetPending ? "Resetting…" : "Reset demo"}
             </button>
           ) : null}
+          <Link className="live-projects" href="/projects">
+            Live projects
+          </Link>
           <div className="trust-signal">
             <span className="status-dot" aria-hidden="true" />
             <span>

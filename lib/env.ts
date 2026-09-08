@@ -20,6 +20,10 @@ const vertexAiFlag = z.preprocess(
   blankAsUndefined,
   z.enum(["true"]).default("true"),
 );
+const projectWorkspacesFlag = z.preprocess(
+  blankAsUndefined,
+  z.enum(["true", "false"]).default("false"),
+);
 
 export const serverEnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -36,6 +40,7 @@ export const serverEnvSchema = z.object({
   GEMINI_MODEL: optionalString,
   CLOUD_TASKS_LOCATION: optionalString,
   CLOUD_TASKS_QUEUE: z.string().min(1).default("scriptops-ripples"),
+  PROJECT_TASKS_QUEUE: z.string().min(1).default("scriptops-projects"),
   CLOUD_RUN_BASE_URL: optionalUrl,
   TASK_INVOKER_SERVICE_ACCOUNT: optionalEmail,
   TASK_OIDC_AUDIENCE: optionalUrl,
@@ -46,6 +51,9 @@ export const serverEnvSchema = z.object({
   GEMINI_STAGE_TIMEOUT_MS: optionalPositiveInteger,
   PARALLEL_TIMEOUT_MS: optionalPositiveInteger,
   EVIDENCE_CACHE_TTL_HOURS: optionalPositiveInteger.default(72),
+  PROJECT_WORKSPACES_ENABLED: projectWorkspacesFlag,
+  PROJECT_UPLOAD_BUCKET: optionalString,
+  PROJECT_UPLOAD_URL_TTL_SECONDS: optionalPositiveInteger.default(900),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
@@ -67,6 +75,12 @@ export const rippleTaskRuntimeEnvSchema = smokeRuntimeEnvSchema.omit({
 });
 
 export type RippleTaskRuntimeEnv = z.infer<typeof rippleTaskRuntimeEnvSchema>;
+
+export const projectTaskRuntimeEnvSchema = rippleTaskRuntimeEnvSchema.extend({
+  PROJECT_TASKS_QUEUE: z.string().min(1),
+});
+
+export type ProjectTaskRuntimeEnv = z.infer<typeof projectTaskRuntimeEnvSchema>;
 
 export const agentRuntimeEnvSchema = z.object({
   GOOGLE_CLOUD_PROJECT: z.string().min(1),
@@ -110,6 +124,12 @@ export function readRippleTaskRuntimeEnv(
   input: NodeJS.ProcessEnv = process.env,
 ): RippleTaskRuntimeEnv {
   return rippleTaskRuntimeEnvSchema.parse(input);
+}
+
+export function readProjectTaskRuntimeEnv(
+  input: NodeJS.ProcessEnv = process.env,
+): ProjectTaskRuntimeEnv {
+  return projectTaskRuntimeEnvSchema.parse(input);
 }
 
 export function readAgentRuntimeEnv(

@@ -1,0 +1,14 @@
+{
+  "case": "clock-workshop",
+  "stage": "breakdown-0",
+  "code": "PH09_PROVIDER_OR_VALIDATION_FAILURE",
+  "status": 429,
+  "hints": [],
+  "tokens": 0,
+  "estimatedCostCents": 0,
+  "reservedCents": 25,
+  "elapsedMs": 2144,
+  "model": "gemini-3.7-flash",
+  "version": "initial-v2",
+  "outputs": {}
+}

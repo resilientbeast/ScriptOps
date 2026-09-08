@@ -1,0 +1,586 @@
+{
+  "case": "community-rehearsal",
+  "model": "gemini-3.7-flash",
+  "version": "initial-v4",
+  "pricing": {
+    "inputUsdPerMillion": 0.75,
+    "outputUsdPerMillion": 3.75,
+    "searchUsdPerRequest": 0.015
+  },
+  "draft": {
+    "kind": "initial",
+    "basePlanVersion": 0,
+    "sceneRevisionId": "4a273a6a-a261-490b-8215-b7c8835fc772",
+    "planningInputsVersion": 1,
+    "inputHash": "95eb8530b58892ba68e3e579a2a410b5c91b2b4dd652aa16c776aa4d76857947",
+    "plan": {
+      "title": "community-rehearsal",
+      "logline": null,
+      "currency": "USD",
+      "scenes": [
+        {
+          "id": "scene-1",
+          "displayNumber": "1",
+          "heading": "1. INT. COMMUNITY HALL - DAY",
+          "setting": "interior",
+          "storyLocation": "COMMUNITY HALL",
+          "timeOfDay": "day",
+          "summary": "Mara and Jo, two adult dancers, rehearse a slow duet, carry chairs into the courtyard, and return to the hall.",
+          "sourceFactIds": [
+            "fdx:paragraph:1:heading:",
+            "fdx:paragraph:2:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:1:heading:",
+              "quote": "1. INT. COMMUNITY HALL - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:2:text:",
+              "quote": "MARA and JO, two adult dancers, rehearse a slow duet. They carry chairs into the courtyard, then return to the hall."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [
+              "mara",
+              "jo"
+            ],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        },
+        {
+          "id": "scene-2",
+          "displayNumber": "2",
+          "heading": "2. EXT. COURTYARD - DAY",
+          "setting": "exterior",
+          "storyLocation": "COURTYARD",
+          "timeOfDay": "day",
+          "summary": "Mara and Jo, two adult dancers, rehearse a slow duet, carry chairs into the courtyard, and return to the hall.",
+          "sourceFactIds": [
+            "fdx:paragraph:3:heading:",
+            "fdx:paragraph:4:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:3:heading:",
+              "quote": "2. EXT. COURTYARD - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:4:text:",
+              "quote": "MARA and JO, two adult dancers, rehearse a slow duet. They carry chairs into the courtyard, then return to the hall."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [
+              "mara",
+              "jo"
+            ],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        },
+        {
+          "id": "scene-3",
+          "displayNumber": "3",
+          "heading": "3. INT. HALL - DAY",
+          "setting": "interior",
+          "storyLocation": "COMMUNITY HALL",
+          "timeOfDay": "day",
+          "summary": "Mara and Jo, two adult dancers, rehearse a slow duet, carry chairs into the courtyard, and return to the hall.",
+          "sourceFactIds": [
+            "fdx:paragraph:5:heading:",
+            "fdx:paragraph:6:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:5:heading:",
+              "quote": "3. INT. HALL - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:6:text:",
+              "quote": "MARA and JO, two adult dancers, rehearse a slow duet. They carry chairs into the courtyard, then return to the hall."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [
+              "mara",
+              "jo"
+            ],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        }
+      ],
+      "schedule": {
+        "shootDays": 1,
+        "days": [
+          {
+            "id": "day-1",
+            "dayNumber": 1,
+            "label": "Day 1: Community Hall & Courtyard Rehearsal Duet Sequences",
+            "sceneIds": [
+              "scene-1",
+              "scene-2",
+              "scene-3"
+            ],
+            "dayNight": "day",
+            "estimatedHours": 8.5,
+            "setupRequirements": [
+              "Choreography rehearsal and floor safety prep for Mara and Jo",
+              "Lighting setup for interior community hall dance sequence",
+              "Exterior camera and lighting turnaround for courtyard chair-carrying sequence",
+              "Prop management for rehearsal chairs moving between hall and courtyard"
+            ],
+            "complianceNotes": [
+              "Verify valid general liability insurance documentation satisfies filming jurisdiction requirements prior to load-in"
+            ]
+          }
+        ]
+      },
+      "budget": {
+        "currency": "USD",
+        "low": 1750,
+        "high": 3750,
+        "lineItems": [
+          {
+            "id": "btl-crew-labor",
+            "category": "Crew Labor",
+            "quantity": 10,
+            "unit": "hours",
+            "low": 1050,
+            "high": 2250,
+            "basis": "Estimated core crew coverage for a 1-day 10-hour shoot window based on New Mexico crew median wage rates of approximately $35.22 to $36.75 per hour.",
+            "evidenceIds": [
+              "evidence-4e71d5495e9e9c0430b0",
+              "evidence-397acf8862cf606564a5",
+              "evidence-517ed5a0ba1412f5a4ef",
+              "evidence-950e589a28723a771fa8"
+            ]
+          },
+          {
+            "id": "cast-and-specialist-labor",
+            "category": "Cast & Choreography",
+            "quantity": 10,
+            "unit": "hours",
+            "low": 700,
+            "high": 1500,
+            "basis": "Estimated performance and dance rehearsal wages for two adult dancers across the 10-hour production day aligned with prevailing regional skilled labor benchmarks.",
+            "evidenceIds": [
+              "evidence-4e71d5495e9e9c0430b0",
+              "evidence-0aab20108da48eff3b86"
+            ]
+          }
+        ],
+        "costDrivers": [
+          {
+            "id": "nm-crew-wage-benchmarks",
+            "label": "Regional Crew Wage Rates",
+            "direction": "increase",
+            "reason": "Reported median hourly wages for full-time New Mexico film crew members range between $35.16 and $36.75, driving baseline hourly labor costs above general state median wages.",
+            "evidenceIds": [
+              "evidence-4e71d5495e9e9c0430b0",
+              "evidence-397acf8862cf606564a5",
+              "evidence-950e589a28723a771fa8"
+            ]
+          }
+        ],
+        "assumptions": [
+          "Budget model assumes a single 10-hour shoot day encompassing interior hall and exterior courtyard scenes.",
+          "Labor calculations utilize reported New Mexico film crew hourly medians as the primary benchmark for technical and specialist roles.",
+          "All line item sums exactly match the overall project low ($1,750) and high ($3,750) budget totals."
+        ]
+      },
+      "locations": [
+        {
+          "id": "santa-fe-community-center-courtyard",
+          "name": "Santa Fe Community Center & Courtyard Facility",
+          "locality": "Santa Fe",
+          "regionCode": "US-NM",
+          "fit": "Accommodates both the interior dance rehearsal space ('COMMUNITY HALL') and the adjacent exterior 'COURTYARD' within a single property footprint, minimizing company moves between Scenes 1, 2, and 3.",
+          "risks": [
+            "Filming permits must be applied for and approved through local jurisdiction prior to production; availability is not guaranteed.",
+            "Santa Fe municipal filming regulations require application fees ($25 small / $100 large) plus $10 per shoot day regardless of public or private property status.",
+            "General liability insurance meeting regional/municipal thresholds ($1,050,000 standard NM requirement / $1M minimum) must be secured and submitted prior to access confirmation.",
+            "Facility floor safety and spatial clearance for dance choreography require on-site technical scout verification."
+          ],
+          "evidenceIds": [
+            "evidence-9ce69794f3a667a56910",
+            "evidence-435c7c593c64085ad5d1",
+            "evidence-cfc5254728513ae2f7bd",
+            "evidence-07498ba85c1a1a5d8e3c",
+            "evidence-2773a283df0300b4fe97"
+          ]
+        },
+        {
+          "id": "las-cruces-multipurpose-hall-courtyard",
+          "name": "Las Cruces Multipurpose Hall and Attached Courtyard",
+          "locality": "Las Cruces",
+          "regionCode": "US-NM",
+          "fit": "Provides an interior rehearsal floor suitable for duet dance movements transitioning smoothly into an exterior courtyard setting to support the continuous narrative flow of carrying chairs outside and returning.",
+          "risks": [
+            "Permitting must be coordinated via Film Las Cruces; access and schedule availability require verification.",
+            "Nearby resident and business notification within a standard 200-foot radius is likely required 48 hours in advance of load-in.",
+            "Proof of standard general liability insurance coverage is required before permit issuance and property entry can occur.",
+            "Exterior daylight conditions and acoustic control between the hall and courtyard must be verified during scouting."
+          ],
+          "evidenceIds": [
+            "evidence-9ce69794f3a667a56910",
+            "evidence-f742ba558fe1c4d244a2",
+            "evidence-07498ba85c1a1a5d8e3c",
+            "evidence-a29ae1858a249abfdea6"
+          ]
+        }
+      ],
+      "casting": [
+        {
+          "id": "mara",
+          "roleName": "Mara",
+          "archetype": "Dancer",
+          "ageCategory": "adult",
+          "complianceNotes": [],
+          "specialistNeeds": [
+            "Choreography / Dance"
+          ]
+        },
+        {
+          "id": "jo",
+          "roleName": "Jo",
+          "archetype": "Dancer",
+          "ageCategory": "adult",
+          "complianceNotes": [],
+          "specialistNeeds": [
+            "Choreography / Dance"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "id": "evidence-9ce69794f3a667a56910",
+          "title": "Permit Information | New Mexico Film Office",
+          "url": "https://nmfilm.com/filmmaker-resources/permits-procedures/permit-information",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-4e71d5495e9e9c0430b0",
+          "title": "1 By the New Mexico Film Office ECONOMIC IMPACT OF THE NEW MEXICO FILM",
+          "url": "https://nmfilm.com/assets/uploads/NM-Film-2025-Report-Final-003.pdf",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-2f6f5d00d6b90be975f5",
+          "title": "Film Site In New Mexico | The Film Locations™",
+          "url": "https://thefilmlocations.com/usa/new-mexico",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-8309299350c8bdd6251c",
+          "title": "Other Land Use | New Mexico Film Office",
+          "url": "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/other-land-use",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-45c84caf770f886b7390",
+          "title": "Location Pro",
+          "url": "https://nmfilm.com/whynewmexico/locations/list-your-property-as-a-location",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-a5087a415fa058ed97e1",
+          "title": "New Mexico Film Site Permits | The Film Locations™",
+          "url": "https://thefilmlocations.com/usa/new-mexico/permits",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-a29ae1858a249abfdea6",
+          "title": "New Mexico Film Permits: 3 Important Permitting Facts - PPS",
+          "url": "https://grouppps.com/new-mexico-film-permits",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-07498ba85c1a1a5d8e3c",
+          "title": "Permit Tips & Contacts | New Mexico Film ...",
+          "url": "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/permit-tips-contacts",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-435c7c593c64085ad5d1",
+          "title": "Resources & Permitting - Santa Fe Film Office",
+          "url": "https://santafenm.film/filmmakers/resources-permitting/",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-397acf8862cf606564a5",
+          "title": "In Netflix’s ‘Ransom Canyon,’ local crew brings a Western landscape to life | Business | abqjournal.com",
+          "url": "https://www.abqjournal.com/business/in-netflixs-ransom-canyon-local-crew-brings-a-western-landscape-to-life/689096",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-517ed5a0ba1412f5a4ef",
+          "title": "New Mexico film tax credit costs over $20,000 per full-time job, study shows | New Mexico | thecentersquare.com",
+          "url": "https://www.thecentersquare.com/new_mexico/article_3197f374-a9b2-11ee-a9a8-a79534cf77cb.html",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-cfc5254728513ae2f7bd",
+          "title": "SFFO Film Permit Application",
+          "url": "https://sffilmpermits.com/",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-f742ba558fe1c4d244a2",
+          "title": "Permits - Film Las Cruces",
+          "url": "https://filmlascruces.com/permits/",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-0aab20108da48eff3b86",
+          "title": "New Mexico Film Production Tax Incentive Study Phase II Report October 2015",
+          "url": "https://documents.ncsl.org/wwwncsl/Fiscal/evaluationDB/New_Mexico_Film_Production_Tax_Incentive_Study_PhaseII_Report.pdf",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-2773a283df0300b4fe97",
+          "title": "New Mexico Film and Production Insurance",
+          "url": "https://movieinsure.com/new-mexico-film-production-insurance",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-bf442b567465c67ba50f",
+          "title": "Deep Dive into the New Mexico Film Office | Wrapbook",
+          "url": "https://www.wrapbook.com/blog/new-mexico-film-office",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        },
+        {
+          "id": "evidence-950e589a28723a771fa8",
+          "title": "Film Industry Continues to Generate Positive Economic Impact Statewide - New Mexico Business Portal",
+          "url": "https://www.biz.nm.gov/newsroom/film-industry-continues-to-generate-positive-economic-impact-statewide-100000765",
+          "retrievedAt": "2026-09-07T09:09:24.499Z"
+        }
+      ],
+      "assumptions": [
+        "Inferred that 'HALL' in Scene 3 refers to the same location as 'COMMUNITY HALL' from Scene 1 based on context."
+      ],
+      "warnings": [
+        "Planning estimates require producer validation; rates, access and availability are not confirmed."
+      ]
+    },
+    "generatedAt": "2026-09-07T09:10:05.866Z"
+  },
+  "research": [
+    {
+      "id": "evidence-9ce69794f3a667a56910",
+      "title": "Permit Information | New Mexico Film Office",
+      "url": "https://nmfilm.com/filmmaker-resources/permits-procedures/permit-information",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Permit Information Although comparatively few permits are necessary for filming in New Mexico, permits are required for production on federal, state-owned, and tribal properties and lands. Permits are also often required for production on city properties, especially historical sites, and public streets, as well as for special use of county roads and state highways. \\ Companies considering shooting on federal property must connect with the proper federal contact. Location Permits The New Mexico Film Office does not issue filming permits. Film permitting is generally handled by the city/town/county where you're filming. For permit questions specific to a location, please get in touch with the nearest film liaison. State-owned properties: Please contact the NMFO at 505-476-5600 or via email at info@nmfilm.com Railroad Right of Entry and Permitting Please get in touch with the NMDOT Rail Bureau NMDOT via email with any inquiries or questions about potential encroachment on railroad property. If you are within 100 feet of a railroad or between a fence/property marker and a railroad, you may be trespassing in the railroad right-of-way and can conflict with railroad operations which can create a serious safety hazard for the railroad and film production. This includes production at NM Rail Runner Express stations and Amtrak Stations. Filming activities may be interrupted if you fail to obtain written permission from the railroad owner to enter its property. In New Mexico, the three most prominent railroad property owners are BNSF Railway, Union Pacific Railroad, and the New Mexico Department of Transportation (NMDOT). The railroad will or may require the following: ... org/state-firemarshal/) Santa Fe Office: 800-244-6702 State Film Liaisons",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-4e71d5495e9e9c0430b0",
+      "title": "1 By the New Mexico Film Office ECONOMIC IMPACT OF THE NEW MEXICO FILM",
+      "url": "https://nmfilm.com/assets/uploads/NM-Film-2025-Report-Final-003.pdf",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Restricts the current 15-20% credit to 15%. The rule still remains to place to which a production cannot claim more than 15% of total taxable BTL wages under NRCE, so the maximum NRCE credit can only be 15% of 15% of a production’s total BTL wages. Legislation now caps the number of positions that qualify based on production budget in New Mexico by the production. The giveback of 2.5% of expenditures for the payment of wages has also been removed NRCE (New Mexico Film Partners) 15%-20% 15% Changes to NRCE for film partners include adjusting the “15% of total BTL wages” rule referenced above, to not apply to film partners. Instead allows for film partner productions with at least half of their BTL crew base as NM residents to claim 15% for nonresidents if meeting requirements including providing a 72-hour notice of job opportunities for resident hires. Tax Credit Fund Cap for Non Film Partners $110 Million ... A similar trend has also been observed in membership data provided by Teamsters 399, representing drivers, wranglers, and other crew member positions with approximate membership of 400 in New Mexico, a 17% increase from membership data provided in 2021. Wages This industry continues to provide high paying wages as can be seen in the chart above. In FY25 the median hourly wage for full time New Mexico crew members was $35.22 per hour. As a comparison the median wage in NM for all industry was $20.20 per hour, and the New Mexico minimum wage as of 2022 is $12 per hour. $29.25 $29.06 $35.16 $36.75 $35.22 FY 21 FY 22 FY 23 FY 24 FY 25 Estimated Median Hourly Wage of NM Crew $20.20 MEDIAN WAGE IN NM (ALL INDUSTRIES) $12.00 NM MINIMUM WAGE nmfilm.com 24 FILM TOURISM",
+      "topics": [
+        "costs"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-2f6f5d00d6b90be975f5",
+      "title": "Film Site In New Mexico | The Film Locations™",
+      "url": "https://thefilmlocations.com/usa/new-mexico",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "New Mexico has 393 film site permits on public land listed in The Film Locations™. Of these permits, 1.02% are authorized while 97.46% are now closed.",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-8309299350c8bdd6251c",
+      "title": "Other Land Use | New Mexico Film Office",
+      "url": "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/other-land-use",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Forest Service National Parks and Monuments New Mexico State Parks & Monuments State Land Office White Sands National Park Permit Bureau of Land Management & Forest Service The BLM, a Division of the U.S. Department of Interior, manages over 13 million acres in New Mexico for recreational, range, timber, mineral, oil, gas, watershed, fish and wildlife, scientific and cultural values. BLM Field Offices may issue “minimum impact” permits for production purposes. Permits may be issued at the Field Office after it has been determined that the filming activity will have a minimum impact on the public land. For more specific information contact the New Mexico Bureau of Land Management Office nearest to your location. \\ Companies considering shooting on federal property must connect with the proper federal contact immediately, as requirements and lead times may change. BLM Field Offices Phone Number Fax Number --- --- --- Rio Puerco Field Office (Albuquerque) 505-761-8700 505-761-8911 Carlsbad Field Office 575-234-5972 575-234-5927 Farmington Field Office 505-564-7600 575-564-7608 Las Cruces Field Office 575-525-4300 575-525-4412 Roswell Field Office 575-627-0272 575-627-0276 Socorro Field Office 575-835-0412 575-835-0223 Taos Field Office 575-758-8851 575-758-1620",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-45c84caf770f886b7390",
+      "title": "Location Pro",
+      "url": "https://nmfilm.com/whynewmexico/locations/list-your-property-as-a-location",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Browse film locations, find crew and vendors in the production directory, apply for film permits, and manage productions — the film office platform.",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-a5087a415fa058ed97e1",
+      "title": "New Mexico Film Site Permits | The Film Locations™",
+      "url": "https://thefilmlocations.com/usa/new-mexico/permits",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Filter 393 film site permits by decade, disposition, and type in New Mexico.",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-a29ae1858a249abfdea6",
+      "title": "New Mexico Film Permits: 3 Important Permitting Facts - PPS",
+      "url": "https://grouppps.com/new-mexico-film-permits",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Requirements New Mexico Film Permits Request Permit Consultation New Mexico Film Permit Requirements What are the permit requirements to film in New Mexico\\ \\ Filming in New Mexico requires securing the appropriate New Mexico film permits to ensure that production activities comply with state and local laws. These permits are typically required for filming on public property, streets, or any other public spaces, and they help to regulate access to filming locations. Filmmakers must provide detailed information about the project, including location, dates, times, and the nature of the filming activities. It’s essential to apply for New Mexico film permits in advance to avoid any last-minute complications and to ensure that all necessary permits are in place before production begins. Filmmakers must work closely with local authorities to meet these requirements and avoid fines or delays. The permit process also ensures that filmmakers maintain the safety of their crew, cast, and the public during filming, which is crucial when filming in public spaces or urban environments. Filmmakers should also be prepared for additional permitting requirements if they plan to film in certain special locations in New Mexico, such as national parks, monuments, or other protected areas. These areas often have strict environmental regulations, and additional New Mexico film permits may be required to film in these locations. Productions that impact the environment or use natural features for their scenes must ensure they meet all the required criteria to protect New Mexico’s natural resources. Permits for these areas are typically more detailed and require advanced planning to ensure compliance.",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-07498ba85c1a1a5d8e3c",
+      "title": "Permit Tips & Contacts | New Mexico Film ...",
+      "url": "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/permit-tips-contacts",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Permit Tips & Contacts New Mexico Film ... The standard insurance requirement for shooting in New Mexico is a $1,050,000 comprehensive general liability insurance policy, (which is the limit of the New",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-435c7c593c64085ad5d1",
+      "title": "Resources & Permitting - Santa Fe Film Office",
+      "url": "https://santafenm.film/filmmakers/resources-permitting/",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "MENU Santa Fe Film Office \\ 1 Best Places to Live & Work as a Movie Maker in North America \\-MovieMaker Magazine 2023, 2024, 2025 & 2026 Resources & Permitting Home » Filmmakers » Resources & Permitting Easy online permitting system Film Permits are required regardless of Public or Private Property A one time $25 application fee for small productions and a one time $100 fee for large productions $10 per day of shooting Film Permit Application CREW BASE New Mexico boasts the largest, skilled resident crew base between coasts STUDIOS & SETS TALENT Large diverse talent pool with hundreds of SAG-AFTRA members. Casting Directors, Background, and P.A.’s LOCATIONS From seven standing western sets to cutting edge contemporary, snow-capped mountains to desert landscapes. SFFO Locations Directory NMFO Locations Directory PROXIMITY TO L.A. 1 hour 50 minute flight or an easy 12-hour drive WEATHER Over 300 days of sunshine, four beautiful seasons and a temperate climate Unions and Guilds IATSE Local 480 – Moving Picture Technicians, Artists, and Allied Crafts [www.local480.com](https://www.",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-397acf8862cf606564a5",
+      "title": "In Netflix’s ‘Ransom Canyon,’ local crew brings a Western landscape to life | Business | abqjournal.com",
+      "url": "https://www.abqjournal.com/business/in-netflixs-ransom-canyon-local-crew-brings-a-western-landscape-to-life/689096",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "April 2024 through March 2025, according to an economic impact report from the New Mexico Film Office. The median hourly wage for full-time New Mexico crew members was $35.22,",
+      "topics": [
+        "costs"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-517ed5a0ba1412f5a4ef",
+      "title": "New Mexico film tax credit costs over $20,000 per full-time job, study shows | New Mexico | thecentersquare.com",
+      "url": "https://www.thecentersquare.com/new_mexico/article_3197f374-a9b2-11ee-a9a8-a79534cf77cb.html",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "In FY2023, the median hourly wage for full-time New Mexico crew members was $35.51 per hour , whereas the median wage in NM for all industries was $19.19 per hour, and the New Mexico minimum wage as of 2022 is $12 per hour.",
+      "topics": [
+        "costs"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-cfc5254728513ae2f7bd",
+      "title": "SFFO Film Permit Application",
+      "url": "https://sffilmpermits.com/",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "\\ 1 Best Places to Live & Work as a Movie Maker in North America –Movie Maker Magazine 2023, 2024, 2025 Santa Fe Film Permit Application Santa Fe Film Permit Application Location manager shooting your next film in New Mexico? Back to Top Andrew Griego Film Coordinator 505-955-6233 505-637-1496 (c) acgriego@santafenm.gov Jennifer LaBar-Tapia Commissioner 505-955-6216 jllabartapia@santafenm.gov Santa Fe Film Office 201 West Marcy Street Santa Fe, NM 87501 website design by studio x, inc.",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-f742ba558fe1c4d244a2",
+      "title": "Permits - Film Las Cruces",
+      "url": "https://filmlascruces.com/permits/",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Film Las Cruces is contracted with the City of Las Cruces, Doña Ana County and the City of Anthony to provide permitting assistance to film and digital media projects. We are happy to walk you through and point you in the right direction for all other permitting agencies throughout southern New Mexico; including White Sands National Park, Town of Mesilla, Bureau of Land Management, Spaceport America, Hatch, New Mexico Department of Transportation, and others. What kinds of filming activities do not require a permit? News and gathering of news related stories. Other types of documentaries not requiring the use of actors, models, sets, or props. Still not sure if your production requires a filming permit? Give us a call: 575-805-3456 What is a low impact/b-roll permit? A low impact/b-roll filming permit may be issued for documentary-style footage with a maximum of 8 total cast and crew on-site at any one time. When should I notify neighboring residents and businesses regarding filming activity in the area? All permitted filming locations are likely to require the surrounding businesses and neighbors to be notified of your filming activity 48 hours in advance of load in. The standard radius for notification letter distribution is 200 feet from the filming location, parking, and basecamp. Film Las Cruces will notify your production with notification requirements during the process of your application. Submit a Permit Application Privacy Policy Terms & Conditions Film Las Cruces Manage Cookie Consent To provide the best experiences, we use technologies like cookies to store and/or access device information. Consenting to these technologies will allow us to process data such as browsing behavior or unique IDs on this site.",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-0aab20108da48eff3b86",
+      "title": "New Mexico Film Production Tax Incentive Study Phase II Report October 2015",
+      "url": "https://documents.ncsl.org/wwwncsl/Fiscal/evaluationDB/New_Mexico_Film_Production_Tax_Incentive_Study_PhaseII_Report.pdf",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "This finding was based on a comparison between mean hourly wage rates available from the Bureau of Labor Statistics and contracted wages as applies to a subset of film and television industry workers. 1 Please note that the statewide average hourly wage rate is similar to the average hourly wage rates in Albuquerque and Santa Fe, where the majority of film and television production takes place. According to the Bureau of Labor Statistics, the hourly wage rate across all industries and occupations in Albuquerque and Santa Fe was $20.92 and $20.43 respectively. Bureau of Labor Statistics, Occupational Employment Statistics (OES) survey, mean hourly wage as of May 2014). 3 New Mexico Film Production Tax Incentive Study Phase 2 Report  It is estimated that the majority of positions held by New Mexico residents in the film and television industry included employee benefits, such as health coverage and pension plans, funded primarily through employer contributions.  It is estimated that the majority of positions held by New Mexico residents in the film and television industry included employee benefits, such as health coverage and pension plans, funded primarily through employer contributions.  Most direct positions are relatively skilled positions that require post-secondary education, work experience or on-the-job training. 49 Please note that the statewide average hourly wage rate is similar to the average hourly wage rates in Albuquerque and Santa Fe, where the majority of film and television production takes place. According to the Bureau of Labor Statistics, the hourly wage rate across all industries and occupations in Albuquerque and Santa Fe was $20.92 and $20.43 respectively. Bureau of Labor Statistics, Occupational Employment Statistics (OES) survey, mean hourly wage as of May 2014). New Mexico Film Production Tax Incentive Study Phase 2 Report 35",
+      "topics": [
+        "costs"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-2773a283df0300b4fe97",
+      "title": "New Mexico Film and Production Insurance",
+      "url": "https://movieinsure.com/new-mexico-film-production-insurance",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "New Mexico Film and Production Insurance Essential Coverages for New Mexico Productions · General Liability Insurance ($1M minimum) — Required for permits and public lands · Equipment / Inland Marine —",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-bf442b567465c67ba50f",
+      "title": "Deep Dive into the New Mexico Film Office | Wrapbook",
+      "url": "https://www.wrapbook.com/blog/new-mexico-film-office",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Find scale rates for major film, TV, and commercial unions in seconds. Check out the latest scale rates and fringes for Spring 2027. See the Rate Finder Link to announcement October 1, 2025 · Financing & Incentives Production Management Collaboration & Culture Industry Insights Financing & Incentives Press Center Deep Dive into the New Mexico Film Office Loring Weisenberger Free ebook Download Now Free Template Download Now About the author Loring Weisenberger Loring is a Los Angeles-based writer, director, and creative producer. Film New Mexico offers support across the full spectrum of the state’s production industry. From film financing for production companies to basic training for crew members , the State of New Mexico Film Office acts as a conduit between filmmakers and whatever resources they require. Below, we’ll outline four key areas in which Film New Mexico can assist your next shoot. Facilitating permits and permissions While Film New Mexico does not issue permits directly, they are the go-to source for information on the permitting process. Their team can provide clarity on pressing questions and connect you directly to the exact local experts that your production needs. The New Mexico Film Office can also help productions navigate other administrative and compliance challenges.",
+      "topics": [
+        "permits"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    },
+    {
+      "id": "evidence-950e589a28723a771fa8",
+      "title": "Film Industry Continues to Generate Positive Economic Impact Statewide - New Mexico Business Portal",
+      "url": "https://www.biz.nm.gov/newsroom/film-industry-continues-to-generate-positive-economic-impact-statewide-100000765",
+      "retrievedAt": "2026-09-07T09:09:24.499Z",
+      "excerpt": "Paying Job Creation: The median hourly wage for full-time New Mexico crew members hit a record high of $36.75 in FY24, up $1.24 from FY23. The median wage in NM for all industries was $20 ... Communities: After doubling the film tax credit uplift",
+      "topics": [
+        "costs"
+      ],
+      "regionCode": "US-NM",
+      "policyVersion": "project-research-v3"
+    }
+  ],
+  "tokens": 36368,
+  "estimatedCostCents": 5.1192,
+  "elapsedMs": 68763,
+  "humanQualityReview": "pending"
+}

@@ -1,0 +1,118 @@
+{
+  "case": "community-rehearsal",
+  "stage": "normalize",
+  "code": "PH09_PROVIDER_OR_VALIDATION_FAILURE",
+  "status": 429,
+  "hints": [],
+  "tokens": 2475,
+  "estimatedCostCents": 0.360225,
+  "reservedCents": 50,
+  "elapsedMs": 6460,
+  "model": "gemini-3.7-flash",
+  "version": "initial-v2",
+  "outputs": {
+    "breakdown-0": {
+      "scenes": [
+        {
+          "id": "scene-1",
+          "displayNumber": "1",
+          "heading": "1. INT. COMMUNITY HALL - DAY",
+          "setting": "interior",
+          "storyLocation": "COMMUNITY HALL",
+          "timeOfDay": "day",
+          "summary": "Mara and Jo rehearse a slow duet inside the community hall before carrying chairs out to the courtyard and returning. Inferred: Prop chairs and dance rehearsal space requirements.",
+          "sourceFactIds": [
+            "fdx:paragraph:1:heading:",
+            "fdx:paragraph:2:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:1:heading:",
+              "quote": "1. INT. COMMUNITY HALL - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:2:text:",
+              "quote": "MARA and JO, two adult dancers, rehearse a slow duet. They carry chairs into the courtyard, then return to the hall."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [
+              "mara",
+              "jo"
+            ],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        },
+        {
+          "id": "scene-2",
+          "displayNumber": "2",
+          "heading": "2. EXT. COURTYARD - DAY",
+          "setting": "exterior",
+          "storyLocation": "COURTYARD",
+          "timeOfDay": "day",
+          "summary": "Mara and Jo rehearse a slow duet and carry chairs into the courtyard before returning to the hall. Inferred: Prop chairs and outdoor staging space.",
+          "sourceFactIds": [
+            "fdx:paragraph:3:heading:",
+            "fdx:paragraph:4:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:3:heading:",
+              "quote": "2. EXT. COURTYARD - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:4:text:",
+              "quote": "MARA and JO, two adult dancers, rehearse a slow duet. They carry chairs into the courtyard, then return to the hall."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [
+              "mara",
+              "jo"
+            ],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        },
+        {
+          "id": "scene-3",
+          "displayNumber": "3",
+          "heading": "3. INT. HALL - DAY",
+          "setting": "interior",
+          "storyLocation": "HALL",
+          "timeOfDay": "day",
+          "summary": "Mara and Jo rehearse a slow duet, carry chairs to the courtyard, and return to the hall. Inferred: Prop chairs and dance rehearsal space requirements.",
+          "sourceFactIds": [
+            "fdx:paragraph:5:heading:",
+            "fdx:paragraph:6:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:5:heading:",
+              "quote": "3. INT. HALL - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:6:text:",
+              "quote": "MARA and JO, two adult dancers, rehearse a slow duet. They carry chairs into the courtyard, then return to the hall."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [
+              "mara",
+              "jo"
+            ],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        }
+      ]
+    }
+  }
+}

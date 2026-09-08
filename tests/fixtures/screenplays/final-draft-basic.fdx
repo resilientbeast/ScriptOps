@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FinalDraft DocumentType="Script">
+  <Content>
+    <Paragraph Type="Action"><Text>FADE IN:</Text></Paragraph>
+    <Paragraph Type="Scene Heading"><Text>12A. INT. CABIN - NIGHT</Text></Paragraph>
+    <Paragraph Type="Action"><Text>Rain knocks against the windows.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>MARA</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>Keep the lantern dry.</Text></Paragraph>
+    <Paragraph Type="Scene Heading"><Text>EXT. CABIN PORCH - DAWN</Text></Paragraph>
+    <Paragraph Type="Action"><Text>Mara steps outside.</Text></Paragraph>
+  </Content>
+</FinalDraft>

@@ -121,6 +121,41 @@ describe("live evidence normalization", () => {
     expect(evidence.records[0]?.title).toBe("Permit guidance");
   });
 
+  it("drops title-only excerpts and duplicate NM Film Office path variants", () => {
+    const evidence = normalizeProductionEvidence({
+      search_id: "distinct",
+      session_id: "session-distinct",
+      results: [
+        {
+          title: "Labor Law | New Mexico Film Office",
+          url: "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/labor-law",
+          excerpts: ["Employers must obtain a child performer pre-authorization certificate before employment begins."],
+        },
+        {
+          title: "Labor Law | New Mexico Film Office",
+          url: "https://nmfilm.com/filmmaker-resources/permits-procedures/labor-law",
+          excerpts: ["Children in New Mexico may be employed by production companies under special guidelines."],
+        },
+        {
+          title: "Labor Law - New Mexico Department of Workforce Solutions",
+          url: "https://www.dws.nm.gov/Portals/0/DM/LaborRelations/Child_Labor_Law.pdf",
+          excerpts: ["Labor Law - New Mexico Department of Workforce Solutions"],
+        },
+        {
+          title: "Permit information",
+          url: "https://nmfilm.com/filmmaker-resources/permits-procedures/permit-information",
+          excerpts: ["Permits are required for production on federal, state-owned, and tribal properties and lands."],
+        },
+      ],
+    }, input, "2026-09-05T01:00:00.000Z");
+
+    expect(evidence.records).toHaveLength(2);
+    expect(evidence.records.map((record) => record.title)).toEqual([
+      "Labor Law | New Mexico Film Office",
+      "Permit information",
+    ]);
+  });
+
   it("rejects an empty usable result set at the schema gate", () => {
     expect(() => normalizeProductionEvidence({ search_id: "empty", session_id: "session-empty", results: [] }, input, "2026-09-05T01:00:00.000Z")).toThrow();
   });

@@ -3,7 +3,7 @@ import type { RefinementCtx } from "zod";
 export const MAX_PERSISTED_DOCUMENT_BYTES = 700 * 1024;
 
 const prohibitedClaimPatterns = [
-  /\bguarantee(?:d|s)?\b/i,
+  /(?<!not )\bguarantee(?:d|s)?\b/i,
   /\bfully compliant\b/i,
   /\bpermit(?:s)? (?:is |are |has been |have been )?(?:approved|secured|cleared)\b/i,
   /\b(?:access|availability|safety|costs?) (?:is|are|has been|have been) confirmed\b/i,

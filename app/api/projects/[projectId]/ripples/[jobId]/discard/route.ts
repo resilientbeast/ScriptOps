@@ -1,0 +1,22 @@
+import { requireProjectActor } from "@/lib/auth/require-project-actor";
+import { getAdminFirestore } from "@/lib/firestore/admin";
+import { FirestoreProjectRippleRepository } from "@/lib/planning/project-ripple-firestore";
+import { isSameOrigin } from "@/lib/ripple/contracts";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+export async function POST(request: Request, { params }: { params: Promise<{ projectId: string; jobId: string }> }) {
+  const actor = await requireProjectActor();
+  if (actor instanceof Response) return actor;
+  if (!isSameOrigin(request)) return Response.json({ error: "ORIGIN_INVALID" }, { status: 403 });
+  const { projectId, jobId } = await params;
+  if (![projectId, jobId].every(id => /^[a-z0-9][a-z0-9-]{0,99}$/.test(id))) return Response.json({ error: "RIPPLE_APPROVAL_NOT_FOUND" }, { status: 404 });
+  try {
+    const job = await new FirestoreProjectRippleRepository(getAdminFirestore(process.env.GOOGLE_CLOUD_PROJECT!)).discard(projectId, jobId, actor.userId);
+    return Response.json({ job }, { headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    const code = error instanceof Error && /^RIPPLE_[A-Z_]+$/.test(error.message) ? error.message : "RIPPLE_APPROVAL_UNAVAILABLE";
+    return Response.json({ error: code }, { status: code === "RIPPLE_APPROVAL_UNAVAILABLE" ? 503 : 409 });
+  }
+}

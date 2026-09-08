@@ -1,0 +1,8 @@
+import { type NextRequest } from "next/server";
+import { requireProjectActor } from "@/lib/auth/require-project-actor";
+import { getProjectStateRepository } from "@/lib/projects/project-state-admin";
+import { createUploadReservationSchema } from "@/lib/uploads/contracts";
+import { getUploadRepository } from "@/lib/uploads/upload-admin";
+import { isSameOrigin } from "@/lib/ripple/contracts";
+export const dynamic = "force-dynamic"; export const runtime = "nodejs";
+export async function POST(request: NextRequest, { params }: { params: Promise<{ projectId: string }> }) { const actor = await requireProjectActor(); if (actor instanceof Response) return actor; if (!isSameOrigin(request)) return Response.json({ error: { code: "ORIGIN_INVALID" } }, { status: 403 }); const projectId = (await params).projectId; const project = await getProjectStateRepository().getOwnedProject(actor.userId, projectId); if (!project) return Response.json({ error: { code: "PROJECT_NOT_FOUND" } }, { status: 404 }); if (project.lifecycle !== "active" || project.approvedPlanVersion > 0) return Response.json({ error: { code: "UPLOAD_NOT_AVAILABLE" } }, { status: 409 }); const body = createUploadReservationSchema.safeParse(await request.json().catch(() => null)); if (!body.success) return Response.json({ error: { code: "UPLOAD_REQUEST_INVALID" } }, { status: 400 }); try { return Response.json(await getUploadRepository().reserve(actor.userId, projectId, body.data), { status: 201, headers: { "Cache-Control": "no-store" } }); } catch (error) { console.error("Project upload reservation failed", { projectId, error: error instanceof Error ? error.message : "unknown" }); return Response.json({ error: { code: "UPLOAD_STORAGE_UNAVAILABLE" } }, { status: 503 }); } }

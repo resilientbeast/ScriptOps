@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://scriptops-5sinbwmqzq-uc.a.run.app", "https://scriptops-916693774226.us-central1.run.app"],
+    "method": ["PUT"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 900
+  }
+]

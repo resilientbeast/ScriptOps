@@ -1,0 +1,392 @@
+{
+  "case": "empty-desert",
+  "stage": "assemble",
+  "code": "PH09_PROVIDER_OR_VALIDATION_FAILURE",
+  "status": null,
+  "hints": [],
+  "issues": [
+    {
+      "path": [],
+      "code": "custom",
+      "message": "Production plans may not claim guaranteed permits, access, compliance, safety, availability, or costs"
+    }
+  ],
+  "tokens": 19514,
+  "estimatedCostCents": 3.47295,
+  "reservedCents": 200,
+  "elapsedMs": 72486,
+  "model": "gemini-3.7-flash",
+  "version": "initial-v3",
+  "outputs": {
+    "breakdown-0": {
+      "scenes": [
+        {
+          "id": "scene-1",
+          "displayNumber": "1",
+          "heading": "1. EXT. DESERT - DAY",
+          "setting": "exterior",
+          "storyLocation": "DESERT",
+          "timeOfDay": "day",
+          "summary": "Wind blows sand across an empty desert expanse. No people or vehicles are present.",
+          "sourceFactIds": [
+            "fdx:paragraph:1:heading:",
+            "fdx:paragraph:2:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:1:heading:",
+              "quote": "1. EXT. DESERT - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:2:text:",
+              "quote": "Wind moves sand across empty ground. No people or vehicles appear."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        },
+        {
+          "id": "scene-2",
+          "displayNumber": "2",
+          "heading": "2. EXT. RIDGE - DAY",
+          "setting": "exterior",
+          "storyLocation": "RIDGE",
+          "timeOfDay": "day",
+          "summary": "Wind shifts sand across a barren ridge. No people or vehicles are present.",
+          "sourceFactIds": [
+            "fdx:paragraph:3:heading:",
+            "fdx:paragraph:4:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:3:heading:",
+              "quote": "2. EXT. RIDGE - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:4:text:",
+              "quote": "Wind moves sand across empty ground. No people or vehicles appear."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        }
+      ]
+    },
+    "normalize": {
+      "scenes": [
+        {
+          "id": "scene-1",
+          "displayNumber": "1",
+          "heading": "1. EXT. DESERT - DAY",
+          "setting": "exterior",
+          "storyLocation": "DESERT",
+          "timeOfDay": "day",
+          "summary": "Wind blows sand across an empty desert expanse. No people or vehicles are present.",
+          "sourceFactIds": [
+            "fdx:paragraph:1:heading:",
+            "fdx:paragraph:2:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:1:heading:",
+              "quote": "1. EXT. DESERT - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:2:text:",
+              "quote": "Wind moves sand across empty ground. No people or vehicles appear."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        },
+        {
+          "id": "scene-2",
+          "displayNumber": "2",
+          "heading": "2. EXT. RIDGE - DAY",
+          "setting": "exterior",
+          "storyLocation": "RIDGE",
+          "timeOfDay": "day",
+          "summary": "Wind shifts sand across a barren ridge. No people or vehicles are present.",
+          "sourceFactIds": [
+            "fdx:paragraph:3:heading:",
+            "fdx:paragraph:4:text:"
+          ],
+          "sourceFacts": [
+            {
+              "sourceId": "fdx:paragraph:3:heading:",
+              "quote": "2. EXT. RIDGE - DAY"
+            },
+            {
+              "sourceId": "fdx:paragraph:4:text:",
+              "quote": "Wind moves sand across empty ground. No people or vehicles appear."
+            }
+          ],
+          "requirements": {
+            "castRoleIds": [],
+            "vehicles": [],
+            "stunts": [],
+            "minors": [],
+            "specialEquipment": []
+          }
+        }
+      ],
+      "roles": [],
+      "locations": [
+        "DESERT",
+        "RIDGE"
+      ],
+      "assumptions": [
+        "No cast roles, vehicles, stunts, or special equipment are required based on source text indicating no people or vehicles are present.",
+        "Story locations DESERT and RIDGE are distinct exterior settings as described in scene headings."
+      ]
+    },
+    "research": [
+      {
+        "id": "evidence-9ce69794f3a667a56910",
+        "title": "Permit Information | New Mexico Film Office",
+        "url": "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/permit-information",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "The New Mexico Film Office does not issue filming permits . Film permitting is generally handled by the city/town/county where you& x27;re filming. For permit questions specific to a location, please get in touch with the nearest film liaison.",
+        "topics": [
+          "permits"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      },
+      {
+        "id": "evidence-0aab20108da48eff3b86",
+        "title": "New Mexico Film Production Tax Incentive Study Phase II Report October 2015",
+        "url": "https://documents.ncsl.org/wwwncsl/Fiscal/evaluationDB/New_Mexico_Film_Production_Tax_Incentive_Study_PhaseII_Report.pdf",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "Occupational Employment Statistics (OES) survey of the US Bureau of Labor Statistics, as of May 2014. Hourly wage data for the film and television industry in New Mexico is based on Area Standard Agreements · pertaining to that position (as applicable). Area Standard Agreements are union agreements that are · negotiated on behalf of the industry and include negotiated wage rates that apply to industry positions in ... The data provided by payroll companies did not include wages, therefore a complete comparison of New",
+        "topics": [
+          "costs"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      },
+      {
+        "id": "evidence-45c84caf770f886b7390",
+        "title": "Location Pro",
+        "url": "https://nmfilm.com/whynewmexico/locations/list-your-property-as-a-location",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "Browse film locations, find crew and vendors in the production directory, apply for film permits, and manage productions — the film office platform.",
+        "topics": [
+          "permits"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      },
+      {
+        "id": "evidence-a5087a415fa058ed97e1",
+        "title": "New Mexico Film Site Permits | The Film Locations™",
+        "url": "https://thefilmlocations.com/usa/new-mexico/permits",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "Filter 393 film site permits by decade, disposition, and type in New Mexico.",
+        "topics": [
+          "permits"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      },
+      {
+        "id": "evidence-a29ae1858a249abfdea6",
+        "title": "New Mexico Film Permits: 3 Important Permitting Facts - PPS",
+        "url": "https://grouppps.com/new-mexico-film-permits",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "New Mexico Film Permits: 3 Important Permitting Facts - PPS General liability insurance is typically required, covering bodily injury, property damage, and accidents that may occur during the production process.",
+        "topics": [
+          "permits"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      },
+      {
+        "id": "evidence-2f6f5d00d6b90be975f5",
+        "title": "Film Site In New Mexico | The Film Locations™",
+        "url": "https://thefilmlocations.com/usa/new-mexico",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "New Mexico has 393 film site permits on public land listed in The Film Locations™. Of these permits, 1.02% are authorized while 97.46% are now closed.",
+        "topics": [
+          "permits"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      },
+      {
+        "id": "evidence-07498ba85c1a1a5d8e3c",
+        "title": "Permit Tips & Contacts | New Mexico Film ...",
+        "url": "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/permit-tips-contacts",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "Permit Tips & Contacts New Mexico Film ... The standard insurance requirement for shooting in New Mexico is a $1,050,000 comprehensive general liability insurance policy, (which is the limit of the New",
+        "topics": [
+          "permits"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      },
+      {
+        "id": "evidence-435c7c593c64085ad5d1",
+        "title": "Resources & Permitting - Santa Fe Film Office",
+        "url": "https://santafenm.film/filmmakers/resources-permitting/",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "Easy online permitting system Film Permits are required regardless of Public or Private Property A one time $25 application fee for small productions and a one time $100 fee for large productions $10 per day of shooting Film Permit Application CREW BASE New Mexico boasts the largest, skilled",
+        "topics": [
+          "permits"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      },
+      {
+        "id": "evidence-8309299350c8bdd6251c",
+        "title": "Other Land Use | New Mexico Film Office",
+        "url": "https://nmfilm.com/whynewmexico/filmmaker-resources/permits-procedures/other-land-use",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "BLM Field Offices may issue “minimum impact” permits for production purposes. Permits may be issued at the Field Office after it has been determined that the filming activity will have a minimum impact on the public land . For more specific information contact the New Mexico Bureau of Land",
+        "topics": [
+          "permits"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      },
+      {
+        "id": "evidence-2773a283df0300b4fe97",
+        "title": "New Mexico Film and Production Insurance",
+        "url": "https://movieinsure.com/new-mexico-film-production-insurance",
+        "retrievedAt": "2026-09-07T09:01:25.782Z",
+        "excerpt": "Contact the New Mexico Film Office early for location scouting and support Secure insurance promptly to support permitting on public and tribal lands Plan for extreme temperature swings, dust, and high-altitude conditions Leverage local crew and vendors for authenticity and cost savings Respect Native American lands and cultural traditions Ready to Film in New Mexico? From the otherworldly dunes of White Sands to the vibrant streets of Albuquerque, the artistic soul of Santa Fe, and the majestic mountains of the north, New Mexico offers filmmakers unparalleled beauty, cultural depth, and production value. Let MovieInsure help protect your New Mexico production. Call 888-959-0772 today or request a quote online. We’re here to support your storytelling with reliable, affordable insurance tailored to the Land of Enchantment. Let’s create something magical in New Mexico! NEW MEXICO Tax Credits As-Of: June 2026 Tax Credit: 25-40% refundable (NO per-project caps) New Mexico offers 25% base refundable tax credit with bonuses for TV series/pilots, certified production facilities, local union crew, and rural filming—bringing effective rates to 40% in optimal scenarios. The refundable structure is critical: productions receive cash back regardless of in-state tax liability. New Mexico’s annual cap increased from $120M to $130M for fiscal 2025, with further increases planned to reach $160M by 2028. Per-project and per-person wage caps were removed, enabling large productions to access unlimited value. The state maintains exceptional production infrastructure: Netflix Studios Albuquerque, major facilities in Santa Fe and Las Cruces, established crew bases. Locations range from desert landscapes to high-altitude terrain to historic cities.",
+        "topics": [
+          "permits"
+        ],
+        "regionCode": "US-NM",
+        "policyVersion": "project-research-v2"
+      }
+    ],
+    "schedule": {
+      "shootDays": 1,
+      "days": [
+        {
+          "id": "day-1",
+          "dayNumber": 1,
+          "label": "Day 1 - Desert and Ridge Exterior Landscapes",
+          "sceneIds": [
+            "scene-1",
+            "scene-2"
+          ],
+          "dayNight": "day",
+          "estimatedHours": 8,
+          "setupRequirements": [
+            "Basecamp establishment for exterior desert environment",
+            "Company move/reposition between Desert floor and Ridge locations",
+            "Camera setup for wide landscape coverage and dust protection protocols"
+          ],
+          "complianceNotes": []
+        }
+      ]
+    },
+    "budget": {
+      "currency": "USD",
+      "low": 1800,
+      "high": 4500,
+      "lineItems": [
+        {
+          "id": "crew-labor",
+          "category": "Labor - Camera and Production Crew",
+          "quantity": 1,
+          "unit": "day",
+          "low": 1500,
+          "high": 3500,
+          "basis": "Estimated day rates for a lean exterior landscape camera unit and safety support in New Mexico operating under standard labor agreements.",
+          "evidenceIds": [
+            "evidence-0aab20108da48eff3b86"
+          ]
+        },
+        {
+          "id": "fringe-payroll",
+          "category": "Payroll Taxes and Benefits",
+          "quantity": 1,
+          "unit": "allowance",
+          "low": 300,
+          "high": 1000,
+          "basis": "Standard payroll burdens, fringes, and taxes associated with local production labor.",
+          "evidenceIds": [
+            "evidence-0aab20108da48eff3b86"
+          ]
+        }
+      ],
+      "costDrivers": [
+        {
+          "id": "crew-labor-rates",
+          "label": "Labor Rates and Area Standards",
+          "direction": "increase",
+          "reason": "Crew costs scale according to local union and area standard agreement wage floors in New Mexico.",
+          "evidenceIds": [
+            "evidence-0aab20108da48eff3b86"
+          ]
+        }
+      ],
+      "assumptions": [
+        "Production requires a minimal non-cast landscape crew operating for a single 1-day shoot.",
+        "Costs reflect direct labor and fringe expenses adhering to regional wage standards without unverified speculative fees."
+      ]
+    },
+    "locations": {
+      "locations": [
+        {
+          "id": "blm-public-lands-desert",
+          "name": "BLM Managed Desert Public Lands",
+          "locality": "Albuquerque / Central New Mexico Area",
+          "regionCode": "US-NM",
+          "fit": "Provides wide, unpopulated desert expanses matching the script requirements for Scene 1 (EXT. DESERT - DAY) and Scene 2 (EXT. RIDGE - DAY) where only sand, wind, and barren terrain are present without vehicles or people.",
+          "risks": [
+            "Filming requires Bureau of Land Management (BLM) review and approval; permits depend on field office evaluation of minimum impact.",
+            "Environmental challenges including wind, blowing dust, and rapid temperature swings characteristic of New Mexico desert terrain.",
+            "Filming permits are not issued by the state film office directly and require local coordination and minimum standard liability insurance coverage ($1,050,000 policy limit)."
+          ],
+          "evidenceIds": [
+            "evidence-9ce69794f3a667a56910",
+            "evidence-8309299350c8bdd6251c",
+            "evidence-07498ba85c1a1a5d8e3c",
+            "evidence-2773a283df0300b4fe97"
+          ]
+        },
+        {
+          "id": "santa-fe-county-exterior-ridge",
+          "name": "Santa Fe County Exterior Open Terrain & Ridges",
+          "locality": "Santa Fe County",
+          "regionCode": "US-NM",
+          "fit": "Offers barren ridgelines and elevated arid terrain suitable for Scene 2 (EXT. RIDGE - DAY) and surrounding desert plains for Scene 1 with convenient proximity to regional production infrastructure.",
+          "risks": [
+            "Requires municipal/county film permit application with per-day shooting fees and application processing fees regardless of whether property is public or private.",
+            "Exposure to high-altitude environmental conditions, blowing sand/dust, and weather variability.",
+            "Permit authorization and property access are subject to application review and are not guaranteed in advance."
+          ],
+          "evidenceIds": [
+            "evidence-435c7c593c64085ad5d1",
+            "evidence-9ce69794f3a667a56910",
+            "evidence-2773a283df0300b4fe97",
+            "evidence-a29ae1858a249abfdea6"
+          ]
+        }
+      ]
+    },
+    "casting": {
+      "casting": []
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "case": "empty-desert",
+  "stage": "breakdown-0",
+  "code": "PH09_PROVIDER_OR_VALIDATION_FAILURE",
+  "status": 400,
+  "hints": [
+    "INVALID_ARGUMENT"
+  ],
+  "tokens": 0,
+  "estimatedCostCents": 0,
+  "reservedCents": 25,
+  "elapsedMs": 3003,
+  "model": "gemini-3.7-flash",
+  "outputs": {}
+}

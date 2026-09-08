@@ -325,7 +325,21 @@ export function DashboardShell({
           />
         ) : null}
 
-        {decisionNotice ? <p className="decision-notice" role="status">{decisionNotice}</p> : null}
+        {snapshot.hasApprovedRipple ? (
+          <section className="approved-plan-actions" aria-label="Approved production plan handoff">
+            <div>
+              <p className="overline">Approved production handoff</p>
+              <p role="status">
+                {decisionNotice ?? `Plan v${snapshot.planVersion} is approved and ready for production handoff.`}
+              </p>
+            </div>
+            <a className="download-production-bible" href="/api/export/production-bible.pdf" download>
+              Download Production Bible <span>(PDF)</span>
+            </a>
+          </section>
+        ) : decisionNotice ? (
+          <p className="decision-notice" role="status">{decisionNotice}</p>
+        ) : null}
 
         {snapshot.dailyCapReached ? (
           <p className="cap-notice" role="status">Today’s shared analysis allowance is reached. You can still review evidence, approve a ready proposal, reset this browser demo, and export an approved plan.</p>
