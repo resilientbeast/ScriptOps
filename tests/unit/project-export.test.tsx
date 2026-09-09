@@ -15,7 +15,7 @@ function approvedPlans(sceneCount = 6) {
   const fixture = planningFixture(sceneCount, true);
   const initialDraft = createInitialPlanDraft({ projectTitle: fixture.snapshot.projectTitle, revision: fixture.snapshot.revision, planningInputs: fixture.snapshot.planningInputs, plan: fixture.plan });
   const v1 = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-export", scriptVersionId: "script-1", draft: initialDraft }));
-  const rippleDraft = createProjectRippleDraft({ jobId: "ripple-export", planningInputs: fixture.snapshot.planningInputs, base: v1, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the opening scene to a covered weather day and revise the crew cost.", output: { schedule: fixture.plan.schedule, budget: fixture.plan.budget, locations: fixture.plan.locations, casting: fixture.plan.casting, assumptions: ["Covered day access needs producer confirmation."], warnings: ["Production estimates need producer review."] } });
+  const rippleDraft = createProjectRippleDraft({ jobId: "ripple-export", planningInputs: fixture.snapshot.planningInputs, base: v1, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the opening scene to a covered weather day and revise the crew cost.", evidence: fixture.evidence, output: { schedule: fixture.plan.schedule, budget: fixture.plan.budget, locations: fixture.plan.locations, casting: fixture.plan.casting, assumptions: ["Covered day access needs producer confirmation."], warnings: ["Production estimates need producer review."] } });
   const v2 = createApprovedRipplePlan(createProjectRippleManifest({ jobId: "ripple-export", scriptVersionId: "script-1", planningInputsVersion: 1, draft: rippleDraft }), 2);
   return { fixture, v1, v2 };
 }

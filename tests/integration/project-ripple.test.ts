@@ -41,7 +41,7 @@ async function readyProposal(context: Awaited<ReturnType<typeof setup>>, request
   const claimed = await context.repository.claim(context.id, job.id);
   expect(claimed).not.toBeNull();
   const basePlan = claimed!.snapshot.base.manifest.draft.plan;
-  const draft = createProjectRippleDraft({ jobId: job.id, planningInputs: claimed!.snapshot.planningInputs, base: claimed!.snapshot.base, sceneId: claimed!.snapshot.sceneId, requestText: claimed!.snapshot.requestText, output: { schedule: basePlan.schedule, budget: basePlan.budget, locations: basePlan.locations, casting: basePlan.casting, assumptions: ["Covered-day availability needs producer verification."], warnings: ["This proposal is an estimate pending producer review."] } });
+  const draft = createProjectRippleDraft({ jobId: job.id, planningInputs: claimed!.snapshot.planningInputs, base: claimed!.snapshot.base, sceneId: claimed!.snapshot.sceneId, requestText: claimed!.snapshot.requestText, evidence: context.fixture.evidence, output: { schedule: basePlan.schedule, budget: basePlan.budget, locations: basePlan.locations, casting: basePlan.casting, assumptions: ["Covered-day availability needs producer verification."], warnings: ["This proposal is an estimate pending producer review."] } });
   await context.repository.finish(context.id, job.id, claimed!.leaseToken!, draft, null);
   return job;
 }

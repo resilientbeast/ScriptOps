@@ -7,6 +7,13 @@ import { initialProductionPlanSchema } from "@/lib/planning/schemas";
 
 const hash = (value: unknown) => createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const identifierSchema = z.string().regex(/^[a-z0-9][a-z0-9-]{0,99}$/);
+const evidenceProvenanceSchema = z.object({
+  mode: z.literal("fresh-parallel-search"),
+  searchedAt: z.iso.datetime({ offset: true }),
+  basePlanVersion: z.number().int().positive(),
+  baselineRecordCount: z.number().int().nonnegative(),
+  freshRecordCount: z.number().int().positive(),
+}).strict();
 
 export const projectRippleDraftSchema = z.object({
   jobId: identifierSchema,
@@ -16,6 +23,7 @@ export const projectRippleDraftSchema = z.object({
   sceneId: identifierSchema,
   requestText: z.string().trim().min(10).max(2_000),
   plan: initialProductionPlanSchema,
+  evidenceProvenance: evidenceProvenanceSchema.optional(),
   generatedAt: z.iso.datetime({ offset: true }),
 }).strict();
 

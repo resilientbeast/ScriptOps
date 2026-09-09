@@ -77,7 +77,7 @@ export async function renderProjectProductionBible(project: Pick<Project, "id" |
 
       {ripple ? <View style={styles.section}>
         <Text style={styles.sectionTitle}>Evidence provenance</Text>
-        <Text style={styles.note}>This revision retains evidence approved with Plan v{ripple.basePlanVersion}. It does not include a new evidence search for this change.</Text>
+        <Text style={styles.note}>{ripple.evidenceProvenance ? `Fresh Parallel research completed for this revision: ${ripple.evidenceProvenance.freshRecordCount} sources retrieved ${new Date(ripple.evidenceProvenance.searchedAt).toLocaleString()}.` : `This revision retains evidence approved with Plan v${ripple.basePlanVersion}. It does not include a new evidence search for this change.`}</Text>
       </View> : null}
 
       <View style={styles.section}>
@@ -101,7 +101,7 @@ export async function renderProjectProductionBible(project: Pick<Project, "id" |
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{ripple ? `Evidence retained from Plan v${ripple.basePlanVersion}` : "Evidence"}</Text>
+        <Text style={styles.sectionTitle}>{ripple ? ripple.evidenceProvenance ? "Fresh evidence for this revision" : `Evidence retained from Plan v${ripple.basePlanVersion}` : "Evidence"}</Text>
         {plan.evidence.map(record => <View style={styles.citation} wrap={false} key={record.id}><Text style={styles.cardTitle}>{record.title}</Text><Link src={record.url} style={styles.link}>{compactUrl(record.url)}</Link><Text style={styles.mono}>Retrieved {new Date(record.retrievedAt).toLocaleString()} · {record.id}</Text></View>)}
       </View>
 

@@ -3,6 +3,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { z } from "zod";
 
 import { initialBudgetSchema, locationCandidateSchema, shootingScheduleSchema, castingBriefSchema, type PlanningInputs } from "@/lib/planning/schemas";
+import { planningEvidenceSchema, type PlanningEvidence } from "@/lib/planning/planning-evidence";
 import type { ProjectPlan } from "@/lib/planning/initial-plan-approval";
 import { projectRippleDraftSchema, type ProjectRippleDraft } from "@/lib/planning/project-ripple-manifest";
 import { projectJobSchema, type ProjectJob } from "@/lib/jobs/schemas";
@@ -57,18 +58,23 @@ export function createProjectRippleJob(input: { projectId: string; writeEpoch: n
   });
 }
 
-export function createProjectRippleDraft(input: { jobId: string; planningInputs: PlanningInputs; base: ProjectPlan; sceneId: string; requestText: string; output: unknown; now?: string }): ProjectRippleDraft {
+export function createProjectRippleDraft(input: { jobId: string; planningInputs: PlanningInputs; base: ProjectPlan; sceneId: string; requestText: string; evidence: PlanningEvidence; output: unknown; now?: string }): ProjectRippleDraft {
   const output = projectRippleOutputSchema.parse(input.output);
   const basePlan = planFromRecord(input.base);
+  const evidence = planningEvidenceSchema.parse(input.evidence);
   if (!basePlan.scenes.some(scene => scene.id === input.sceneId)) throw new Error("RIPPLE_SCENE_NOT_FOUND");
   if (basePlan.currency !== input.planningInputs.currency || output.budget.currency !== basePlan.currency || output.locations.some(location => location.regionCode !== input.planningInputs.regionCode)) throw new Error("RIPPLE_REGION_OR_CURRENCY_MISMATCH");
   if ((input.planningInputs.budgetCeiling !== null && output.budget.high > input.planningInputs.budgetCeiling) || (input.planningInputs.targetHoursPerDay !== null && output.schedule.days.some(day => day.estimatedHours > input.planningInputs.targetHoursPerDay!)) || (input.planningInputs.shootWindow && output.schedule.shootDays > Math.floor((Date.parse(input.planningInputs.shootWindow.end) - Date.parse(input.planningInputs.shootWindow.start)) / 86_400_000) + 1)) throw new Error("RIPPLE_CONSTRAINT_INFEASIBLE");
+  const evidenceIds = new Set(evidence.map(record => record.id));
+  const cited = [...output.budget.lineItems, ...output.budget.costDrivers, ...output.locations];
+  if (cited.some(item => !item.evidenceIds.length || item.evidenceIds.some(id => !evidenceIds.has(id)))) throw new Error("RIPPLE_CITATION_INVALID");
   const plan = {
     ...basePlan,
     schedule: output.schedule,
     budget: output.budget,
     locations: output.locations,
     casting: output.casting,
+    evidence: evidence.map(({ id, title, url, retrievedAt }) => ({ id, title, url, retrievedAt })),
     assumptions: [...new Set([...basePlan.assumptions, ...output.assumptions])],
     warnings: [...new Set([...basePlan.warnings, ...output.warnings])],
   };
@@ -80,6 +86,7 @@ export function createProjectRippleDraft(input: { jobId: string; planningInputs:
     sceneId: input.sceneId,
     requestText: input.requestText.trim(),
     plan,
+    evidenceProvenance: { mode: "fresh-parallel-search", searchedAt: input.now ?? new Date().toISOString(), basePlanVersion: input.base.planVersion, baselineRecordCount: basePlan.evidence.length, freshRecordCount: evidence.length },
     generatedAt: input.now ?? new Date().toISOString(),
   });
 }

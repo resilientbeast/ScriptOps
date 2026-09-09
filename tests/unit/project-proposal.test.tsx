@@ -19,9 +19,12 @@ describe("project proposal contract", () => {
       assumptions: ["Weather cover requires producer confirmation."],
       warnings: ["Costs are estimates pending producer review."],
     };
-    const proposal = createProjectRippleDraft({ jobId: "ripple-fixture", planningInputs: fixture.snapshot.planningInputs, base, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the scene to a covered weather day and revise crew needs.", output });
+    const freshEvidence = fixture.evidence.map(record => ({ ...record, retrievedAt: "2026-09-09T00:00:00.000Z" }));
+    const proposal = createProjectRippleDraft({ jobId: "ripple-fixture", planningInputs: fixture.snapshot.planningInputs, base, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the scene to a covered weather day and revise crew needs.", evidence: freshEvidence, output });
     expect(proposal.plan.scenes).toEqual(fixture.plan.scenes);
-    expect(proposal.plan.evidence).toEqual(fixture.plan.evidence);
+    expect(proposal.plan.evidence).toEqual(freshEvidence.map(({ id, title, url, retrievedAt }) => ({ id, title, url, retrievedAt })));
+    expect(proposal.plan.evidence).not.toEqual(fixture.plan.evidence);
+    expect(proposal.evidenceProvenance).toMatchObject({ mode: "fresh-parallel-search", basePlanVersion: 1, baselineRecordCount: fixture.plan.evidence.length, freshRecordCount: freshEvidence.length });
     expect(rippleDelta(fixture.plan, proposal.plan)).toMatchObject({ budgetLow: 500, budgetHigh: 1000, shootDays: 0, currency: "USD" });
   });
 
@@ -29,6 +32,6 @@ describe("project proposal contract", () => {
     const fixture = planningFixture(1, true);
     const draft = createInitialPlanDraft({ projectTitle: fixture.snapshot.projectTitle, revision: fixture.snapshot.revision, planningInputs: fixture.snapshot.planningInputs, plan: fixture.plan });
     const base = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-fixture", scriptVersionId: "script-1", draft }));
-    expect(() => createProjectRippleDraft({ jobId: "ripple-fixture", planningInputs: fixture.snapshot.planningInputs, base, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the scene to a covered weather day and revise crew needs.", output: { schedule: fixture.plan.schedule, budget: { ...fixture.plan.budget, currency: "EUR" }, locations: fixture.plan.locations, casting: fixture.plan.casting, assumptions: [], warnings: [] } })).toThrow("RIPPLE_REGION_OR_CURRENCY_MISMATCH");
+    expect(() => createProjectRippleDraft({ jobId: "ripple-fixture", planningInputs: fixture.snapshot.planningInputs, base, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the scene to a covered weather day and revise crew needs.", evidence: fixture.evidence, output: { schedule: fixture.plan.schedule, budget: { ...fixture.plan.budget, currency: "EUR" }, locations: fixture.plan.locations, casting: fixture.plan.casting, assumptions: [], warnings: [] } })).toThrow("RIPPLE_REGION_OR_CURRENCY_MISMATCH");
   });
 });
