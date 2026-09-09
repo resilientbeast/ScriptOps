@@ -22,7 +22,7 @@ export function planningFixture(count = 1, people = false) {
   const providers: PlanningProviders = {
     async generate(stage) {
       calls.push(stage);
-      const output = stage.startsWith("breakdown-") ? { scenes: scenes.slice(Number(stage.slice(10)) * 5, (Number(stage.slice(10)) + 1) * 5) } : stage === "normalize" ? { scenes, roles: casting, locations: [people ? "Workshop" : "Desert"], assumptions: [] } : stage === "schedule" ? plan.schedule : stage === "budget" ? plan.budget : stage === "locations" ? { locations: plan.locations } : { casting };
+      const output = stage.startsWith("breakdown-") ? { scenes: scenes.slice(Number(stage.slice(10)) * 5, (Number(stage.slice(10)) + 1) * 5) } : stage === "normalize" ? { scenes: scenes.map(scene => ({ id: scene.id, storyLocation: scene.storyLocation, castRoleIds: scene.requirements.castRoleIds })), roles: casting.map(({ id, roleName }) => ({ id, roleName })), locations: [people ? "Workshop" : "Desert"], assumptions: [] } : stage === "schedule" ? plan.schedule : stage === "budget" ? plan.budget : stage === "locations" ? { locations: plan.locations } : { casting };
       return { output: structuredClone(output), usage: { inputTokens: 100, outputTokens: 100, elapsedMs: 1 } };
     },
     async research() { calls.push("research"); return { output: evidence, usage: { inputTokens: 0, outputTokens: 0, elapsedMs: 1 } }; },

@@ -6,10 +6,12 @@ import { MAX_OUTPUT_TOKENS, MAX_PROMPT_BYTES, type PlanningProviders } from "@/l
 import { normalizePlanningEvidence, planningResearchRequest } from "@/lib/planning/planning-evidence";
 import { MAX_BILLED_INPUT_TOKENS, MAX_RESEARCH_REQUESTS_PER_ATTEMPT, validatePlanningPricing, type PlanningPricing } from "@/lib/planning/limits";
 
-export function createPlanningProviders(config: { project: string; location: string; model: string; parallelApiKey: string; pricing: PlanningPricing }): PlanningProviders {
+export function createPlanningProviders(config: { project: string; location: string; model: string; parallelApiKey: string; pricing: PlanningPricing; geminiTimeoutMs?: number; parallelTimeoutMs?: number }): PlanningProviders {
   const pricing = validatePlanningPricing(config.pricing);
-  const gemini = new GoogleGenAI({ vertexai: true, project: config.project, location: config.location, httpOptions: { retryOptions: { attempts: 1 }, timeout: 45_000 } });
-  const parallel = new Parallel({ apiKey: config.parallelApiKey, timeout: 35_000, maxRetries: 0, logLevel: "off" });
+  const geminiTimeoutMs = config.geminiTimeoutMs ?? 45_000;
+  const parallelTimeoutMs = config.parallelTimeoutMs ?? 30_000;
+  const gemini = new GoogleGenAI({ vertexai: true, project: config.project, location: config.location, httpOptions: { retryOptions: { attempts: 1 }, timeout: geminiTimeoutMs } });
+  const parallel = new Parallel({ apiKey: config.parallelApiKey, timeout: parallelTimeoutMs, maxRetries: 0, logLevel: "off" });
   return {
     async generate(stage, data, schema) {
       const contents = JSON.stringify(data);
@@ -21,7 +23,7 @@ export function createPlanningProviders(config: { project: string; location: str
       const started = Date.now();
       const response = await gemini.models.generateContent({ model: config.model, contents, config: {
         systemInstruction,
-        abortSignal: AbortSignal.timeout(45_000), maxOutputTokens: MAX_OUTPUT_TOKENS,
+        abortSignal: AbortSignal.timeout(geminiTimeoutMs), maxOutputTokens: MAX_OUTPUT_TOKENS,
         ...(config.model.startsWith("gemini-3") ? { thinkingConfig: { thinkingLevel: ThinkingLevel.LOW } } : { temperature: 0.1, thinkingConfig: { thinkingBudget: 1024 } }),
         responseMimeType: "application/json", responseJsonSchema,
       } });

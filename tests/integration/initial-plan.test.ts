@@ -21,6 +21,26 @@ describe("initial generation from accepted source", () => {
     expect(calls.filter(call => call.startsWith("breakdown-"))).toHaveLength(Math.ceil(count / 5));
     expect(draft.basePlanVersion).toBe(0);
   });
+  it("keeps 32-scene normalization and specialist prompts compact", async () => {
+    const f = planningFixture(32, true);
+    const outputs: StageOutputs = {};
+    const payloads = new Map<string, unknown>();
+    const providers: PlanningProviders = {
+      ...f.providers,
+      generate: async (stage, data, schema) => {
+        payloads.set(stage, data);
+        return f.providers.generate(stage, data, schema);
+      },
+    };
+    for (const stage of planningStages(f.snapshot)) outputs[stage] = (await runPlanningStage(f.snapshot, stage, outputs, f.blocks, providers, planningNow)).output;
+    const normalizationPayload = JSON.stringify(payloads.get("normalize"));
+    expect(normalizationPayload).not.toContain("sourceFacts");
+    expect(normalizationPayload).not.toContain("sourceFactIds");
+    expect(Buffer.byteLength(normalizationPayload)).toBeLessThan(40_000);
+    expect(JSON.stringify(payloads.get("schedule"))).not.toContain("sourceFacts");
+    expect(JSON.stringify(payloads.get("casting"))).not.toContain("sourceFacts");
+    expect(initialPlanDraftSchema.parse(outputs.assemble).plan.scenes).toHaveLength(32);
+  });
   it("retains prior stage outputs after a provider failure and resumes only the failed stage", async () => {
     const f = planningFixture(6, true);
     const outputs: StageOutputs = {};

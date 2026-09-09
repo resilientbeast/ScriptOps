@@ -28,7 +28,7 @@ export async function executeProjectRipple(firestore: Firestore, taskEnv: Projec
   if (!state) return new Response(null, { status: 204 });
   try {
     const env = readAgentRuntimeEnv();
-    const providers = createPlanningProviders({ project: env.GOOGLE_CLOUD_PROJECT, location: env.GOOGLE_CLOUD_LOCATION, model: state.snapshot.model, parallelApiKey: env.PARALLEL_API_KEY, pricing: state.snapshot.pricing });
+    const providers = createPlanningProviders({ project: env.GOOGLE_CLOUD_PROJECT, location: env.GOOGLE_CLOUD_LOCATION, model: state.snapshot.model, parallelApiKey: env.PARALLEL_API_KEY, pricing: state.snapshot.pricing, geminiTimeoutMs: env.GEMINI_STAGE_TIMEOUT_MS, parallelTimeoutMs: env.PARALLEL_TIMEOUT_MS });
     const basePlan = planFromRecord(state.snapshot.base);
     const research = await providers.research(state.snapshot.planningInputs, requiredResearchTopics(basePlan.scenes));
     const evidence = validatePlanningEvidence(research.output, requiredResearchTopics(basePlan.scenes));

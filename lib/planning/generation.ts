@@ -22,7 +22,14 @@ export type PlanningProviders = {
 };
 export type StageOutputs = Record<string, unknown>;
 const breakdownSchema = z.object({ scenes: z.array(planningSceneSchema).min(1).max(BATCH_SIZE) }).strict();
-const normalizationSchema = z.object({ scenes: z.array(planningSceneSchema).min(1).max(200), roles: z.array(castingBriefSchema).max(100), locations: z.array(z.string().min(1).max(300)).max(200), assumptions: z.array(z.string().min(1).max(1000)).max(30) }).strict();
+const normalizedRoleSchema = castingBriefSchema.pick({ id: true, roleName: true });
+const normalizationSceneSchema = z.object({
+  id: z.string().regex(/^[a-z0-9][a-z0-9-]{0,99}$/),
+  storyLocation: z.string().trim().min(1).max(300).nullable(),
+  castRoleIds: z.array(z.string().regex(/^[a-z0-9][a-z0-9-]{0,99}$/)).max(30),
+}).strict();
+const normalizationResponseSchema = z.object({ scenes: z.array(normalizationSceneSchema).min(1).max(200), roles: z.array(normalizedRoleSchema).max(100), locations: z.array(z.string().min(1).max(300)).max(200), assumptions: z.array(z.string().min(1).max(1000)).max(30) }).strict();
+const normalizationSchema = z.object({ scenes: z.array(planningSceneSchema).min(1).max(200), roles: z.array(normalizedRoleSchema).max(100), locations: z.array(z.string().min(1).max(300)).max(200), assumptions: z.array(z.string().min(1).max(1000)).max(30) }).strict();
 const locationsSchema = z.object({ locations: z.array(locationCandidateSchema).min(1).max(50) }).strict();
 const castingSchema = z.object({ casting: z.array(castingBriefSchema).max(100) }).strict();
 
@@ -106,6 +113,47 @@ function validateSourceFacts(scenes: z.infer<typeof planningSceneSchema>[], sour
   });
 }
 
+function normalizationInput(scenes: z.infer<typeof planningSceneSchema>[]) {
+  return scenes.map(scene => ({
+    id: scene.id,
+    heading: scene.heading,
+    storyLocation: scene.storyLocation,
+    summary: scene.summary,
+    castRoleIds: scene.requirements.castRoleIds,
+    minors: scene.requirements.minors,
+    stunts: scene.requirements.stunts,
+  }));
+}
+
+function reconstructNormalizedScenes(
+  scenes: z.infer<typeof planningSceneSchema>[],
+  mappings: z.infer<typeof normalizationResponseSchema>["scenes"],
+) {
+  if (mappings.length !== scenes.length || new Set(mappings.map(scene => scene.id)).size !== scenes.length) throw new Error("INITIAL_PLAN_SCENE_COVERAGE");
+  const byId = new Map(mappings.map(scene => [scene.id, scene]));
+  return scenes.map(scene => {
+    const mapping = byId.get(scene.id);
+    if (!mapping) throw new Error("INITIAL_PLAN_SCENE_COVERAGE");
+    return {
+      ...scene,
+      storyLocation: mapping.storyLocation,
+      requirements: { ...scene.requirements, castRoleIds: mapping.castRoleIds },
+    };
+  });
+}
+
+function scenePlanningProjection(scene: z.infer<typeof planningSceneSchema>) {
+  return {
+    id: scene.id,
+    heading: scene.heading,
+    setting: scene.setting,
+    storyLocation: scene.storyLocation,
+    timeOfDay: scene.timeOfDay,
+    summary: scene.summary,
+    requirements: scene.requirements,
+  };
+}
+
 export async function runPlanningStage(snapshot: PlanningSnapshot, stage: string, outputs: StageOutputs, blocks: SourceBlock[], providers: PlanningProviders, now = new Date()): Promise<StageResult> {
   if (snapshot.version !== PLANNING_VERSION) throw new Error("INITIAL_PLAN_VERSION_MISMATCH");
   const stages = planningStages(snapshot);
@@ -128,9 +176,9 @@ export async function runPlanningStage(snapshot: PlanningSnapshot, stage: string
     validateSourceFacts(breakdown.scenes, sources);
   } else if (stage === "normalize") {
     const scenes = stages.filter(key => key.startsWith("breakdown-")).flatMap(key => breakdownSchema.parse(outputs[key]).scenes);
-    result = await generate({ scenes, instruction: "Normalize shared cast role IDs and story location names across all scenes without losing any requirements or source facts. Preserve sourceFacts verbatim. Return shared role briefs (empty when appropriate), normalized scenes and distinct story locations. Explicitly state inferred assumptions. Do not state age, dialogue, casting, legal, labor, or availability facts unless an exact sourceFact supports it." }, normalizationSchema);
-    const parsed = normalizationSchema.parse(result.output);
-    const normalized = { ...parsed, scenes: restoreSourceFactIds(parsed.scenes, snapshot.revision.scenes) };
+    result = await generate({ scenes: normalizationInput(scenes), instruction: "Unify cast role IDs and story location names across every scene. Return every scene ID exactly once with only its normalized storyLocation and castRoleIds. Return shared role identities, distinct story locations, and explicit assumptions. Preserve empty casting for unpeopled scenes. Do not invent characters, ages, dialogue, legal, labor, access, or availability facts." }, normalizationResponseSchema);
+    const parsed = normalizationResponseSchema.parse(result.output);
+    const normalized = { ...parsed, scenes: reconstructNormalizedScenes(scenes, parsed.scenes) };
     result.output = normalized;
     validateScenes(normalized.scenes, snapshot.revision.scenes);
     normalized.scenes.forEach((scene, i) => {
@@ -150,16 +198,17 @@ export async function runPlanningStage(snapshot: PlanningSnapshot, stage: string
       result.output = validatePlanningEvidence(result.output, topics, now);
     } else {
       const evidence = validatePlanningEvidence(outputs.research, topics, now);
-      const common = { planningInputs: snapshot.planningInputs, ...normalized, evidence };
-      if (stage === "schedule") result = await generate({ ...common, instruction: "Allocate every scene exactly once. Honor hard budget, shoot-window and daily-hour constraints. Include realistic setup, travel and safety time. Sequential day numbers start at one. complianceNotes must be empty unless they state a specific verification step. Do not use the words standard, mandatory, legal, or regulatory, and never present planning targets as labor, meal, rest, or turnaround rules." }, shootingScheduleSchema);
+      const scenes = normalized.scenes.map(scenePlanningProjection);
+      const common = { planningInputs: snapshot.planningInputs, roles: normalized.roles, storyLocations: normalized.locations, assumptions: normalized.assumptions };
+      if (stage === "schedule") result = await generate({ ...common, scenes, instruction: "Allocate every scene exactly once. Honor hard budget, shoot-window and daily-hour constraints. Include realistic setup, travel and safety time. Sequential day numbers start at one. complianceNotes must be empty unless they state a specific verification step. Do not use the words standard, mandatory, legal, or regulatory, and never present planning targets as labor, meal, rest, or turnaround rules." }, shootingScheduleSchema);
       else if (stage === "budget") {
         const costEvidence = evidence.filter(record => record.topics.includes("costs") && /(^|\.)(nmfilm\.com|nm\.gov)$/i.test(new URL(record.url).hostname));
         if (!costEvidence.length) throw new Error("INITIAL_PLAN_COST_EVIDENCE_UNAVAILABLE");
-        result = await generate({ ...common, evidence: costEvidence, schedule: outputs.schedule, instruction: "Estimate a nonzero whole-project budget band consistent with scheduled days and requirements, in the requested currency. Return lineItems with quantities, units, a basis, evidence IDs, and low/high values whose sums exactly equal the budget low/high totals. Cite only supplied official cost-topic evidence IDs on every line item and driver. Explain uncertainty in assumptions/drivers. Do not invent quotes or silently reduce scope to meet a ceiling." }, initialBudgetSchema);
+        result = await generate({ ...common, scenes, evidence: costEvidence, schedule: outputs.schedule, instruction: "Estimate a nonzero whole-project budget band consistent with scheduled days and requirements, in the requested currency. Return lineItems with quantities, units, a basis, evidence IDs, and low/high values whose sums exactly equal the budget low/high totals. Cover crew, cast when roles exist, equipment, locations and permits, transport, catering, insurance and administration, post-production, and contingency. Cite only supplied official cost-topic evidence IDs on every line item and driver. Explain uncertainty in assumptions/drivers. Do not invent quotes or silently reduce scope to meet a ceiling." }, initialBudgetSchema);
       }
-      else if (stage === "locations") result = await generate({ ...common, schedule: outputs.schedule, instruction: "Recommend relevant shooting location candidates or location types within the production region for the shared story locations. Cite supplied evidence for each, disclose access/availability risks. No generic placeholder or claims of confirmed permissions, access, availability, safety, or costs. State that access needs verification instead of saying availability is guaranteed. Do not use standard, mandatory, legal, regulatory, approved, or secured in risks." }, locationsSchema);
+      else if (stage === "locations") result = await generate({ ...common, scenes: scenes.map(scene => ({ id: scene.id, heading: scene.heading, setting: scene.setting, storyLocation: scene.storyLocation, timeOfDay: scene.timeOfDay, requirements: { vehicles: scene.requirements.vehicles, stunts: scene.requirements.stunts, minors: scene.requirements.minors, specialEquipment: scene.requirements.specialEquipment } })), evidence, schedule: outputs.schedule, instruction: "Recommend relevant shooting location candidates or location types within the production region for the shared story locations. Cite supplied evidence for each, disclose access/availability risks. Only use a specific facility name when that exact name appears in supplied evidence; otherwise use a descriptive location type. State that access needs verification instead of saying availability is guaranteed. Do not claim confirmed permissions, access, availability, safety, or costs, and do not use standard, mandatory, legal, regulatory, approved, or secured in risks." }, locationsSchema);
       else if (stage === "casting") {
-        result = await generate({ ...common, schedule: outputs.schedule, instruction: "Develop the shared role briefs. Preserve exactly the normalized role IDs; legitimate empty casting stays empty. Only state age or performer facts supported by sourceFacts; otherwise use unknown and record an assumption. Include minor/stunt needs and uncertainty. complianceNotes must be empty unless they state a specific verification step." }, castingSchema);
+        result = await generate({ ...common, scenes: scenes.map(scene => ({ id: scene.id, summary: scene.summary, castRoleIds: scene.requirements.castRoleIds, minors: scene.requirements.minors, stunts: scene.requirements.stunts })), schedule: outputs.schedule, instruction: "Develop the shared role briefs. Preserve exactly the normalized role IDs; legitimate empty casting stays empty. Use ageCategory unknown unless the supplied scene summary or minor requirement explicitly supports adult or minor. Include minor/stunt needs and uncertainty. complianceNotes must be empty unless they state a specific verification step." }, castingSchema);
         const casting = castingSchema.parse(result.output).casting;
         if (casting.length !== normalized.roles.length || new Set(casting.map(role => role.id)).size !== casting.length || casting.some(role => !normalized.roles.some(source => source.id === role.id))) throw new Error("INITIAL_PLAN_ROLE_REFERENCE");
       } else {
