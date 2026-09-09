@@ -18,6 +18,45 @@ function normalizeLine(value: string): string {
   return value.replace(/\s+/g, " ").trim();
 }
 
+function normalizeSceneHeading(
+  value: string,
+  displayNumber: string | null,
+): { heading: string; displayNumber: string | null } {
+  const normalized = normalizeLine(value);
+  const layoutNumbers = /\s+(\d+[A-Z]?)\s+(\d+)$/i.exec(normalized);
+  if (layoutNumbers) {
+    return {
+      heading: normalized.slice(0, layoutNumbers.index).trim(),
+      displayNumber: displayNumber ?? layoutNumbers[1]!.toUpperCase(),
+    };
+  }
+  return { heading: normalized, displayNumber };
+}
+
+function hasUnclosedParenthesis(value: string): boolean {
+  let balance = 0;
+  for (const character of value) {
+    if (character === "(") balance += 1;
+    if (character === ")") balance -= 1;
+  }
+  return balance > 0;
+}
+
+function isHeadingContinuation(heading: string, value: string): boolean {
+  const normalized = normalizeLine(value);
+  const endsWithLayoutNumbers = /\)\s+(?:\d+[A-Z]?\s+)?\d+$/i.test(normalized);
+  return endsWithLayoutNumbers && (
+    hasUnclosedParenthesis(heading) ||
+    /^\([^)]*\)\s+(?:\d+[A-Z]?\s+)?\d+$/i.test(normalized)
+  );
+}
+
+function isTitlePageFrontMatter(blocks: SourceBlock[]): boolean {
+  if (!blocks.length || blocks.some((block) => block.page !== 1)) return false;
+  const text = blocks.map((block) => block.text).join(" ");
+  return /\b(?:written by|screenplay by|story by|draft|copyright)\b/i.test(text);
+}
+
 function extractBlocks(pages: Array<{ num: number; text: string }>): {
   blocks: SourceBlock[];
   warnings: IngestionWarning[];
@@ -51,7 +90,7 @@ function segmentScenes(blocks: SourceBlock[]): {
 } {
   const scenes: ParsedScene[] = [];
   const warnings: IngestionWarning[] = [];
-  const outsideSourceIds: string[] = [];
+  const outsideBlocks: SourceBlock[] = [];
   let activeScene: ParsedScene | null = null;
 
   for (const block of blocks) {
@@ -63,11 +102,15 @@ function segmentScenes(blocks: SourceBlock[]): {
           `Screenplays may contain at most ${MAX_EXTRACTED_SCENES} extracted scenes.`,
         );
       }
+      const parsedHeading = normalizeSceneHeading(
+        match[2]!,
+        match[1]?.toUpperCase() ?? null,
+      );
       activeScene = {
         id: `scene-${scenes.length + 1}`,
         ordinal: scenes.length + 1,
-        displayNumber: match[1]?.toUpperCase() ?? null,
-        heading: match[2]!.trim(),
+        displayNumber: parsedHeading.displayNumber,
+        heading: parsedHeading.heading,
         sourceText: block.text,
         sourceSpans: [createSourceSpan(block)],
       };
@@ -75,8 +118,16 @@ function segmentScenes(blocks: SourceBlock[]): {
       continue;
     }
     if (!activeScene) {
-      outsideSourceIds.push(block.id);
+      outsideBlocks.push(block);
       continue;
+    }
+    if (activeScene.sourceSpans.length === 1 && isHeadingContinuation(activeScene.heading, block.text)) {
+      const parsedHeading = normalizeSceneHeading(
+        `${activeScene.heading} ${block.text}`,
+        activeScene.displayNumber,
+      );
+      activeScene.heading = parsedHeading.heading;
+      activeScene.displayNumber = parsedHeading.displayNumber;
     }
     activeScene.sourceText = `${activeScene.sourceText}\n${block.text}`;
     activeScene.sourceSpans.push(createSourceSpan(block));
@@ -97,11 +148,14 @@ function segmentScenes(blocks: SourceBlock[]): {
       sourceIds: missingNumberIds,
     });
   }
-  if (outsideSourceIds.length > 0) {
+  if (outsideBlocks.length > 0) {
+    const titlePage = isTitlePageFrontMatter(outsideBlocks);
     warnings.push({
-      code: "TEXT_OUTSIDE_SCENE",
-      message: "Some screenplay text appears before the first scene heading.",
-      sourceIds: outsideSourceIds,
+      code: titlePage ? "FRONT_MATTER_EXCLUDED" : "TEXT_OUTSIDE_SCENE",
+      message: titlePage
+        ? "Title-page text was excluded from production scene review."
+        : "Some screenplay text appears before the first scene heading.",
+      sourceIds: outsideBlocks.map((block) => block.id),
     });
   }
   return { scenes, warnings };

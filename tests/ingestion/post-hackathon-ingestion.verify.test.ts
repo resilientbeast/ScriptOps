@@ -7,7 +7,7 @@ import { parseFdxScreenplay } from "@/lib/ingestion/fdx";
 import { parsePdfScreenplay } from "@/lib/ingestion/pdf";
 import { ScreenplayIngestionError } from "@/lib/ingestion/contracts";
 import { parseUploadedScreenplay } from "@/lib/ingestion/worker";
-import { createSceneReviewDraft } from "@/lib/scripts/scene-review";
+import { acceptSceneReviewDraft, createSceneReviewDraft } from "@/lib/scripts/scene-review";
 import {
   createBlankPdf,
   createPdfWithPageLines,
@@ -141,6 +141,38 @@ describe("PH01 ingestion feasibility", () => {
     report("pdf-long-scene-review", startedAt, {
       sceneCount: draft.scenes.length,
       sourceSpanCount: draft.scenes[0]!.sourceSpans.length,
+    });
+  });
+
+  it("excludes title-page front matter and repairs wrapped PDF headings", async () => {
+    const startedAt = Date.now();
+    const manifest = await parseUploadedScreenplay(
+      "pdf",
+      createPdfWithPageLines([
+        ["INSTRUCTIONS FOR MY SON", "Written by", "A. Writer", "Draft: September 2026"],
+        ["INT. HOLT HOUSE - KITCHEN - DAY (FLASHBACK - 30 YEARS", "EARLIER) 6 6", "Walter enters the kitchen."],
+      ]),
+    );
+    const draft = createSceneReviewDraft("script-title-page", manifest);
+    const acknowledged = {
+      ...draft,
+      warnings: draft.warnings.map((warning) => ({ ...warning, acknowledged: true })),
+    };
+
+    expect(manifest.warnings).toContainEqual({
+      code: "FRONT_MATTER_EXCLUDED",
+      message: "Title-page text was excluded from production scene review.",
+      sourceIds: ["pdf:page:1:line:1", "pdf:page:1:line:2", "pdf:page:1:line:3", "pdf:page:1:line:4"],
+    });
+    expect(manifest.warnings.some((warning) => warning.code === "TEXT_OUTSIDE_SCENE")).toBe(false);
+    expect(draft.scenes[0]).toMatchObject({
+      displayNumber: "6",
+      reviewedHeading: "INT. HOLT HOUSE - KITCHEN - DAY (FLASHBACK - 30 YEARS EARLIER)",
+    });
+    expect(acceptSceneReviewDraft(acknowledged, "user-a", 0)).toMatchObject({ status: "accepted" });
+    report("pdf-title-page-and-wrapped-heading", startedAt, {
+      warningCount: manifest.warnings.length,
+      sceneCount: draft.scenes.length,
     });
   });
 

@@ -34,7 +34,11 @@ export type ParsedScene = {
 };
 
 export type IngestionWarning = {
-  code: "SCENE_NUMBER_MISSING" | "TEXT_OUTSIDE_SCENE" | "PAGE_TEXT_MISSING";
+  code:
+    | "SCENE_NUMBER_MISSING"
+    | "TEXT_OUTSIDE_SCENE"
+    | "FRONT_MATTER_EXCLUDED"
+    | "PAGE_TEXT_MISSING";
   message: string;
   sourceIds: string[];
 };
