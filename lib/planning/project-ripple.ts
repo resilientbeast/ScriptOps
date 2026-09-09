@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { initialBudgetSchema, locationCandidateSchema, shootingScheduleSchema, castingBriefSchema, type PlanningInputs } from "@/lib/planning/schemas";
 import { planningEvidenceSchema, type PlanningEvidence } from "@/lib/planning/planning-evidence";
+import { minimumProductionBudget } from "@/lib/planning/budget-floor";
 import type { ProjectPlan } from "@/lib/planning/initial-plan-approval";
 import { projectRippleDraftSchema, type ProjectRippleDraft } from "@/lib/planning/project-ripple-manifest";
 import { projectJobSchema, type ProjectJob } from "@/lib/jobs/schemas";
@@ -39,6 +40,7 @@ export function isOfficialNewMexicoCostEvidence(record: PlanningEvidence[number]
 
 const budgetCoverage = [
   ["crew", /crew|payroll/i],
+  ["cast", /cast|performer/i],
   ["equipment", /equipment|camera|lighting|grip|sound/i],
   ["locations", /location|permit/i],
   ["transport", /transport|travel|fuel|lodging/i],
@@ -48,8 +50,8 @@ const budgetCoverage = [
   ["contingency", /contingen|weather|safety/i],
 ] as const;
 
-export function missingBudgetCoverage(budget: z.infer<typeof initialBudgetSchema>) {
-  return budgetCoverage.filter(([, pattern]) => !budget.lineItems.some(item => pattern.test(`${item.category} ${item.basis}`))).map(([category]) => category);
+export function missingBudgetCoverage(budget: z.infer<typeof initialBudgetSchema>, requiresCast = true) {
+  return budgetCoverage.filter(([category, pattern]) => (category !== "cast" || requiresCast) && !budget.lineItems.some(item => pattern.test(`${item.category} ${item.basis}`))).map(([category]) => category);
 }
 
 export function rippleRequestHash(projectId: string, basePlanVersion: number, sceneId: string, requestText: string) {
@@ -93,13 +95,17 @@ export function createProjectRippleDraft(input: { jobId: string; planningInputs:
   const cited = [...budgetCitations, ...(output.locations ?? [])];
   if (cited.some(item => !item.evidenceIds.length || item.evidenceIds.some(id => !evidenceIds.has(id)))) throw new Error("RIPPLE_CITATION_INVALID");
   if (budgetCitations.some(item => item.evidenceIds.some(id => !officialCostEvidenceIds.has(id)))) throw new Error("RIPPLE_COST_EVIDENCE_INVALID");
-  if (output.budget && missingBudgetCoverage(output.budget).length) throw new Error("RIPPLE_BUDGET_COVERAGE_INCOMPLETE");
+  const nextSchedule = output.schedule ?? basePlan.schedule;
+  const nextCasting = output.casting ?? basePlan.casting;
+  if (output.budget && missingBudgetCoverage(output.budget, nextCasting.length > 0).length) throw new Error("RIPPLE_BUDGET_COVERAGE_INCOMPLETE");
+  const budgetFloor = minimumProductionBudget({ schedule: nextSchedule, casting: nextCasting, scenes: basePlan.scenes }, input.requestText);
+  if (output.budget && (output.budget.low < budgetFloor.low || output.budget.high < budgetFloor.high)) throw new Error("RIPPLE_BUDGET_BELOW_RATE_FLOOR");
   const plan = {
     ...basePlan,
-    schedule: output.schedule ?? basePlan.schedule,
+    schedule: nextSchedule,
     budget: output.budget ?? basePlan.budget,
     locations: output.locations ?? basePlan.locations,
-    casting: output.casting ?? basePlan.casting,
+    casting: nextCasting,
     evidence: evidence.map(({ id, title, url, retrievedAt }) => ({ id, title, url, retrievedAt })),
     assumptions: [...new Set([...basePlan.assumptions, ...output.assumptions])],
     warnings: [...new Set([...basePlan.warnings, ...output.warnings])],

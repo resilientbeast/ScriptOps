@@ -13,7 +13,7 @@ describe("project proposal contract", () => {
     const base = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-fixture", scriptVersionId: "script-1", draft }));
     const output = {
       schedule: fixture.plan.schedule,
-      budget: { ...fixture.plan.budget, low: 3500, high: 7000, lineItems: fixture.plan.budget.lineItems.map((item, index) => index === 0 ? { ...item, low: 1500, high: 3000 } : item) },
+      budget: { ...fixture.plan.budget, low: 15000, high: 20000, lineItems: fixture.plan.budget.lineItems.map((item, index) => index === 0 ? { ...item, low: 5000, high: 7000 } : item) },
       locations: fixture.plan.locations,
       casting: fixture.plan.casting,
       assumptions: ["Weather cover requires producer confirmation."],
