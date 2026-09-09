@@ -113,7 +113,9 @@ export function createProjectRippleDraft(input: { jobId: string; planningInputs:
     budget: output.budget ?? basePlan.budget,
     locations: output.locations ?? basePlan.locations,
     casting: nextCasting,
-    evidence: evidence.map(({ id, title, url, retrievedAt }) => ({ id, title, url, retrievedAt })),
+    // Retained artifacts can still cite their approved-plan evidence. Fresh research is
+    // appended for this ripple, with a later record taking precedence for the same ID.
+    evidence: [...new Map([...basePlan.evidence, ...evidence.map(({ id, title, url, retrievedAt }) => ({ id, title, url, retrievedAt }))].map(record => [record.id, record])).values()],
     assumptions: [...new Set([...basePlan.assumptions, ...output.assumptions])],
     warnings: [...new Set([...basePlan.warnings, ...output.warnings])],
   };

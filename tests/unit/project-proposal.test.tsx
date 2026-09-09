@@ -32,6 +32,9 @@ describe("project proposal contract", () => {
 
   it("retains operational artifacts verbatim when a ripple omits them", () => {
     const fixture = planningFixture(1, true);
+    const retainedLocationEvidence = { ...fixture.evidence[0]!, id: "evidence-retained-location" };
+    fixture.plan.evidence.push({ id: retainedLocationEvidence.id, title: retainedLocationEvidence.title, url: retainedLocationEvidence.url, retrievedAt: retainedLocationEvidence.retrievedAt });
+    fixture.plan.locations[0]!.evidenceIds = [retainedLocationEvidence.id];
     const draft = createInitialPlanDraft({ projectTitle: fixture.snapshot.projectTitle, revision: fixture.snapshot.revision, planningInputs: fixture.snapshot.planningInputs, plan: fixture.plan });
     const base = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-fixture", scriptVersionId: "script-1", draft }));
     const revisedSchedule = { ...fixture.plan.schedule, days: fixture.plan.schedule.days.map(day => ({ ...day, label: "Night work" })) };
@@ -40,6 +43,7 @@ describe("project proposal contract", () => {
     expect(proposal.plan.budget).toEqual(fixture.plan.budget);
     expect(proposal.plan.locations).toEqual(fixture.plan.locations);
     expect(proposal.plan.casting).toEqual(fixture.plan.casting);
+    expect(proposal.plan.evidence).toContainEqual({ id: retainedLocationEvidence.id, title: retainedLocationEvidence.title, url: retainedLocationEvidence.url, retrievedAt: retainedLocationEvidence.retrievedAt });
   });
 
   it("accepts null placeholders from Gemini without sending transforms to Vertex", () => {
