@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import { createApprovedInitialPlan } from "@/lib/planning/initial-plan-approval";
 import { createInitialPlanDraft } from "@/lib/planning/initial-plan";
 import { createInitialPlanManifest } from "@/lib/planning/initial-plan-manifest";
-import { createProjectRippleDraft, rippleDelta } from "@/lib/planning/project-ripple";
+import { createProjectRippleDraft, projectRippleOutputSchema, rippleDelta } from "@/lib/planning/project-ripple";
+import { planningProviderSchema } from "@/lib/planning/provider-schema";
 import { planningFixture } from "@/tests/fixtures/planning";
 
 describe("project proposal contract", () => {
@@ -39,6 +40,15 @@ describe("project proposal contract", () => {
     expect(proposal.plan.budget).toEqual(fixture.plan.budget);
     expect(proposal.plan.locations).toEqual(fixture.plan.locations);
     expect(proposal.plan.casting).toEqual(fixture.plan.casting);
+  });
+
+  it("accepts null placeholders from Gemini without sending transforms to Vertex", () => {
+    const fixture = planningFixture(1, true);
+    const draft = createInitialPlanDraft({ projectTitle: fixture.snapshot.projectTitle, revision: fixture.snapshot.revision, planningInputs: fixture.snapshot.planningInputs, plan: fixture.plan });
+    const base = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-fixture", scriptVersionId: "script-1", draft }));
+    const proposal = createProjectRippleDraft({ jobId: "ripple-fixture", planningInputs: fixture.snapshot.planningInputs, base, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the scene to a night shoot and revise the schedule.", evidence: fixture.evidence, output: { schedule: fixture.plan.schedule, budget: null, locations: null, casting: null, assumptions: [], warnings: [] } });
+    expect(proposal.changedArtifacts).toEqual(["schedule"]);
+    expect(() => planningProviderSchema(projectRippleOutputSchema, fixture.evidence.map(record => record.id))).not.toThrow();
   });
 
   it("rejects a revision that changes the approved plan currency or project region", () => {

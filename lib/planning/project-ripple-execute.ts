@@ -15,6 +15,7 @@ function providerFailureMetadata(error: unknown) {
   const value = error as Error & { code?: string | number; status?: number };
   return {
     name: error.name.slice(0, 80),
+    message: error.message.slice(0, 240),
     code: typeof value.code === "string" || typeof value.code === "number" ? String(value.code).slice(0, 80) : null,
     status: typeof value.status === "number" ? value.status : null,
   };

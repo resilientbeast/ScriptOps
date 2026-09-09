@@ -24,10 +24,10 @@ const productionSignals = [/\bscene\b/i, /\b(day|night|dawn|dusk|weather|rain|sn
 export const isProjectProductionRelevant = (requestText: string) => productionSignals.some(signal => signal.test(requestText));
 
 export const projectRippleOutputSchema = z.object({
-  schedule: z.union([shootingScheduleSchema, z.null()]).optional().transform(value => value ?? undefined),
-  budget: z.union([initialBudgetSchema, z.null()]).optional().transform(value => value ?? undefined),
-  locations: z.union([z.array(locationCandidateSchema).min(1).max(50), z.null()]).optional().transform(value => value ?? undefined),
-  casting: z.union([z.array(castingBriefSchema).max(100), z.null()]).optional().transform(value => value ?? undefined),
+  schedule: z.union([shootingScheduleSchema, z.null()]).optional(),
+  budget: z.union([initialBudgetSchema, z.null()]).optional(),
+  locations: z.union([z.array(locationCandidateSchema).min(1).max(50), z.null()]).optional(),
+  casting: z.union([z.array(castingBriefSchema).max(100), z.null()]).optional(),
   assumptions: notesSchema,
   warnings: notesSchema,
 }).strict();
@@ -80,7 +80,14 @@ export function createProjectRippleJob(input: { projectId: string; writeEpoch: n
 }
 
 export function createProjectRippleDraft(input: { jobId: string; planningInputs: PlanningInputs; base: ProjectPlan; sceneId: string; requestText: string; evidence: PlanningEvidence; output: unknown; now?: string }): ProjectRippleDraft {
-  const output = projectRippleOutputSchema.parse(input.output);
+  const parsedOutput = projectRippleOutputSchema.parse(input.output);
+  const output = {
+    ...parsedOutput,
+    schedule: parsedOutput.schedule ?? undefined,
+    budget: parsedOutput.budget ?? undefined,
+    locations: parsedOutput.locations ?? undefined,
+    casting: parsedOutput.casting ?? undefined,
+  };
   const basePlan = planFromRecord(input.base);
   const evidence = planningEvidenceSchema.parse(input.evidence);
   if (!basePlan.scenes.some(scene => scene.id === input.sceneId)) throw new Error("RIPPLE_SCENE_NOT_FOUND");
