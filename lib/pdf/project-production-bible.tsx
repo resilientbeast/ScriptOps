@@ -75,6 +75,11 @@ export async function renderProjectProductionBible(project: Pick<Project, "id" |
         <View style={styles.card} wrap={false}><Text style={styles.cardTitle}>Scene {ripple.sceneId}</Text><Text style={styles.note}>{ripple.requestText}</Text><Text style={styles.mono}>Based on Plan v{ripple.basePlanVersion} · generated {new Date(ripple.generatedAt).toLocaleString()}</Text></View>
       </View> : null}
 
+      {ripple ? <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Evidence provenance</Text>
+        <Text style={styles.note}>This revision retains evidence approved with Plan v{ripple.basePlanVersion}. It does not include a new evidence search for this change.</Text>
+      </View> : null}
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Shooting schedule</Text>
         {plan.schedule.days.map(day => <View style={styles.card} wrap={false} key={day.id}><Text style={styles.cardTitle}>Day {day.dayNumber} · {day.label}</Text><Text style={styles.note}>{day.estimatedHours} hours · {day.dayNight} · scenes {day.sceneIds.join(", ")}</Text>{day.setupRequirements.map(note => <Text style={styles.note} key={note}>Setup: {note}</Text>)}{day.complianceNotes.map(note => <Text style={styles.note} key={note}>Verify: {note}</Text>)}</View>)}
@@ -96,7 +101,7 @@ export async function renderProjectProductionBible(project: Pick<Project, "id" |
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Evidence</Text>
+        <Text style={styles.sectionTitle}>{ripple ? `Evidence retained from Plan v${ripple.basePlanVersion}` : "Evidence"}</Text>
         {plan.evidence.map(record => <View style={styles.citation} wrap={false} key={record.id}><Text style={styles.cardTitle}>{record.title}</Text><Link src={record.url} style={styles.link}>{compactUrl(record.url)}</Link><Text style={styles.mono}>Retrieved {new Date(record.retrievedAt).toLocaleString()} · {record.id}</Text></View>)}
       </View>
 

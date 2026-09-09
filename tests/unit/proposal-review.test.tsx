@@ -29,6 +29,7 @@ describe("producer proposal review", () => {
     expect(html).toContain("Location candidates");
     expect(html).toContain("Casting briefs");
     expect(html).toContain("4 → 5 shoot days");
+    expect(html).toContain(`Evidence consulted · showing ${Math.min(4, approvedExampleFixture.proposal.evidence.records.length)} of ${approvedExampleFixture.proposal.evidence.records.length} sources`);
     expect(html).not.toContain("Verify Verify");
   });
 

@@ -55,6 +55,7 @@ export function ProposalReview({
   const evidenceById = new Map(
     proposal.evidence.records.map((record) => [record.id, record]),
   );
+  const visibleEvidence = proposal.evidence.records.slice(0, 4);
 
   return (
     <section className="proposal-review" aria-labelledby="proposal-review-title">
@@ -95,9 +96,9 @@ export function ProposalReview({
           </ul>
         </div>
         <div>
-          <p className="overline">Evidence consulted</p>
+          <p className="overline">Evidence consulted · showing {visibleEvidence.length} of {proposal.evidence.records.length} sources</p>
           <ul className="proposal-sources">
-            {proposal.evidence.records.slice(0, 4).map((record) => (
+            {visibleEvidence.map((record) => (
               <li key={record.id}>
                 <a href={record.url} target="_blank" rel="noreferrer">{record.title}</a>
                 <span>{record.sourceMode} · {record.excerpt}</span>
