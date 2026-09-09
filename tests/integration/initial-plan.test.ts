@@ -61,12 +61,13 @@ describe("initial generation from accepted source", () => {
     f.snapshot.revision.scenes[0]!.sourceSpans.push({ sourceId: extra.id, page: null, blockIndex: extra.blockIndex, startOffset: 0, endOffset: extra.text.length });
     const generated = structuredClone(f.plan.scenes[0]!);
     generated.sourceFactIds = [f.blocks[0]!.id];
-    generated.sourceFacts = [{ sourceId: f.blocks[0]!.id, quote: f.blocks[0]!.text }];
+    generated.sourceFacts = [{ sourceId: f.blocks[0]!.id, quote: extra.text }];
     const providers: PlanningProviders = { ...f.providers, generate: async (stage, data, schema) => stage === "breakdown-0"
       ? { output: { scenes: [generated] }, usage: { inputTokens: 1, outputTokens: 1, elapsedMs: 1 } }
       : f.providers.generate(stage, data, schema) };
     const result = await runPlanningStage(f.snapshot, "breakdown-0", {}, f.blocks, providers, planningNow);
     expect((result.output as { scenes: { sourceFactIds: string[] }[] }).scenes[0]!.sourceFactIds).toEqual([f.blocks[0]!.id, extra.id]);
+    expect((result.output as { scenes: { sourceFacts: { sourceId: string }[] }[] }).scenes[0]!.sourceFacts[0]!.sourceId).toBe(extra.id);
   });
   it("blocks hard constraints and zero-budget placeholders at their stage", async () => {
     const f = await runFixture(6, false);

@@ -71,10 +71,36 @@ function restoreSourceFactIds(scenes: z.infer<typeof planningSceneSchema>[], exp
   });
 }
 
+function normalizeSourceText(value: string) {
+  return value.normalize("NFKC").replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[\u2013\u2014]/g, "-").replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Gemini can correctly copy a source quote but associate it with an adjacent
+ * PDF block. Rebind only uniquely matched quotes within the same reviewed
+ * scene; an ambiguous or non-source quote remains a hard failure.
+ */
+function reconcileSourceFacts(scenes: z.infer<typeof planningSceneSchema>[], sourceScenesForBatch: ReturnType<typeof sourceScenes>) {
+  return scenes.map((scene, index) => {
+    const sources = sourceScenesForBatch[index]!.sources;
+    return {
+      ...scene,
+      sourceFacts: scene.sourceFacts.map(fact => {
+        const quote = normalizeSourceText(fact.quote);
+        const current = sources.find(source => source.id === fact.sourceId);
+        if (current && normalizeSourceText(current.text).includes(quote)) return fact;
+        const matches = sources.filter(source => normalizeSourceText(source.text).includes(quote));
+        if (matches.length !== 1) throw new Error("INITIAL_PLAN_SOURCE_FACT_INVALID");
+        return { ...fact, sourceId: matches[0]!.id };
+      }),
+    };
+  });
+}
+
 function validateSourceFacts(scenes: z.infer<typeof planningSceneSchema>[], sourceScenesForBatch: ReturnType<typeof sourceScenes>) {
   scenes.forEach((scene, index) => {
     const sourceTexts = new Map(sourceScenesForBatch[index]!.sources.map(source => [source.id, source.text]));
-    if (scene.sourceFacts.some(fact => !sourceTexts.get(fact.sourceId)?.includes(fact.quote))) {
+    if (scene.sourceFacts.some(fact => !sourceTexts.get(fact.sourceId) || !normalizeSourceText(sourceTexts.get(fact.sourceId)!).includes(normalizeSourceText(fact.quote)))) {
       throw new Error("INITIAL_PLAN_SOURCE_FACT_INVALID");
     }
   });
@@ -95,7 +121,8 @@ export async function runPlanningStage(snapshot: PlanningSnapshot, stage: string
     const batchIndex = Number(stage.slice(10));
     const sources = sourceScenes(snapshot, blocks, batchIndex);
     result = await generate({ scenes: sources, instruction: "Break down all source action, cast, vehicles, stunts, minors and equipment. Preserve ordered scene IDs, reviewed headings, and display numbers. Return one or more exact sourceFacts quotes copied from the supplied source text, each paired with its sourceId. The server maintains each scene's complete provenance ID set. Facts must be grounded in supplied source; label inferred needs in summaries. No invented cast for unpeopled scenes." }, breakdownSchema);
-    const breakdown = { scenes: restoreSourceFactIds(breakdownSchema.parse(result.output).scenes, snapshot.revision.scenes.slice(batchIndex * BATCH_SIZE, (batchIndex + 1) * BATCH_SIZE)) };
+    const parsed = breakdownSchema.parse(result.output);
+    const breakdown = { scenes: reconcileSourceFacts(restoreSourceFactIds(parsed.scenes, snapshot.revision.scenes.slice(batchIndex * BATCH_SIZE, (batchIndex + 1) * BATCH_SIZE)), sources) };
     result.output = breakdown;
     validateScenes(breakdown.scenes, snapshot.revision.scenes.slice(batchIndex * BATCH_SIZE, (batchIndex + 1) * BATCH_SIZE));
     validateSourceFacts(breakdown.scenes, sources);
