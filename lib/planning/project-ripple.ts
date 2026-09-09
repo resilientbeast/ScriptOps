@@ -24,10 +24,10 @@ const productionSignals = [/\bscene\b/i, /\b(day|night|dawn|dusk|weather|rain|sn
 export const isProjectProductionRelevant = (requestText: string) => productionSignals.some(signal => signal.test(requestText));
 
 export const projectRippleOutputSchema = z.object({
-  schedule: shootingScheduleSchema.optional(),
-  budget: initialBudgetSchema.optional(),
-  locations: z.array(locationCandidateSchema).min(1).max(50).optional(),
-  casting: z.array(castingBriefSchema).max(100).optional(),
+  schedule: z.union([shootingScheduleSchema, z.null()]).optional().transform(value => value ?? undefined),
+  budget: z.union([initialBudgetSchema, z.null()]).optional().transform(value => value ?? undefined),
+  locations: z.union([z.array(locationCandidateSchema).min(1).max(50), z.null()]).optional().transform(value => value ?? undefined),
+  casting: z.union([z.array(castingBriefSchema).max(100), z.null()]).optional().transform(value => value ?? undefined),
   assumptions: notesSchema,
   warnings: notesSchema,
 }).strict();
