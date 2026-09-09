@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { addDocumentSizeIssue, addProhibitedClaimIssues, addUniqueValueIssues } from "@/lib/domain/invariants";
+import { MAX_SOURCE_SPANS_PER_SCENE } from "@/lib/ingestion/contracts";
 
 const identifierSchema = z.string().regex(/^[a-z0-9][a-z0-9-]{0,99}$/);
 const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
@@ -81,11 +82,11 @@ export const planningSceneSchema = z
     storyLocation: z.string().trim().min(1).max(300).nullable(),
     timeOfDay: z.enum(["day", "night", "dawn", "dusk", "other", "unknown"]),
     summary: noteSchema,
-    sourceFactIds: z.array(z.string().trim().min(1).max(200)).min(1).max(100),
+    sourceFactIds: z.array(z.string().trim().min(1).max(200)).min(1).max(MAX_SOURCE_SPANS_PER_SCENE),
     sourceFacts: z.array(z.object({
       sourceId: z.string().trim().min(1).max(200),
       quote: noteSchema,
-    }).strict()).min(1).max(100),
+    }).strict()).min(1).max(MAX_SOURCE_SPANS_PER_SCENE),
     requirements: z
       .object({
         castRoleIds: z.array(identifierSchema).max(30),

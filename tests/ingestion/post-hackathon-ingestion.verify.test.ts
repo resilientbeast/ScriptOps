@@ -6,6 +6,8 @@ import { describe, expect, it } from "vitest";
 import { parseFdxScreenplay } from "@/lib/ingestion/fdx";
 import { parsePdfScreenplay } from "@/lib/ingestion/pdf";
 import { ScreenplayIngestionError } from "@/lib/ingestion/contracts";
+import { parseUploadedScreenplay } from "@/lib/ingestion/worker";
+import { createSceneReviewDraft } from "@/lib/scripts/scene-review";
 import {
   createBlankPdf,
   createPdfWithPageLines,
@@ -109,6 +111,36 @@ describe("PH01 ingestion feasibility", () => {
       blockCount: screenplay.blocks.length,
       sceneCount: screenplay.scenes.length,
       pageCount: new Set(screenplay.blocks.map((block) => block.page)).size,
+    });
+  });
+
+  it("keeps a long continuous scene reviewable without losing its source trace", async () => {
+    const startedAt = Date.now();
+    const continuousAction = Array.from(
+      { length: 198 },
+      (_, index) => `Continuous screenplay action line ${index + 1}.`,
+    );
+    const pages = Array.from(
+      { length: 99 },
+      (_, index) => continuousAction.slice(index * 2, index * 2 + 2),
+    );
+    pages[0]!.unshift("1. INT. ARCHIVE - NIGHT");
+    pages.at(-1)!.push("2. EXT./INT. RECORDS OFFICE - DAY", "A clerk opens the file.");
+    const manifest = await parseUploadedScreenplay(
+      "pdf",
+      createPdfWithPageLines(pages),
+    );
+    const draft = createSceneReviewDraft("script-long-scene", manifest);
+
+    expect(manifest.screenplay.scenes).toHaveLength(2);
+    expect(manifest.screenplay.scenes[0]!.sourceSpans).toHaveLength(199);
+    expect(manifest.screenplay.scenes[1]).toMatchObject({
+      heading: "EXT./INT. RECORDS OFFICE - DAY",
+    });
+    expect(draft.scenes[0]!.sourceSpans).toHaveLength(199);
+    report("pdf-long-scene-review", startedAt, {
+      sceneCount: draft.scenes.length,
+      sourceSpanCount: draft.scenes[0]!.sourceSpans.length,
     });
   });
 

@@ -1,6 +1,11 @@
 export const MAX_SCREENPLAY_BYTES = 20 * 1024 * 1024;
 export const MAX_PDF_PAGES = 150;
 export const MAX_EXTRACTED_SCENES = 200;
+/**
+ * A single continuous production scene can legitimately span several PDF pages.
+ * Keep its traceable source blocks bounded without rejecting normal long-form scripts.
+ */
+export const MAX_SOURCE_SPANS_PER_SCENE = 500;
 
 export type ScreenplayFormat = "fdx" | "pdf";
 

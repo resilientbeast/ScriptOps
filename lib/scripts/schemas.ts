@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { MAX_SOURCE_SPANS_PER_SCENE } from "@/lib/ingestion/contracts";
+
 const identifierSchema = z.string().regex(/^[a-z0-9][a-z0-9-]{0,99}$/);
 const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
 const shortTextSchema = z.string().trim().min(1).max(500);
@@ -30,7 +32,7 @@ export const parsedSceneSchema = z
     displayNumber: z.string().regex(/^\d+[A-Z]?$/).nullable(),
     originalHeading: shortTextSchema,
     reviewedHeading: shortTextSchema,
-    sourceSpans: z.array(sourceSpanSchema).min(1).max(100),
+    sourceSpans: z.array(sourceSpanSchema).min(1).max(MAX_SOURCE_SPANS_PER_SCENE),
     warningIds: z.array(identifierSchema).max(30),
     predecessorSceneIds: z.array(identifierSchema).max(30),
   })
