@@ -23,10 +23,10 @@ const productionSignals = [/\bscene\b/i, /\b(day|night|dawn|dusk|weather|rain|sn
 export const isProjectProductionRelevant = (requestText: string) => productionSignals.some(signal => signal.test(requestText));
 
 export const projectRippleOutputSchema = z.object({
-  schedule: shootingScheduleSchema,
-  budget: initialBudgetSchema,
-  locations: z.array(locationCandidateSchema).min(1).max(50),
-  casting: z.array(castingBriefSchema).max(100),
+  schedule: shootingScheduleSchema.optional(),
+  budget: initialBudgetSchema.optional(),
+  locations: z.array(locationCandidateSchema).min(1).max(50).optional(),
+  casting: z.array(castingBriefSchema).max(100).optional(),
   assumptions: notesSchema,
   warnings: notesSchema,
 }).strict();
@@ -35,6 +35,21 @@ export type ProjectRippleOutput = z.infer<typeof projectRippleOutputSchema>;
 
 export function isOfficialNewMexicoCostEvidence(record: PlanningEvidence[number]) {
   return record.topics.includes("costs") && /(^|\.)(nmfilm\.com|nm\.gov)$/i.test(new URL(record.url).hostname);
+}
+
+const budgetCoverage = [
+  ["crew", /crew|payroll/i],
+  ["equipment", /equipment|camera|lighting|grip|sound/i],
+  ["locations", /location|permit/i],
+  ["transport", /transport|travel|fuel|lodging/i],
+  ["catering", /cater|craft/i],
+  ["insurance", /insurance|legal|admin/i],
+  ["post-production", /post|editorial|finish/i],
+  ["contingency", /contingen|weather|safety/i],
+] as const;
+
+export function missingBudgetCoverage(budget: z.infer<typeof initialBudgetSchema>) {
+  return budgetCoverage.filter(([, pattern]) => !budget.lineItems.some(item => pattern.test(`${item.category} ${item.basis}`))).map(([category]) => category);
 }
 
 export function rippleRequestHash(projectId: string, basePlanVersion: number, sceneId: string, requestText: string) {
@@ -67,21 +82,24 @@ export function createProjectRippleDraft(input: { jobId: string; planningInputs:
   const basePlan = planFromRecord(input.base);
   const evidence = planningEvidenceSchema.parse(input.evidence);
   if (!basePlan.scenes.some(scene => scene.id === input.sceneId)) throw new Error("RIPPLE_SCENE_NOT_FOUND");
-  if (basePlan.currency !== input.planningInputs.currency || output.budget.currency !== basePlan.currency || output.locations.some(location => location.regionCode !== input.planningInputs.regionCode)) throw new Error("RIPPLE_REGION_OR_CURRENCY_MISMATCH");
-  if ((input.planningInputs.budgetCeiling !== null && output.budget.high > input.planningInputs.budgetCeiling) || (input.planningInputs.targetHoursPerDay !== null && output.schedule.days.some(day => day.estimatedHours > input.planningInputs.targetHoursPerDay!)) || (input.planningInputs.shootWindow && output.schedule.shootDays > Math.floor((Date.parse(input.planningInputs.shootWindow.end) - Date.parse(input.planningInputs.shootWindow.start)) / 86_400_000) + 1)) throw new Error("RIPPLE_CONSTRAINT_INFEASIBLE");
+  const changedArtifacts = (["schedule", "budget", "locations", "casting"] as const).filter(key => output[key] !== undefined);
+  if (!changedArtifacts.length) throw new Error("RIPPLE_NO_OPERATIONAL_CHANGE");
+  if (basePlan.currency !== input.planningInputs.currency || (output.budget && output.budget.currency !== basePlan.currency) || output.locations?.some(location => location.regionCode !== input.planningInputs.regionCode)) throw new Error("RIPPLE_REGION_OR_CURRENCY_MISMATCH");
+  if ((input.planningInputs.budgetCeiling !== null && output.budget && output.budget.high > input.planningInputs.budgetCeiling) || (input.planningInputs.targetHoursPerDay !== null && output.schedule?.days.some(day => day.estimatedHours > input.planningInputs.targetHoursPerDay!)) || (input.planningInputs.shootWindow && output.schedule && output.schedule.shootDays > Math.floor((Date.parse(input.planningInputs.shootWindow.end) - Date.parse(input.planningInputs.shootWindow.start)) / 86_400_000) + 1)) throw new Error("RIPPLE_CONSTRAINT_INFEASIBLE");
   const evidenceIds = new Set(evidence.map(record => record.id));
   const officialCostEvidenceIds = new Set(evidence.filter(isOfficialNewMexicoCostEvidence).map(record => record.id));
-  if (!officialCostEvidenceIds.size) throw new Error("RIPPLE_COST_EVIDENCE_UNAVAILABLE");
-  const budgetCitations = [...output.budget.lineItems, ...output.budget.costDrivers];
-  const cited = [...budgetCitations, ...output.locations];
+  if (output.budget && !officialCostEvidenceIds.size) throw new Error("RIPPLE_COST_EVIDENCE_UNAVAILABLE");
+  const budgetCitations = output.budget ? [...output.budget.lineItems, ...output.budget.costDrivers] : [];
+  const cited = [...budgetCitations, ...(output.locations ?? [])];
   if (cited.some(item => !item.evidenceIds.length || item.evidenceIds.some(id => !evidenceIds.has(id)))) throw new Error("RIPPLE_CITATION_INVALID");
   if (budgetCitations.some(item => item.evidenceIds.some(id => !officialCostEvidenceIds.has(id)))) throw new Error("RIPPLE_COST_EVIDENCE_INVALID");
+  if (output.budget && missingBudgetCoverage(output.budget).length) throw new Error("RIPPLE_BUDGET_COVERAGE_INCOMPLETE");
   const plan = {
     ...basePlan,
-    schedule: output.schedule,
-    budget: output.budget,
-    locations: output.locations,
-    casting: output.casting,
+    schedule: output.schedule ?? basePlan.schedule,
+    budget: output.budget ?? basePlan.budget,
+    locations: output.locations ?? basePlan.locations,
+    casting: output.casting ?? basePlan.casting,
     evidence: evidence.map(({ id, title, url, retrievedAt }) => ({ id, title, url, retrievedAt })),
     assumptions: [...new Set([...basePlan.assumptions, ...output.assumptions])],
     warnings: [...new Set([...basePlan.warnings, ...output.warnings])],
@@ -94,6 +112,7 @@ export function createProjectRippleDraft(input: { jobId: string; planningInputs:
     sceneId: input.sceneId,
     requestText: input.requestText.trim(),
     plan,
+    changedArtifacts,
     evidenceProvenance: { mode: "fresh-parallel-search", searchedAt: input.now ?? new Date().toISOString(), basePlanVersion: input.base.planVersion, baselineRecordCount: basePlan.evidence.length, freshRecordCount: evidence.length },
     generatedAt: input.now ?? new Date().toISOString(),
   });

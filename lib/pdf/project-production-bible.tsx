@@ -72,7 +72,7 @@ export async function renderProjectProductionBible(project: Pick<Project, "id" |
 
       {ripple ? <View style={styles.section}>
         <Text style={styles.sectionTitle}>Approved revision request</Text>
-        <View style={styles.card} wrap={false}><Text style={styles.cardTitle}>Scene {ripple.sceneId}</Text><Text style={styles.note}>{ripple.requestText}</Text><Text style={styles.mono}>Based on Plan v{ripple.basePlanVersion} · generated {new Date(ripple.generatedAt).toLocaleString()}</Text></View>
+        <View style={styles.card} wrap={false}><Text style={styles.cardTitle}>Scene {ripple.sceneId}</Text><Text style={styles.note}>{ripple.requestText}</Text><Text style={styles.note}>Changed: {(ripple.changedArtifacts ?? ["schedule", "budget", "locations", "casting"]).join(", ")}. Other operational artifacts are retained verbatim from Plan v{ripple.basePlanVersion}.</Text><Text style={styles.mono}>Based on Plan v{ripple.basePlanVersion} · generated {new Date(ripple.generatedAt).toLocaleString()}</Text></View>
       </View> : null}
 
       {ripple ? <View style={styles.section}>

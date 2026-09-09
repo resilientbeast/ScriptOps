@@ -13,7 +13,7 @@ describe("project proposal contract", () => {
     const base = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-fixture", scriptVersionId: "script-1", draft }));
     const output = {
       schedule: fixture.plan.schedule,
-      budget: { ...fixture.plan.budget, low: 3500, high: 7000, lineItems: [{ ...fixture.plan.budget.lineItems[0]!, low: 3500, high: 7000 }] },
+      budget: { ...fixture.plan.budget, low: 3500, high: 7000, lineItems: fixture.plan.budget.lineItems.map((item, index) => index === 0 ? { ...item, low: 1500, high: 3000 } : item) },
       locations: fixture.plan.locations,
       casting: fixture.plan.casting,
       assumptions: ["Weather cover requires producer confirmation."],
@@ -26,6 +26,19 @@ describe("project proposal contract", () => {
     expect(proposal.plan.evidence).not.toEqual(fixture.plan.evidence);
     expect(proposal.evidenceProvenance).toMatchObject({ mode: "fresh-parallel-search", basePlanVersion: 1, baselineRecordCount: fixture.plan.evidence.length, freshRecordCount: freshEvidence.length });
     expect(rippleDelta(fixture.plan, proposal.plan)).toMatchObject({ budgetLow: 500, budgetHigh: 1000, shootDays: 0, currency: "USD" });
+    expect(proposal.changedArtifacts).toEqual(["schedule", "budget", "locations", "casting"]);
+  });
+
+  it("retains operational artifacts verbatim when a ripple omits them", () => {
+    const fixture = planningFixture(1, true);
+    const draft = createInitialPlanDraft({ projectTitle: fixture.snapshot.projectTitle, revision: fixture.snapshot.revision, planningInputs: fixture.snapshot.planningInputs, plan: fixture.plan });
+    const base = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-fixture", scriptVersionId: "script-1", draft }));
+    const revisedSchedule = { ...fixture.plan.schedule, days: fixture.plan.schedule.days.map(day => ({ ...day, label: "Night work" })) };
+    const proposal = createProjectRippleDraft({ jobId: "ripple-fixture", planningInputs: fixture.snapshot.planningInputs, base, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the scene to a night shoot and revise the schedule.", evidence: fixture.evidence, output: { schedule: revisedSchedule, assumptions: [], warnings: [] } });
+    expect(proposal.changedArtifacts).toEqual(["schedule"]);
+    expect(proposal.plan.budget).toEqual(fixture.plan.budget);
+    expect(proposal.plan.locations).toEqual(fixture.plan.locations);
+    expect(proposal.plan.casting).toEqual(fixture.plan.casting);
   });
 
   it("rejects a revision that changes the approved plan currency or project region", () => {

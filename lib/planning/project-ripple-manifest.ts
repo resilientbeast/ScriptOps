@@ -14,6 +14,7 @@ const evidenceProvenanceSchema = z.object({
   baselineRecordCount: z.number().int().nonnegative(),
   freshRecordCount: z.number().int().positive(),
 }).strict();
+const changedArtifactSchema = z.enum(["schedule", "budget", "locations", "casting"]);
 
 export const projectRippleDraftSchema = z.object({
   jobId: identifierSchema,
@@ -23,6 +24,7 @@ export const projectRippleDraftSchema = z.object({
   sceneId: identifierSchema,
   requestText: z.string().trim().min(10).max(2_000),
   plan: initialProductionPlanSchema,
+  changedArtifacts: z.array(changedArtifactSchema).min(1).max(4).optional(),
   evidenceProvenance: evidenceProvenanceSchema.optional(),
   generatedAt: z.iso.datetime({ offset: true }),
 }).strict();
