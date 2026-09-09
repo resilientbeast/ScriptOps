@@ -34,4 +34,13 @@ describe("project proposal contract", () => {
     const base = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-fixture", scriptVersionId: "script-1", draft }));
     expect(() => createProjectRippleDraft({ jobId: "ripple-fixture", planningInputs: fixture.snapshot.planningInputs, base, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the scene to a covered weather day and revise crew needs.", evidence: fixture.evidence, output: { schedule: fixture.plan.schedule, budget: { ...fixture.plan.budget, currency: "EUR" }, locations: fixture.plan.locations, casting: fixture.plan.casting, assumptions: [], warnings: [] } })).toThrow("RIPPLE_REGION_OR_CURRENCY_MISMATCH");
   });
+
+  it("rejects budget citations that do not come from official New Mexico cost evidence", () => {
+    const fixture = planningFixture(1, true);
+    const draft = createInitialPlanDraft({ projectTitle: fixture.snapshot.projectTitle, revision: fixture.snapshot.revision, planningInputs: fixture.snapshot.planningInputs, plan: fixture.plan });
+    const base = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-fixture", scriptVersionId: "script-1", draft }));
+    const genericCostEvidence = { ...fixture.evidence[0]!, id: "evidence-generic-cost", title: "Generic production insurance advice", url: "https://example.com/production-insurance" };
+    const budget = { ...fixture.plan.budget, lineItems: fixture.plan.budget.lineItems.map(item => ({ ...item, evidenceIds: [genericCostEvidence.id] })), costDrivers: fixture.plan.budget.costDrivers.map(item => ({ ...item, evidenceIds: [genericCostEvidence.id] })) };
+    expect(() => createProjectRippleDraft({ jobId: "ripple-fixture", planningInputs: fixture.snapshot.planningInputs, base, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the scene to a covered weather day and revise crew needs.", evidence: [...fixture.evidence, genericCostEvidence], output: { schedule: fixture.plan.schedule, budget, locations: fixture.plan.locations, casting: fixture.plan.casting, assumptions: [], warnings: [] } })).toThrow("RIPPLE_COST_EVIDENCE_INVALID");
+  });
 });

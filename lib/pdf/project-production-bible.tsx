@@ -97,7 +97,7 @@ export async function renderProjectProductionBible(project: Pick<Project, "id" |
           {plan.locations.slice(0, 1).map(location => <View style={styles.card} key={location.id}><Text style={styles.cardTitle}>{location.name} · {location.locality} ({location.regionCode})</Text><Text style={styles.note}>{location.fit}</Text>{location.risks.map(risk => <Text style={styles.note} key={risk}>Risk: {risk}</Text>)}</View>)}
         </View>
         {plan.locations.slice(1).map(location => <View style={styles.card} wrap={false} key={location.id}><Text style={styles.cardTitle}>{location.name} · {location.locality} ({location.regionCode})</Text><Text style={styles.note}>{location.fit}</Text>{location.risks.map(risk => <Text style={styles.note} key={risk}>Risk: {risk}</Text>)}</View>)}
-        {plan.casting.map(brief => <View style={styles.card} wrap={false} key={brief.id}><Text style={styles.cardTitle}>{brief.roleName} · {brief.ageCategory}</Text><Text style={styles.note}>{brief.archetype}</Text>{brief.specialistNeeds.map(need => <Text style={styles.note} key={need}>Need: {need}</Text>)}</View>)}
+        {plan.casting.map(brief => <View style={styles.card} wrap={false} key={brief.id}><Text style={styles.cardTitle}>{brief.roleName} · Age: {brief.ageCategory}</Text><Text style={styles.note}>{brief.archetype}</Text>{brief.specialistNeeds.map(need => <Text style={styles.note} key={need}>Need: {need}</Text>)}</View>)}
       </View>
 
       <View style={styles.section}>

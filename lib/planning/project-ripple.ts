@@ -33,6 +33,10 @@ export const projectRippleOutputSchema = z.object({
 
 export type ProjectRippleOutput = z.infer<typeof projectRippleOutputSchema>;
 
+export function isOfficialNewMexicoCostEvidence(record: PlanningEvidence[number]) {
+  return record.topics.includes("costs") && /(^|\.)(nmfilm\.com|nm\.gov)$/i.test(new URL(record.url).hostname);
+}
+
 export function rippleRequestHash(projectId: string, basePlanVersion: number, sceneId: string, requestText: string) {
   return createHash("sha256").update(`${projectId}\n${basePlanVersion}\n${sceneId}\n${requestText.trim()}`).digest("hex");
 }
@@ -66,8 +70,12 @@ export function createProjectRippleDraft(input: { jobId: string; planningInputs:
   if (basePlan.currency !== input.planningInputs.currency || output.budget.currency !== basePlan.currency || output.locations.some(location => location.regionCode !== input.planningInputs.regionCode)) throw new Error("RIPPLE_REGION_OR_CURRENCY_MISMATCH");
   if ((input.planningInputs.budgetCeiling !== null && output.budget.high > input.planningInputs.budgetCeiling) || (input.planningInputs.targetHoursPerDay !== null && output.schedule.days.some(day => day.estimatedHours > input.planningInputs.targetHoursPerDay!)) || (input.planningInputs.shootWindow && output.schedule.shootDays > Math.floor((Date.parse(input.planningInputs.shootWindow.end) - Date.parse(input.planningInputs.shootWindow.start)) / 86_400_000) + 1)) throw new Error("RIPPLE_CONSTRAINT_INFEASIBLE");
   const evidenceIds = new Set(evidence.map(record => record.id));
-  const cited = [...output.budget.lineItems, ...output.budget.costDrivers, ...output.locations];
+  const officialCostEvidenceIds = new Set(evidence.filter(isOfficialNewMexicoCostEvidence).map(record => record.id));
+  if (!officialCostEvidenceIds.size) throw new Error("RIPPLE_COST_EVIDENCE_UNAVAILABLE");
+  const budgetCitations = [...output.budget.lineItems, ...output.budget.costDrivers];
+  const cited = [...budgetCitations, ...output.locations];
   if (cited.some(item => !item.evidenceIds.length || item.evidenceIds.some(id => !evidenceIds.has(id)))) throw new Error("RIPPLE_CITATION_INVALID");
+  if (budgetCitations.some(item => item.evidenceIds.some(id => !officialCostEvidenceIds.has(id)))) throw new Error("RIPPLE_COST_EVIDENCE_INVALID");
   const plan = {
     ...basePlan,
     schedule: output.schedule,
