@@ -14,6 +14,37 @@ export { planFromRecord, rippleDelta } from "@/lib/planning/project-ripple-contr
 
 const notesSchema = z.array(z.string().trim().min(1).max(1_000)).max(30);
 
+const verificationTerms = /\b(?:verify|confirm|consult|check|review|pending|subject to)\b/i;
+const prohibitedComplianceTerms = /\b(?:standard|mandatory|legal|regulatory)\b/gi;
+
+function normalizeScheduleComplianceNotes(output: unknown): unknown {
+  if (!output || typeof output !== "object" || Array.isArray(output)) return output;
+  const candidate = output as Record<string, unknown>;
+  if (!candidate.schedule || typeof candidate.schedule !== "object" || Array.isArray(candidate.schedule)) return output;
+  const schedule = candidate.schedule as Record<string, unknown>;
+  if (!Array.isArray(schedule.days)) return output;
+  return {
+    ...candidate,
+    schedule: {
+      ...schedule,
+      days: schedule.days.map(day => {
+        if (!day || typeof day !== "object" || Array.isArray(day)) return day;
+        const plannedDay = day as Record<string, unknown>;
+        if (!Array.isArray(plannedDay.complianceNotes) || !plannedDay.complianceNotes.every(note => typeof note === "string")) return day;
+        return {
+          ...plannedDay,
+          complianceNotes: plannedDay.complianceNotes.map(note => {
+            const cleaned = note.replace(prohibitedComplianceTerms, "applicable").trim().slice(0, 850);
+            return verificationTerms.test(cleaned)
+              ? cleaned
+              : `Review this production consideration with the responsible department before shooting: ${cleaned}`;
+          }),
+        };
+      }),
+    },
+  };
+}
+
 export const createProjectRippleRequestSchema = z.object({
   sceneId: z.string().regex(/^[a-z0-9][a-z0-9-]{0,99}$/),
   requestText: z.string().trim().min(10).max(2_000),
@@ -80,7 +111,7 @@ export function createProjectRippleJob(input: { projectId: string; writeEpoch: n
 }
 
 export function createProjectRippleDraft(input: { jobId: string; planningInputs: PlanningInputs; base: ProjectPlan; sceneId: string; requestText: string; evidence: PlanningEvidence; output: unknown; now?: string }): ProjectRippleDraft {
-  const parsedOutput = projectRippleOutputSchema.parse(input.output);
+  const parsedOutput = projectRippleOutputSchema.parse(normalizeScheduleComplianceNotes(input.output));
   const output = {
     ...parsedOutput,
     schedule: parsedOutput.schedule ?? undefined,

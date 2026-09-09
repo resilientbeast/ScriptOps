@@ -55,6 +55,15 @@ describe("project proposal contract", () => {
     expect(() => planningProviderSchema(projectRippleOutputSchema, fixture.evidence.map(record => record.id))).not.toThrow();
   });
 
+  it("converts a generated compliance assertion into a reviewable verification step", () => {
+    const fixture = planningFixture(1, true);
+    const draft = createInitialPlanDraft({ projectTitle: fixture.snapshot.projectTitle, revision: fixture.snapshot.revision, planningInputs: fixture.snapshot.planningInputs, plan: fixture.plan });
+    const base = createApprovedInitialPlan(createInitialPlanManifest({ jobId: "initial-fixture", scriptVersionId: "script-1", draft }));
+    const schedule = { ...fixture.plan.schedule, days: fixture.plan.schedule.days.map(day => ({ ...day, complianceNotes: ["Rain-cover work follows mandatory safety procedures."] })) };
+    const proposal = createProjectRippleDraft({ jobId: "ripple-fixture", planningInputs: fixture.snapshot.planningInputs, base, sceneId: fixture.plan.scenes[0]!.id, requestText: "Move the scene to a rain-covered night shoot and revise the schedule.", evidence: fixture.evidence, output: { schedule, assumptions: [], warnings: [] } });
+    expect(proposal.plan.schedule.days[0]!.complianceNotes).toEqual(["Review this production consideration with the responsible department before shooting: Rain-cover work follows applicable safety procedures."]);
+  });
+
   it("rejects a revision that changes the approved plan currency or project region", () => {
     const fixture = planningFixture(1, true);
     const draft = createInitialPlanDraft({ projectTitle: fixture.snapshot.projectTitle, revision: fixture.snapshot.revision, planningInputs: fixture.snapshot.planningInputs, plan: fixture.plan });
