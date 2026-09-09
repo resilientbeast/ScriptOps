@@ -1,5 +1,5 @@
 import type { SourceBlock } from "@/lib/ingestion/contracts";
-import type { PlanningProviders, PlanningSnapshot } from "@/lib/planning/generation";
+import { PLANNING_VERSION, type PlanningProviders, type PlanningSnapshot } from "@/lib/planning/generation";
 import { createPlanningInputs } from "@/lib/planning/inputs";
 import { normalizePlanningEvidence } from "@/lib/planning/planning-evidence";
 import type { InitialProductionPlan } from "@/lib/planning/schemas";
@@ -8,7 +8,7 @@ export const planningNow = new Date("2026-09-07T00:00:00.000Z");
 export function planningFixture(count = 1, people = false) {
   const blocks: SourceBlock[] = Array.from({ length: count }, (_, i) => ({ id: `fdx:block:${i}`, page: null, blockIndex: i, text: people ? "INT. WORKSHOP - DAY\nMARA repairs a clock. JO watches." : "EXT. DESERT - DAY\nWind moves sand. No people appear." }));
   const snapshot: PlanningSnapshot = {
-    version: "initial-v5", model: "test-model", projectTitle: people ? "Clockwork" : "Empty horizon", pricing: { inputUsdPerMillion: 0.3, outputUsdPerMillion: 2.5, searchUsdPerRequest: 0.01 },
+    version: PLANNING_VERSION, model: "test-model", projectTitle: people ? "Clockwork" : "Empty horizon", pricing: { inputUsdPerMillion: 0.3, outputUsdPerMillion: 2.5, searchUsdPerRequest: 0.01 },
     planningInputs: createPlanningInputs({ countryCode: "US", regionCode: "US-NM", currency: "USD", assumptions: [], budgetCeiling: null, shootWindow: null, targetHoursPerDay: 10, supportProfileVersion: "pilot-v1" }, planningNow),
     revision: { id: "review-1", scriptVersionId: "script-1", parentRevisionId: null, editVersion: 0, status: "accepted", sceneManifestHash: "b".repeat(64), acknowledgedWarningIds: [], acceptedBy: "owner-a", acceptedAt: planningNow.toISOString(), scenes: blocks.map((block, i) => ({ id: `scene-${i + 1}`, ordinal: i + 1, displayNumber: i === 0 ? "12A" : String(i + 1), originalHeading: block.text.split("\n")[0]!, reviewedHeading: block.text.split("\n")[0]!, sourceSpans: [{ sourceId: block.id, page: null, blockIndex: i, startOffset: 0, endOffset: block.text.length }], warningIds: [], predecessorSceneIds: [] })) },
   };

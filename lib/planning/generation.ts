@@ -9,7 +9,7 @@ import { acceptedSceneRevisionSchema, type AcceptedSceneRevision } from "@/lib/s
 import type { SceneReviewRevision } from "@/lib/scripts/scene-review-state";
 import type { PlanningPricing } from "@/lib/planning/limits";
 
-export const PLANNING_VERSION = "initial-v5";
+export const PLANNING_VERSION = "initial-v6";
 export const BATCH_SIZE = 5;
 export const MAX_PROMPT_BYTES = 180_000;
 export const MAX_OUTPUT_TOKENS = 16_384;
@@ -55,6 +55,22 @@ function validateScenes(scenes: z.infer<typeof planningSceneSchema>[], expected:
   });
 }
 
+/**
+ * PDF extraction can produce many source blocks for a single screenplay scene.
+ * The accepted review is the authority for that complete provenance set: Gemini
+ * supplies grounded facts, while the server restores every source ID after
+ * checking the scene identity. This keeps long scenes traceable without asking
+ * a model to reproduce hundreds of opaque block IDs.
+ */
+function restoreSourceFactIds(scenes: z.infer<typeof planningSceneSchema>[], expected: AcceptedSceneRevision["scenes"]) {
+  if (scenes.length !== expected.length) throw new Error("INITIAL_PLAN_SCENE_COVERAGE");
+  return scenes.map((scene, index) => {
+    const source = expected[index]!;
+    if (scene.id !== source.id || scene.heading !== source.reviewedHeading || scene.displayNumber !== source.displayNumber) throw new Error("INITIAL_PLAN_SOURCE_MISMATCH");
+    return { ...scene, sourceFactIds: [...new Set(source.sourceSpans.map(span => span.sourceId))] };
+  });
+}
+
 function validateSourceFacts(scenes: z.infer<typeof planningSceneSchema>[], sourceScenesForBatch: ReturnType<typeof sourceScenes>) {
   scenes.forEach((scene, index) => {
     const sourceTexts = new Map(sourceScenesForBatch[index]!.sources.map(source => [source.id, source.text]));
@@ -78,13 +94,17 @@ export async function runPlanningStage(snapshot: PlanningSnapshot, stage: string
   if (stage.startsWith("breakdown-")) {
     const batchIndex = Number(stage.slice(10));
     const sources = sourceScenes(snapshot, blocks, batchIndex);
-    result = await generate({ scenes: sources, instruction: "Break down all source action, cast, vehicles, stunts, minors and equipment. Preserve ordered scene IDs, reviewed headings, display numbers and every distinct source ID. Return one or more exact sourceFacts quotes copied from the supplied source text, each paired with its sourceId. Facts must be grounded in supplied source; label inferred needs in summaries. No invented cast for unpeopled scenes." }, breakdownSchema);
-    validateScenes(breakdownSchema.parse(result.output).scenes, snapshot.revision.scenes.slice(batchIndex * BATCH_SIZE, (batchIndex + 1) * BATCH_SIZE));
-    validateSourceFacts(breakdownSchema.parse(result.output).scenes, sources);
+    result = await generate({ scenes: sources, instruction: "Break down all source action, cast, vehicles, stunts, minors and equipment. Preserve ordered scene IDs, reviewed headings, and display numbers. Return one or more exact sourceFacts quotes copied from the supplied source text, each paired with its sourceId. The server maintains each scene's complete provenance ID set. Facts must be grounded in supplied source; label inferred needs in summaries. No invented cast for unpeopled scenes." }, breakdownSchema);
+    const breakdown = { scenes: restoreSourceFactIds(breakdownSchema.parse(result.output).scenes, snapshot.revision.scenes.slice(batchIndex * BATCH_SIZE, (batchIndex + 1) * BATCH_SIZE)) };
+    result.output = breakdown;
+    validateScenes(breakdown.scenes, snapshot.revision.scenes.slice(batchIndex * BATCH_SIZE, (batchIndex + 1) * BATCH_SIZE));
+    validateSourceFacts(breakdown.scenes, sources);
   } else if (stage === "normalize") {
     const scenes = stages.filter(key => key.startsWith("breakdown-")).flatMap(key => breakdownSchema.parse(outputs[key]).scenes);
     result = await generate({ scenes, instruction: "Normalize shared cast role IDs and story location names across all scenes without losing any requirements or source facts. Preserve sourceFacts verbatim. Return shared role briefs (empty when appropriate), normalized scenes and distinct story locations. Explicitly state inferred assumptions. Do not state age, dialogue, casting, legal, labor, or availability facts unless an exact sourceFact supports it." }, normalizationSchema);
-    const normalized = normalizationSchema.parse(result.output);
+    const parsed = normalizationSchema.parse(result.output);
+    const normalized = { ...parsed, scenes: restoreSourceFactIds(parsed.scenes, snapshot.revision.scenes) };
+    result.output = normalized;
     validateScenes(normalized.scenes, snapshot.revision.scenes);
     normalized.scenes.forEach((scene, i) => {
       const original = scenes[i]!;

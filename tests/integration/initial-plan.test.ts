@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { planningFixture, planningNow } from "@/tests/fixtures/planning";
-import { planningStages, runPlanningStage, type StageOutputs } from "@/lib/planning/generation";
+import { planningStages, runPlanningStage, type PlanningProviders, type StageOutputs } from "@/lib/planning/generation";
 import { initialPlanDraftSchema } from "@/lib/planning/schemas";
 import { claimGeneration, finishGenerationStage, type GenerationState } from "@/lib/planning/generation-state";
 import type { Project } from "@/lib/projects/schemas";
@@ -54,6 +54,20 @@ describe("initial generation from accepted source", () => {
     f.plan.scenes[0]!.id = "foreign-scene";
     await expect(runPlanningStage(f.snapshot, "breakdown-0", {}, f.blocks, f.providers, planningNow)).rejects.toThrow("INITIAL_PLAN_SOURCE_MISMATCH");
   });
+  it("restores complete server-side provenance for a long extracted scene", async () => {
+    const f = planningFixture();
+    const extra = { id: "fdx:block:extra", page: null, blockIndex: 1, text: "JO enters with a weathered suitcase." };
+    f.blocks.push(extra);
+    f.snapshot.revision.scenes[0]!.sourceSpans.push({ sourceId: extra.id, page: null, blockIndex: extra.blockIndex, startOffset: 0, endOffset: extra.text.length });
+    const generated = structuredClone(f.plan.scenes[0]!);
+    generated.sourceFactIds = [f.blocks[0]!.id];
+    generated.sourceFacts = [{ sourceId: f.blocks[0]!.id, quote: f.blocks[0]!.text }];
+    const providers: PlanningProviders = { ...f.providers, generate: async (stage, data, schema) => stage === "breakdown-0"
+      ? { output: { scenes: [generated] }, usage: { inputTokens: 1, outputTokens: 1, elapsedMs: 1 } }
+      : f.providers.generate(stage, data, schema) };
+    const result = await runPlanningStage(f.snapshot, "breakdown-0", {}, f.blocks, providers, planningNow);
+    expect((result.output as { scenes: { sourceFactIds: string[] }[] }).scenes[0]!.sourceFactIds).toEqual([f.blocks[0]!.id, extra.id]);
+  });
   it("blocks hard constraints and zero-budget placeholders at their stage", async () => {
     const f = await runFixture(6, false);
     f.snapshot.planningInputs.shootWindow = { start: "2026-09-07", end: "2026-09-07" };
@@ -61,7 +75,7 @@ describe("initial generation from accepted source", () => {
     f.snapshot.planningInputs.budgetCeiling = 100;
     await expect(runPlanningStage(f.snapshot, "budget", f.outputs, [], f.providers, planningNow)).rejects.toThrow("INITIAL_PLAN_CONSTRAINT_INFEASIBLE");
     f.plan.budget.low = 0; f.plan.budget.high = 0;
-    f.plan.budget.lineItems[0]!.low = 0; f.plan.budget.lineItems[0]!.high = 0;
+    f.plan.budget.lineItems.forEach(item => { item.low = 0; item.high = 0; });
     await expect(runPlanningStage(f.snapshot, "budget", f.outputs, [], f.providers, planningNow)).rejects.toThrow("INITIAL_PLAN_BUDGET_INVALID");
   });
   it("requires complete fresh research and prior dependencies", async () => {
